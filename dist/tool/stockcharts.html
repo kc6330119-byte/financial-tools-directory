@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StockCharts - Financial Tools Directory</title>
+    <meta name="description" content="Advanced charting, technical indicators, scan engine">
+
+    <!-- Google Analytics - Replace GA_MEASUREMENT_ID with your actual ID -->
+    <!-- <script async src="https://www.googletagmanager.com/gtag/js?id=GA_MEASUREMENT_ID"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'GA_MEASUREMENT_ID');
+    </script> -->
+
+    <!-- Google AdSense - Replace with your AdSense code after approval -->
+    <!-- <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX" crossorigin="anonymous"></script> -->
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Custom styles -->
+    <link rel="stylesheet" href="/static/css/custom.css">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📊</text></svg>">
+
+    <style>
+        /* Custom Tailwind config */
+        :root {
+            --color-primary: #2563eb;
+            --color-secondary: #1e40af;
+        }
+        /* Ad container styling */
+        .ad-container {
+            min-height: 90px;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen flex flex-col">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-sm border-b">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <a href="/" class="flex items-center space-x-2">
+                        <span class="text-2xl">📊</span>
+                        <span class="font-bold text-xl text-gray-900">Financial Tools Directory</span>
+                    </a>
+                </div>
+
+                <!-- Desktop Navigation -->
+                <div class="hidden md:flex items-center space-x-4">
+                    <div class="relative group">
+                        <button class="text-gray-700 hover:text-blue-600 px-3 py-2 text-sm font-medium">
+                            Categories ▾
+                        </button>
+                        <div class="absolute left-0 mt-2 w-56 bg-white rounded-md shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+                            <div class="py-1">
+                                
+                                <a href="/category/stock-screeners.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                    Stock Screeners
+                                </a>
+                                
+                                <a href="/category/portfolio-trackers.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                    Portfolio Trackers
+                                </a>
+                                
+                                <a href="/category/technical-analysis.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                    Technical Analysis
+                                </a>
+                                
+                                <a href="/category/fundamental-analysis.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                    Fundamental Analysis
+                                </a>
+                                
+                                <a href="/category/data-providers.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                    Data Providers
+                                </a>
+                                
+                                <a href="/category/trading-platforms.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                    Trading Platforms
+                                </a>
+                                
+                                <a href="/category/research-tools.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                    Research Tools
+                                </a>
+                                
+                                <a href="/category/news-alerts.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                    News &amp; Alerts
+                                </a>
+                                
+                            </div>
+                        </div>
+                    </div>
+                    <a href="/#featured" class="text-gray-700 hover:text-blue-600 px-3 py-2 text-sm font-medium">Featured</a>
+                    <a href="/#recent" class="text-gray-700 hover:text-blue-600 px-3 py-2 text-sm font-medium">Recent</a>
+                    <a href="/about.html" class="text-gray-700 hover:text-blue-600 px-3 py-2 text-sm font-medium">About</a>
+                </div>
+
+                <!-- Mobile menu button -->
+                <div class="md:hidden flex items-center">
+                    <button id="mobile-menu-btn" class="text-gray-700 hover:text-blue-600 p-2">
+                        <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile menu -->
+        <div id="mobile-menu" class="hidden md:hidden">
+            <div class="px-2 pt-2 pb-3 space-y-1">
+                
+                <a href="/category/stock-screeners.html" class="block px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-100 rounded-md">
+                    Stock Screeners
+                </a>
+                
+                <a href="/category/portfolio-trackers.html" class="block px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-100 rounded-md">
+                    Portfolio Trackers
+                </a>
+                
+                <a href="/category/technical-analysis.html" class="block px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-100 rounded-md">
+                    Technical Analysis
+                </a>
+                
+                <a href="/category/fundamental-analysis.html" class="block px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-100 rounded-md">
+                    Fundamental Analysis
+                </a>
+                
+                <a href="/category/data-providers.html" class="block px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-100 rounded-md">
+                    Data Providers
+                </a>
+                
+                <a href="/category/trading-platforms.html" class="block px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-100 rounded-md">
+                    Trading Platforms
+                </a>
+                
+                <a href="/category/research-tools.html" class="block px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-100 rounded-md">
+                    Research Tools
+                </a>
+                
+                <a href="/category/news-alerts.html" class="block px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-100 rounded-md">
+                    News &amp; Alerts
+                </a>
+                
+                <hr class="my-2 border-gray-200">
+                <a href="/about.html" class="block px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-100 rounded-md">
+                    About
+                </a>
+                <a href="/contact.html" class="block px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-100 rounded-md">
+                    Contact
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Ad Slot: Header Banner -->
+    <div class="ad-container my-4 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div class="bg-gray-100 border border-dashed border-gray-300 p-6 rounded text-center">
+            <p class="text-gray-400 text-sm">Advertisement</p>
+            <!-- AdSense code goes here -->
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="flex-grow">
+        
+<!-- Tool Header -->
+<section class="bg-white border-b">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <nav class="text-sm mb-6">
+            <a href="/" class="text-gray-500 hover:text-blue-600">Home</a>
+            
+            <span class="mx-2 text-gray-300">/</span>
+            <a href="/category/technical-analysis.html" class="text-gray-500 hover:text-blue-600">Technical Analysis</a>
+            
+            <span class="mx-2 text-gray-300">/</span>
+            <span class="text-gray-900">StockCharts</span>
+        </nav>
+
+        <div class="flex flex-col md:flex-row md:items-start md:justify-between gap-6">
+            <div class="flex items-start space-x-4">
+                
+                <img src="data:image/png;base64,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" alt="StockCharts" class="w-20 h-20 rounded-xl object-cover shadow-sm">
+                
+
+                <div>
+                    <div class="flex items-center gap-2 mb-1">
+                        <h1 class="text-2xl md:text-3xl font-bold text-gray-900">StockCharts</h1>
+                        
+                    </div>
+
+                    <div class="flex items-center space-x-4 text-sm text-gray-500">
+                        <div class="flex items-center space-x-1">
+                            <span class="text-yellow-500">★</span>
+                            <span class="font-medium text-gray-900">4.5</span>
+                            <span>(267 reviews)</span>
+                        </div>
+                        <span>•</span>
+                        <span>Freemium</span>
+                        
+                        <span>•</span>
+                        <span>Free / $14.95-39.95/mo</span>
+                        
+                    </div>
+
+                    
+                    <div class="flex flex-wrap gap-2 mt-3">
+                        
+                        <a href="/category/technical-analysis.html"
+                           class="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded hover:bg-gray-200">
+                            Technical Analysis
+                        </a>
+                        
+                    </div>
+                    
+                </div>
+            </div>
+
+            <div class="flex flex-col sm:flex-row gap-3">
+                <a href="https://stockcharts.com" target="_blank" rel="noopener"
+                   class="inline-flex items-center justify-center bg-blue-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-blue-700 transition">
+                    Visit StockCharts →
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Ad Slot: After Tool Header -->
+<div class="ad-container my-6 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+    <div class="bg-gray-100 border border-dashed border-gray-300 p-6 rounded text-center">
+        <p class="text-gray-400 text-sm">Advertisement</p>
+        <!-- AdSense code goes here -->
+    </div>
+</div>
+
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <!-- Main Content -->
+        <div class="lg:col-span-2 space-y-8">
+            <!-- Description -->
+            <section class="bg-white rounded-lg shadow-sm border p-6">
+                <h2 class="text-lg font-semibold text-gray-900 mb-4">About StockCharts</h2>
+                <p class="text-gray-600 leading-relaxed">Advanced charting, technical indicators, scan engine</p>
+            </section>
+
+            <!-- Features -->
+            
+
+            <!-- Target Audience -->
+            
+            <section class="bg-white rounded-lg shadow-sm border p-6">
+                <h2 class="text-lg font-semibold text-gray-900 mb-4">Best For</h2>
+                <div class="flex flex-wrap gap-2">
+                    
+                    <span class="bg-blue-50 text-blue-700 px-3 py-1 rounded-full text-sm">Active Traders</span>
+                    
+                    <span class="bg-blue-50 text-blue-700 px-3 py-1 rounded-full text-sm">Professionals</span>
+                    
+                </div>
+            </section>
+            
+        </div>
+
+        <!-- Sidebar -->
+        <div class="space-y-6">
+            <!-- Quick Info -->
+            <div class="bg-white rounded-lg shadow-sm border p-6">
+                <h3 class="text-lg font-semibold text-gray-900 mb-4">Quick Info</h3>
+                <dl class="space-y-4">
+                    <div class="flex justify-between">
+                        <dt class="text-gray-500">Pricing</dt>
+                        <dd class="font-medium text-gray-900">Freemium</dd>
+                    </div>
+                    
+                    <div class="flex justify-between">
+                        <dt class="text-gray-500">Price Range</dt>
+                        <dd class="font-medium text-gray-900">Free / $14.95-39.95/mo</dd>
+                    </div>
+                    
+                    <div class="flex justify-between">
+                        <dt class="text-gray-500">API Available</dt>
+                        <dd class="font-medium text-gray-900">No</dd>
+                    </div>
+                    <div class="flex justify-between">
+                        <dt class="text-gray-500">Mobile App</dt>
+                        <dd class="font-medium text-gray-900">No</dd>
+                    </div>
+                    
+                </dl>
+            </div>
+
+            <!-- CTA -->
+            <div class="bg-gradient-to-r from-blue-600 to-blue-700 rounded-lg p-6 text-white">
+                <h3 class="font-semibold text-lg mb-2">Try StockCharts</h3>
+                <p class="text-blue-100 text-sm mb-4">
+                    
+                    Get started with a free account today.
+                    
+                </p>
+                <a href="https://stockcharts.com" target="_blank" rel="noopener"
+                   class="block w-full bg-white text-blue-600 text-center py-2 rounded-lg font-medium hover:bg-blue-50 transition">
+                    Visit Website →
+                </a>
+            </div>
+
+            <!-- Sidebar Ad Slot -->
+            <div class="ad-container">
+                <div class="bg-gray-100 border border-dashed border-gray-300 p-4 rounded text-center">
+                    <p class="text-gray-400 text-xs">Advertisement</p>
+                    <!-- AdSense code goes here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Ad Slot: Before Related Tools -->
+    <div class="ad-container my-8">
+        <div class="bg-gray-100 border border-dashed border-gray-300 p-6 rounded text-center">
+            <p class="text-gray-400 text-sm">Advertisement</p>
+            <!-- AdSense code goes here -->
+        </div>
+    </div>
+
+    <!-- Related Tools -->
+    
+    <section class="mt-12">
+        <h2 class="text-xl font-bold text-gray-900 mb-6">Related Tools</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            
+            <a href="/tool/alpha-vantage.html"
+               class="bg-white p-4 rounded-lg shadow-sm border hover:shadow-md transition">
+                <div class="flex items-center space-x-3 mb-2">
+                    
+                    <img src="https://www.alphavantage.co/logo.png/" alt="Alpha Vantage" class="w-10 h-10 rounded object-cover">
+                    
+                    <div>
+                        <h3 class="font-medium text-gray-900">Alpha Vantage</h3>
+                        <div class="flex items-center text-xs text-gray-500">
+                            <span class="text-yellow-500">★</span>
+                            <span class="ml-1">4.5</span>
+                        </div>
+                    </div>
+                </div>
+                <p class="text-gray-500 text-xs line-clamp-2">Free API for stock data...</p>
+            </a>
+            
+            <a href="/tool/tc2000.html"
+               class="bg-white p-4 rounded-lg shadow-sm border hover:shadow-md transition">
+                <div class="flex items-center space-x-3 mb-2">
+                    
+                    <img src="data:image/jpeg;base64,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" alt="TC2000" class="w-10 h-10 rounded object-cover">
+                    
+                    <div>
+                        <h3 class="font-medium text-gray-900">TC2000</h3>
+                        <div class="flex items-center text-xs text-gray-500">
+                            <span class="text-yellow-500">★</span>
+                            <span class="ml-1">4.2</span>
+                        </div>
+                    </div>
+                </div>
+                <p class="text-gray-500 text-xs line-clamp-2">Real-time data, custom indicators, backtesting...</p>
+            </a>
+            
+            <a href="/tool/barchart.html"
+               class="bg-white p-4 rounded-lg shadow-sm border hover:shadow-md transition">
+                <div class="flex items-center space-x-3 mb-2">
+                    
+                    <img src="https://play-lh.googleusercontent.com/uyfM1fP9AuRhMnXm-_B4KKUVmBLW1ay5pnIehcmt_HK4oYSF70xcfwPVbFHeN1ctJ9E" alt="Barchart" class="w-10 h-10 rounded object-cover">
+                    
+                    <div>
+                        <h3 class="font-medium text-gray-900">Barchart</h3>
+                        <div class="flex items-center text-xs text-gray-500">
+                            <span class="text-yellow-500">★</span>
+                            <span class="ml-1">3.2</span>
+                        </div>
+                    </div>
+                </div>
+                <p class="text-gray-500 text-xs line-clamp-2">Futures, options flow, technical signals...</p>
+            </a>
+            
+        </div>
+    </section>
+    
+</div>
+
+    </main>
+
+    <!-- Ad Slot: Footer Banner -->
+    <div class="ad-container my-8 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div class="bg-gray-100 border border-dashed border-gray-300 p-6 rounded text-center">
+            <p class="text-gray-400 text-sm">Advertisement</p>
+            <!-- AdSense code goes here -->
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+            <div class="grid grid-cols-1 md:grid-cols-5 gap-8">
+                <!-- Brand -->
+                <div class="col-span-1 md:col-span-2">
+                    <div class="flex items-center space-x-2 mb-4">
+                        <span class="text-2xl">📊</span>
+                        <span class="font-bold text-xl">Financial Tools Directory</span>
+                    </div>
+                    <p class="text-gray-400 text-sm">
+                        Discover the best financial tools, stock screeners, portfolio trackers, and trading platforms.
+                    </p>
+                </div>
+
+                <!-- Categories -->
+                <div>
+                    <h3 class="font-semibold mb-4">Categories</h3>
+                    <ul class="space-y-2 text-sm text-gray-400">
+                        
+                        <li><a href="/category/stock-screeners.html" class="hover:text-white">Stock Screeners</a></li>
+                        
+                        <li><a href="/category/portfolio-trackers.html" class="hover:text-white">Portfolio Trackers</a></li>
+                        
+                        <li><a href="/category/technical-analysis.html" class="hover:text-white">Technical Analysis</a></li>
+                        
+                        <li><a href="/category/fundamental-analysis.html" class="hover:text-white">Fundamental Analysis</a></li>
+                        
+                    </ul>
+                </div>
+
+                <!-- More Categories -->
+                <div>
+                    <h3 class="font-semibold mb-4">More</h3>
+                    <ul class="space-y-2 text-sm text-gray-400">
+                        
+                        <li><a href="/category/data-providers.html" class="hover:text-white">Data Providers</a></li>
+                        
+                        <li><a href="/category/trading-platforms.html" class="hover:text-white">Trading Platforms</a></li>
+                        
+                        <li><a href="/category/research-tools.html" class="hover:text-white">Research Tools</a></li>
+                        
+                        <li><a href="/category/news-alerts.html" class="hover:text-white">News &amp; Alerts</a></li>
+                        
+                    </ul>
+                </div>
+
+                <!-- Legal & Info -->
+                <div>
+                    <h3 class="font-semibold mb-4">Info</h3>
+                    <ul class="space-y-2 text-sm text-gray-400">
+                        <li><a href="/about.html" class="hover:text-white">About</a></li>
+                        <li><a href="/contact.html" class="hover:text-white">Contact</a></li>
+                        <li><a href="/privacy.html" class="hover:text-white">Privacy Policy</a></li>
+                        <li><a href="/terms.html" class="hover:text-white">Terms of Service</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="border-t border-gray-700 mt-8 pt-8 text-center text-sm text-gray-400">
+                <p>&copy; 2026 Financial Tools Directory. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Mobile Menu Script -->
+    <script>
+        document.getElementById('mobile-menu-btn').addEventListener('click', function() {
+            document.getElementById('mobile-menu').classList.toggle('hidden');
+        });
+    </script>
+</body>
+</html>

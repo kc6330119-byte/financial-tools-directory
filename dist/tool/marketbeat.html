@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MarketBeat - Financial Tools Directory</title>
+    <meta name="description" content="Simple filters, analyst ratings, insider trading data">
+
+    <!-- Google Analytics - Replace GA_MEASUREMENT_ID with your actual ID -->
+    <!-- <script async src="https://www.googletagmanager.com/gtag/js?id=GA_MEASUREMENT_ID"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'GA_MEASUREMENT_ID');
+    </script> -->
+
+    <!-- Google AdSense - Replace with your AdSense code after approval -->
+    <!-- <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX" crossorigin="anonymous"></script> -->
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Custom styles -->
+    <link rel="stylesheet" href="/static/css/custom.css">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📊</text></svg>">
+
+    <style>
+        /* Custom Tailwind config */
+        :root {
+            --color-primary: #2563eb;
+            --color-secondary: #1e40af;
+        }
+        /* Ad container styling */
+        .ad-container {
+            min-height: 90px;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen flex flex-col">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-sm border-b">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <a href="/" class="flex items-center space-x-2">
+                        <span class="text-2xl">📊</span>
+                        <span class="font-bold text-xl text-gray-900">Financial Tools Directory</span>
+                    </a>
+                </div>
+
+                <!-- Desktop Navigation -->
+                <div class="hidden md:flex items-center space-x-4">
+                    <div class="relative group">
+                        <button class="text-gray-700 hover:text-blue-600 px-3 py-2 text-sm font-medium">
+                            Categories ▾
+                        </button>
+                        <div class="absolute left-0 mt-2 w-56 bg-white rounded-md shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+                            <div class="py-1">
+                                
+                                <a href="/category/stock-screeners.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                    Stock Screeners
+                                </a>
+                                
+                                <a href="/category/portfolio-trackers.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                    Portfolio Trackers
+                                </a>
+                                
+                                <a href="/category/technical-analysis.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                    Technical Analysis
+                                </a>
+                                
+                                <a href="/category/fundamental-analysis.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                    Fundamental Analysis
+                                </a>
+                                
+                                <a href="/category/data-providers.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                    Data Providers
+                                </a>
+                                
+                                <a href="/category/trading-platforms.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                    Trading Platforms
+                                </a>
+                                
+                                <a href="/category/research-tools.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                    Research Tools
+                                </a>
+                                
+                                <a href="/category/news-alerts.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                    News &amp; Alerts
+                                </a>
+                                
+                            </div>
+                        </div>
+                    </div>
+                    <a href="/#featured" class="text-gray-700 hover:text-blue-600 px-3 py-2 text-sm font-medium">Featured</a>
+                    <a href="/#recent" class="text-gray-700 hover:text-blue-600 px-3 py-2 text-sm font-medium">Recent</a>
+                    <a href="/about.html" class="text-gray-700 hover:text-blue-600 px-3 py-2 text-sm font-medium">About</a>
+                </div>
+
+                <!-- Mobile menu button -->
+                <div class="md:hidden flex items-center">
+                    <button id="mobile-menu-btn" class="text-gray-700 hover:text-blue-600 p-2">
+                        <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile menu -->
+        <div id="mobile-menu" class="hidden md:hidden">
+            <div class="px-2 pt-2 pb-3 space-y-1">
+                
+                <a href="/category/stock-screeners.html" class="block px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-100 rounded-md">
+                    Stock Screeners
+                </a>
+                
+                <a href="/category/portfolio-trackers.html" class="block px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-100 rounded-md">
+                    Portfolio Trackers
+                </a>
+                
+                <a href="/category/technical-analysis.html" class="block px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-100 rounded-md">
+                    Technical Analysis
+                </a>
+                
+                <a href="/category/fundamental-analysis.html" class="block px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-100 rounded-md">
+                    Fundamental Analysis
+                </a>
+                
+                <a href="/category/data-providers.html" class="block px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-100 rounded-md">
+                    Data Providers
+                </a>
+                
+                <a href="/category/trading-platforms.html" class="block px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-100 rounded-md">
+                    Trading Platforms
+                </a>
+                
+                <a href="/category/research-tools.html" class="block px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-100 rounded-md">
+                    Research Tools
+                </a>
+                
+                <a href="/category/news-alerts.html" class="block px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-100 rounded-md">
+                    News &amp; Alerts
+                </a>
+                
+                <hr class="my-2 border-gray-200">
+                <a href="/about.html" class="block px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-100 rounded-md">
+                    About
+                </a>
+                <a href="/contact.html" class="block px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-100 rounded-md">
+                    Contact
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Ad Slot: Header Banner -->
+    <div class="ad-container my-4 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div class="bg-gray-100 border border-dashed border-gray-300 p-6 rounded text-center">
+            <p class="text-gray-400 text-sm">Advertisement</p>
+            <!-- AdSense code goes here -->
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="flex-grow">
+        
+<!-- Tool Header -->
+<section class="bg-white border-b">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <nav class="text-sm mb-6">
+            <a href="/" class="text-gray-500 hover:text-blue-600">Home</a>
+            
+            <span class="mx-2 text-gray-300">/</span>
+            <a href="/category/stock-screeners.html" class="text-gray-500 hover:text-blue-600">Stock Screeners</a>
+            
+            <span class="mx-2 text-gray-300">/</span>
+            <span class="text-gray-900">MarketBeat</span>
+        </nav>
+
+        <div class="flex flex-col md:flex-row md:items-start md:justify-between gap-6">
+            <div class="flex items-start space-x-4">
+                
+                <img src="data:image/png;base64,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" alt="MarketBeat" class="w-20 h-20 rounded-xl object-cover shadow-sm">
+                
+
+                <div>
+                    <div class="flex items-center gap-2 mb-1">
+                        <h1 class="text-2xl md:text-3xl font-bold text-gray-900">MarketBeat</h1>
+                        
+                    </div>
+
+                    <div class="flex items-center space-x-4 text-sm text-gray-500">
+                        <div class="flex items-center space-x-1">
+                            <span class="text-yellow-500">★</span>
+                            <span class="font-medium text-gray-900">3.2</span>
+                            <span>(234 reviews)</span>
+                        </div>
+                        <span>•</span>
+                        <span>Free</span>
+                        
+                        <span>•</span>
+                        <span>Free</span>
+                        
+                    </div>
+
+                    
+                    <div class="flex flex-wrap gap-2 mt-3">
+                        
+                        <a href="/category/stock-screeners.html"
+                           class="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded hover:bg-gray-200">
+                            Stock Screeners
+                        </a>
+                        
+                    </div>
+                    
+                </div>
+            </div>
+
+            <div class="flex flex-col sm:flex-row gap-3">
+                <a href="https://www.marketbeat.com/stock-screener" target="_blank" rel="noopener"
+                   class="inline-flex items-center justify-center bg-blue-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-blue-700 transition">
+                    Visit MarketBeat →
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Ad Slot: After Tool Header -->
+<div class="ad-container my-6 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+    <div class="bg-gray-100 border border-dashed border-gray-300 p-6 rounded text-center">
+        <p class="text-gray-400 text-sm">Advertisement</p>
+        <!-- AdSense code goes here -->
+    </div>
+</div>
+
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <!-- Main Content -->
+        <div class="lg:col-span-2 space-y-8">
+            <!-- Description -->
+            <section class="bg-white rounded-lg shadow-sm border p-6">
+                <h2 class="text-lg font-semibold text-gray-900 mb-4">About MarketBeat</h2>
+                <p class="text-gray-600 leading-relaxed">Simple filters, analyst ratings, insider trading data</p>
+            </section>
+
+            <!-- Features -->
+            
+
+            <!-- Target Audience -->
+            
+            <section class="bg-white rounded-lg shadow-sm border p-6">
+                <h2 class="text-lg font-semibold text-gray-900 mb-4">Best For</h2>
+                <div class="flex flex-wrap gap-2">
+                    
+                    <span class="bg-blue-50 text-blue-700 px-3 py-1 rounded-full text-sm">Beginners</span>
+                    
+                    <span class="bg-blue-50 text-blue-700 px-3 py-1 rounded-full text-sm">Active Traders</span>
+                    
+                </div>
+            </section>
+            
+        </div>
+
+        <!-- Sidebar -->
+        <div class="space-y-6">
+            <!-- Quick Info -->
+            <div class="bg-white rounded-lg shadow-sm border p-6">
+                <h3 class="text-lg font-semibold text-gray-900 mb-4">Quick Info</h3>
+                <dl class="space-y-4">
+                    <div class="flex justify-between">
+                        <dt class="text-gray-500">Pricing</dt>
+                        <dd class="font-medium text-gray-900">Free</dd>
+                    </div>
+                    
+                    <div class="flex justify-between">
+                        <dt class="text-gray-500">Price Range</dt>
+                        <dd class="font-medium text-gray-900">Free</dd>
+                    </div>
+                    
+                    <div class="flex justify-between">
+                        <dt class="text-gray-500">API Available</dt>
+                        <dd class="font-medium text-gray-900">No</dd>
+                    </div>
+                    <div class="flex justify-between">
+                        <dt class="text-gray-500">Mobile App</dt>
+                        <dd class="font-medium text-gray-900">No</dd>
+                    </div>
+                    
+                </dl>
+            </div>
+
+            <!-- CTA -->
+            <div class="bg-gradient-to-r from-blue-600 to-blue-700 rounded-lg p-6 text-white">
+                <h3 class="font-semibold text-lg mb-2">Try MarketBeat</h3>
+                <p class="text-blue-100 text-sm mb-4">
+                    
+                    Get started with a free account today.
+                    
+                </p>
+                <a href="https://www.marketbeat.com/stock-screener" target="_blank" rel="noopener"
+                   class="block w-full bg-white text-blue-600 text-center py-2 rounded-lg font-medium hover:bg-blue-50 transition">
+                    Visit Website →
+                </a>
+            </div>
+
+            <!-- Sidebar Ad Slot -->
+            <div class="ad-container">
+                <div class="bg-gray-100 border border-dashed border-gray-300 p-4 rounded text-center">
+                    <p class="text-gray-400 text-xs">Advertisement</p>
+                    <!-- AdSense code goes here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Ad Slot: Before Related Tools -->
+    <div class="ad-container my-8">
+        <div class="bg-gray-100 border border-dashed border-gray-300 p-6 rounded text-center">
+            <p class="text-gray-400 text-sm">Advertisement</p>
+            <!-- AdSense code goes here -->
+        </div>
+    </div>
+
+    <!-- Related Tools -->
+    
+    <section class="mt-12">
+        <h2 class="text-xl font-bold text-gray-900 mb-6">Related Tools</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            
+            <a href="/tool/stock-rover.html"
+               class="bg-white p-4 rounded-lg shadow-sm border hover:shadow-md transition">
+                <div class="flex items-center space-x-3 mb-2">
+                    
+                    <img src="https://www.stockrover.com/wp-content/themes/stockrover/media/images/blue-paw-small.svg" alt="Stock Rover" class="w-10 h-10 rounded object-cover">
+                    
+                    <div>
+                        <h3 class="font-medium text-gray-900">Stock Rover</h3>
+                        <div class="flex items-center text-xs text-gray-500">
+                            <span class="text-yellow-500">★</span>
+                            <span class="ml-1">0</span>
+                        </div>
+                    </div>
+                </div>
+                <p class="text-gray-500 text-xs line-clamp-2">Fundamental screener, portfolio analysis, backtesting...</p>
+            </a>
+            
+            <a href="/tool/zacks-stock-screener.html"
+               class="bg-white p-4 rounded-lg shadow-sm border hover:shadow-md transition">
+                <div class="flex items-center space-x-3 mb-2">
+                    
+                    <img src="https://staticx.zacks.com/images/zacks/logos/logo2014_tagstack-sitehead_232x92_2x.png" alt="Zacks Stock Screener" class="w-10 h-10 rounded object-cover">
+                    
+                    <div>
+                        <h3 class="font-medium text-gray-900">Zacks Stock Screener</h3>
+                        <div class="flex items-center text-xs text-gray-500">
+                            <span class="text-yellow-500">★</span>
+                            <span class="ml-1">3.7</span>
+                        </div>
+                    </div>
+                </div>
+                <p class="text-gray-500 text-xs line-clamp-2">Rank, earnings estimates, style scores...</p>
+            </a>
+            
+            <a href="/tool/finviz.html"
+               class="bg-white p-4 rounded-lg shadow-sm border hover:shadow-md transition">
+                <div class="flex items-center space-x-3 mb-2">
+                    
+                    <img src="https://media.licdn.com/dms/image/v2/D4E0BAQHlvzHhkLvhYg/company-logo_200_200/company-logo_200_200/0/1735839535868/finviz_logo?e=1770854400&amp;v=beta&amp;t=6IefbOooS4slxT7Ju_T7RXKjJuDhax8eBj2NteWlNss" alt="Finviz" class="w-10 h-10 rounded object-cover">
+                    
+                    <div>
+                        <h3 class="font-medium text-gray-900">Finviz</h3>
+                        <div class="flex items-center text-xs text-gray-500">
+                            <span class="text-yellow-500">★</span>
+                            <span class="ml-1">4.6</span>
+                        </div>
+                    </div>
+                </div>
+                <p class="text-gray-500 text-xs line-clamp-2">Features: Heat maps, advanced filters, technical charts, real-time scanner
+
+...</p>
+            </a>
+            
+            <a href="/tool/tradingview-screener.html"
+               class="bg-white p-4 rounded-lg shadow-sm border hover:shadow-md transition">
+                <div class="flex items-center space-x-3 mb-2">
+                    
+                    <img src="data:image/png;base64,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" alt="TradingView Screener" class="w-10 h-10 rounded object-cover">
+                    
+                    <div>
+                        <h3 class="font-medium text-gray-900">TradingView Screener</h3>
+                        <div class="flex items-center text-xs text-gray-500">
+                            <span class="text-yellow-500">★</span>
+                            <span class="ml-1">4.7</span>
+                        </div>
+                    </div>
+                </div>
+                <p class="text-gray-500 text-xs line-clamp-2">Features: 50+ technical indicators, custom filters, alerts...</p>
+            </a>
+            
+        </div>
+    </section>
+    
+</div>
+
+    </main>
+
+    <!-- Ad Slot: Footer Banner -->
+    <div class="ad-container my-8 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div class="bg-gray-100 border border-dashed border-gray-300 p-6 rounded text-center">
+            <p class="text-gray-400 text-sm">Advertisement</p>
+            <!-- AdSense code goes here -->
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+            <div class="grid grid-cols-1 md:grid-cols-5 gap-8">
+                <!-- Brand -->
+                <div class="col-span-1 md:col-span-2">
+                    <div class="flex items-center space-x-2 mb-4">
+                        <span class="text-2xl">📊</span>
+                        <span class="font-bold text-xl">Financial Tools Directory</span>
+                    </div>
+                    <p class="text-gray-400 text-sm">
+                        Discover the best financial tools, stock screeners, portfolio trackers, and trading platforms.
+                    </p>
+                </div>
+
+                <!-- Categories -->
+                <div>
+                    <h3 class="font-semibold mb-4">Categories</h3>
+                    <ul class="space-y-2 text-sm text-gray-400">
+                        
+                        <li><a href="/category/stock-screeners.html" class="hover:text-white">Stock Screeners</a></li>
+                        
+                        <li><a href="/category/portfolio-trackers.html" class="hover:text-white">Portfolio Trackers</a></li>
+                        
+                        <li><a href="/category/technical-analysis.html" class="hover:text-white">Technical Analysis</a></li>
+                        
+                        <li><a href="/category/fundamental-analysis.html" class="hover:text-white">Fundamental Analysis</a></li>
+                        
+                    </ul>
+                </div>
+
+                <!-- More Categories -->
+                <div>
+                    <h3 class="font-semibold mb-4">More</h3>
+                    <ul class="space-y-2 text-sm text-gray-400">
+                        
+                        <li><a href="/category/data-providers.html" class="hover:text-white">Data Providers</a></li>
+                        
+                        <li><a href="/category/trading-platforms.html" class="hover:text-white">Trading Platforms</a></li>
+                        
+                        <li><a href="/category/research-tools.html" class="hover:text-white">Research Tools</a></li>
+                        
+                        <li><a href="/category/news-alerts.html" class="hover:text-white">News &amp; Alerts</a></li>
+                        
+                    </ul>
+                </div>
+
+                <!-- Legal & Info -->
+                <div>
+                    <h3 class="font-semibold mb-4">Info</h3>
+                    <ul class="space-y-2 text-sm text-gray-400">
+                        <li><a href="/about.html" class="hover:text-white">About</a></li>
+                        <li><a href="/contact.html" class="hover:text-white">Contact</a></li>
+                        <li><a href="/privacy.html" class="hover:text-white">Privacy Policy</a></li>
+                        <li><a href="/terms.html" class="hover:text-white">Terms of Service</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="border-t border-gray-700 mt-8 pt-8 text-center text-sm text-gray-400">
+                <p>&copy; 2026 Financial Tools Directory. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Mobile Menu Script -->
+    <script>
+        document.getElementById('mobile-menu-btn').addEventListener('click', function() {
+            document.getElementById('mobile-menu').classList.toggle('hidden');
+        });
+    </script>
+</body>
+</html>

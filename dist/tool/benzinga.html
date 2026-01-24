@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Benzinga - Financial Tools Directory</title>
+    <meta name="description" content="Real-time news, scanners, squawk audio">
+
+    <!-- Google Analytics - Replace GA_MEASUREMENT_ID with your actual ID -->
+    <!-- <script async src="https://www.googletagmanager.com/gtag/js?id=GA_MEASUREMENT_ID"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'GA_MEASUREMENT_ID');
+    </script> -->
+
+    <!-- Google AdSense - Replace with your AdSense code after approval -->
+    <!-- <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX" crossorigin="anonymous"></script> -->
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Custom styles -->
+    <link rel="stylesheet" href="/static/css/custom.css">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📊</text></svg>">
+
+    <style>
+        /* Custom Tailwind config */
+        :root {
+            --color-primary: #2563eb;
+            --color-secondary: #1e40af;
+        }
+        /* Ad container styling */
+        .ad-container {
+            min-height: 90px;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen flex flex-col">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-sm border-b">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <a href="/" class="flex items-center space-x-2">
+                        <span class="text-2xl">📊</span>
+                        <span class="font-bold text-xl text-gray-900">Financial Tools Directory</span>
+                    </a>
+                </div>
+
+                <!-- Desktop Navigation -->
+                <div class="hidden md:flex items-center space-x-4">
+                    <div class="relative group">
+                        <button class="text-gray-700 hover:text-blue-600 px-3 py-2 text-sm font-medium">
+                            Categories ▾
+                        </button>
+                        <div class="absolute left-0 mt-2 w-56 bg-white rounded-md shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+                            <div class="py-1">
+                                
+                                <a href="/category/stock-screeners.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                    Stock Screeners
+                                </a>
+                                
+                                <a href="/category/portfolio-trackers.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                    Portfolio Trackers
+                                </a>
+                                
+                                <a href="/category/technical-analysis.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                    Technical Analysis
+                                </a>
+                                
+                                <a href="/category/fundamental-analysis.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                    Fundamental Analysis
+                                </a>
+                                
+                                <a href="/category/data-providers.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                    Data Providers
+                                </a>
+                                
+                                <a href="/category/trading-platforms.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                    Trading Platforms
+                                </a>
+                                
+                                <a href="/category/research-tools.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                    Research Tools
+                                </a>
+                                
+                                <a href="/category/news-alerts.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                    News &amp; Alerts
+                                </a>
+                                
+                            </div>
+                        </div>
+                    </div>
+                    <a href="/#featured" class="text-gray-700 hover:text-blue-600 px-3 py-2 text-sm font-medium">Featured</a>
+                    <a href="/#recent" class="text-gray-700 hover:text-blue-600 px-3 py-2 text-sm font-medium">Recent</a>
+                    <a href="/about.html" class="text-gray-700 hover:text-blue-600 px-3 py-2 text-sm font-medium">About</a>
+                </div>
+
+                <!-- Mobile menu button -->
+                <div class="md:hidden flex items-center">
+                    <button id="mobile-menu-btn" class="text-gray-700 hover:text-blue-600 p-2">
+                        <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile menu -->
+        <div id="mobile-menu" class="hidden md:hidden">
+            <div class="px-2 pt-2 pb-3 space-y-1">
+                
+                <a href="/category/stock-screeners.html" class="block px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-100 rounded-md">
+                    Stock Screeners
+                </a>
+                
+                <a href="/category/portfolio-trackers.html" class="block px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-100 rounded-md">
+                    Portfolio Trackers
+                </a>
+                
+                <a href="/category/technical-analysis.html" class="block px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-100 rounded-md">
+                    Technical Analysis
+                </a>
+                
+                <a href="/category/fundamental-analysis.html" class="block px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-100 rounded-md">
+                    Fundamental Analysis
+                </a>
+                
+                <a href="/category/data-providers.html" class="block px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-100 rounded-md">
+                    Data Providers
+                </a>
+                
+                <a href="/category/trading-platforms.html" class="block px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-100 rounded-md">
+                    Trading Platforms
+                </a>
+                
+                <a href="/category/research-tools.html" class="block px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-100 rounded-md">
+                    Research Tools
+                </a>
+                
+                <a href="/category/news-alerts.html" class="block px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-100 rounded-md">
+                    News &amp; Alerts
+                </a>
+                
+                <hr class="my-2 border-gray-200">
+                <a href="/about.html" class="block px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-100 rounded-md">
+                    About
+                </a>
+                <a href="/contact.html" class="block px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-100 rounded-md">
+                    Contact
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Ad Slot: Header Banner -->
+    <div class="ad-container my-4 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div class="bg-gray-100 border border-dashed border-gray-300 p-6 rounded text-center">
+            <p class="text-gray-400 text-sm">Advertisement</p>
+            <!-- AdSense code goes here -->
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="flex-grow">
+        
+<!-- Tool Header -->
+<section class="bg-white border-b">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <nav class="text-sm mb-6">
+            <a href="/" class="text-gray-500 hover:text-blue-600">Home</a>
+            
+            <span class="mx-2 text-gray-300">/</span>
+            <a href="/category/news-alerts.html" class="text-gray-500 hover:text-blue-600">News &amp; Alerts</a>
+            
+            <span class="mx-2 text-gray-300">/</span>
+            <span class="text-gray-900">Benzinga</span>
+        </nav>
+
+        <div class="flex flex-col md:flex-row md:items-start md:justify-between gap-6">
+            <div class="flex items-start space-x-4">
+                
+                <img src="data:image/png;base64,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" alt="Benzinga" class="w-20 h-20 rounded-xl object-cover shadow-sm">
+                
+
+                <div>
+                    <div class="flex items-center gap-2 mb-1">
+                        <h1 class="text-2xl md:text-3xl font-bold text-gray-900">Benzinga</h1>
+                        
+                    </div>
+
+                    <div class="flex items-center space-x-4 text-sm text-gray-500">
+                        <div class="flex items-center space-x-1">
+                            <span class="text-yellow-500">★</span>
+                            <span class="font-medium text-gray-900">4.2</span>
+                            <span>(267 reviews)</span>
+                        </div>
+                        <span>•</span>
+                        <span>Subscription</span>
+                        
+                        <span>•</span>
+                        <span>Free / Pro tiers</span>
+                        
+                    </div>
+
+                    
+                    <div class="flex flex-wrap gap-2 mt-3">
+                        
+                        <a href="/category/news-alerts.html"
+                           class="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded hover:bg-gray-200">
+                            News &amp; Alerts
+                        </a>
+                        
+                    </div>
+                    
+                </div>
+            </div>
+
+            <div class="flex flex-col sm:flex-row gap-3">
+                <a href="https://www.benzinga.com" target="_blank" rel="noopener"
+                   class="inline-flex items-center justify-center bg-blue-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-blue-700 transition">
+                    Visit Benzinga →
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Ad Slot: After Tool Header -->
+<div class="ad-container my-6 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+    <div class="bg-gray-100 border border-dashed border-gray-300 p-6 rounded text-center">
+        <p class="text-gray-400 text-sm">Advertisement</p>
+        <!-- AdSense code goes here -->
+    </div>
+</div>
+
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <!-- Main Content -->
+        <div class="lg:col-span-2 space-y-8">
+            <!-- Description -->
+            <section class="bg-white rounded-lg shadow-sm border p-6">
+                <h2 class="text-lg font-semibold text-gray-900 mb-4">About Benzinga</h2>
+                <p class="text-gray-600 leading-relaxed">Real-time news, scanners, squawk audio</p>
+            </section>
+
+            <!-- Features -->
+            
+
+            <!-- Target Audience -->
+            
+            <section class="bg-white rounded-lg shadow-sm border p-6">
+                <h2 class="text-lg font-semibold text-gray-900 mb-4">Best For</h2>
+                <div class="flex flex-wrap gap-2">
+                    
+                    <span class="bg-blue-50 text-blue-700 px-3 py-1 rounded-full text-sm">Active Traders</span>
+                    
+                </div>
+            </section>
+            
+        </div>
+
+        <!-- Sidebar -->
+        <div class="space-y-6">
+            <!-- Quick Info -->
+            <div class="bg-white rounded-lg shadow-sm border p-6">
+                <h3 class="text-lg font-semibold text-gray-900 mb-4">Quick Info</h3>
+                <dl class="space-y-4">
+                    <div class="flex justify-between">
+                        <dt class="text-gray-500">Pricing</dt>
+                        <dd class="font-medium text-gray-900">Subscription</dd>
+                    </div>
+                    
+                    <div class="flex justify-between">
+                        <dt class="text-gray-500">Price Range</dt>
+                        <dd class="font-medium text-gray-900">Free / Pro tiers</dd>
+                    </div>
+                    
+                    <div class="flex justify-between">
+                        <dt class="text-gray-500">API Available</dt>
+                        <dd class="font-medium text-gray-900">No</dd>
+                    </div>
+                    <div class="flex justify-between">
+                        <dt class="text-gray-500">Mobile App</dt>
+                        <dd class="font-medium text-gray-900">No</dd>
+                    </div>
+                    
+                </dl>
+            </div>
+
+            <!-- CTA -->
+            <div class="bg-gradient-to-r from-blue-600 to-blue-700 rounded-lg p-6 text-white">
+                <h3 class="font-semibold text-lg mb-2">Try Benzinga</h3>
+                <p class="text-blue-100 text-sm mb-4">
+                    
+                    See pricing and features on their website.
+                    
+                </p>
+                <a href="https://www.benzinga.com" target="_blank" rel="noopener"
+                   class="block w-full bg-white text-blue-600 text-center py-2 rounded-lg font-medium hover:bg-blue-50 transition">
+                    Visit Website →
+                </a>
+            </div>
+
+            <!-- Sidebar Ad Slot -->
+            <div class="ad-container">
+                <div class="bg-gray-100 border border-dashed border-gray-300 p-4 rounded text-center">
+                    <p class="text-gray-400 text-xs">Advertisement</p>
+                    <!-- AdSense code goes here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Ad Slot: Before Related Tools -->
+    <div class="ad-container my-8">
+        <div class="bg-gray-100 border border-dashed border-gray-300 p-6 rounded text-center">
+            <p class="text-gray-400 text-sm">Advertisement</p>
+            <!-- AdSense code goes here -->
+        </div>
+    </div>
+
+    <!-- Related Tools -->
+    
+    <section class="mt-12">
+        <h2 class="text-xl font-bold text-gray-900 mb-6">Related Tools</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            
+            <a href="/tool/marketwatch.html"
+               class="bg-white p-4 rounded-lg shadow-sm border hover:shadow-md transition">
+                <div class="flex items-center space-x-3 mb-2">
+                    
+                    <img src="data:image/png;base64,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" alt="MarketWatch" class="w-10 h-10 rounded object-cover">
+                    
+                    <div>
+                        <h3 class="font-medium text-gray-900">MarketWatch</h3>
+                        <div class="flex items-center text-xs text-gray-500">
+                            <span class="text-yellow-500">★</span>
+                            <span class="ml-1">3.2</span>
+                        </div>
+                    </div>
+                </div>
+                <p class="text-gray-500 text-xs line-clamp-2">News, market data, virtual portfolio...</p>
+            </a>
+            
+            <a href="/tool/the-motley-fool.html"
+               class="bg-white p-4 rounded-lg shadow-sm border hover:shadow-md transition">
+                <div class="flex items-center space-x-3 mb-2">
+                    
+                    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAQoAAACUCAMAAABcDpd8AAAA+VBMVEX///+lKZwAAADqKoDqKYD/vCjk5OTOzs7a2tpCQkJvb2/iK3+5KpHqKX6hKJ3q6upOTk719fWzs7NhYWG8vLyjIZokJCTIyMidAJMeHh7/twCOjo5nZ2ednZ2WlpYvLy+WAIzkAGn/+/Y7OzuBgYH27/anPp/yu9Pj0+Lyztz25+/nAHPvlbfoO4XVqM774qv5xkz72pD++un75bf73p4QEBD03ejniarrfqjtdqPun7zcwNnHksLEhL29ebbrq8LpW5ayX6uvUqfaZ5TfkbeZJ5G1a7DgRIbZCHHZWI3Dmb/YAFeHAHziscX50nz+89T/y2PBTp1NSlUElZuSAAAJPElEQVR4nO1cC1vaOhgWWwF1OVCkUEEGTMulFdzcBEEQxE3mdtw85///mJNekqalpSkU1/bkfXz2CEmbfm+/ezL39hgYGBgYGBgYGBgYGBgYGBgYGBgYGNwhQwhbXBvqw/w5DNrj4e1oNLq9HLcH1Fd90P5R7vqT6T3EdNLv7OwB3wjK7HbeA6oOwPfmozE1G3J/+tBKiZIOMbV4mtATGT0o43lPBYDnDPA8UEFv1KW5tDNZpERRTCFovy+mcVUNYbYEAHC8wYJJB9B0w5cMZQr1weIB09GaxNJtKI8aEYY6aFSgHx5+fausu1KYtFZ5MMlYxFAxutAYgE4DNg/0w/EqaHtf2VlI7kToZEj9t5MhHMx+AoMGniTBpALaSdNLMeRJw5sIDY37WBmJ8LWpv32SCg796H4DqEvXgKDcN9YSoXHxECMuhMumQQNyD5gURAV0GCpw8Z7QOPyYSKWkRXy4GDYBEh5pBWcphvkLVIwVh9FpUTABuYiNXsxMJuwgg4hhPKDp4KLzjYoJaCNPm6bxb4t200glUCC1SOCwephJhl0vOt/WO0xSLyZ/Srog6PYAFpY3HQQSnyeDq+4xCH/RWVAzAbm4+3MS0kJ5VoFdETg3t2maCVhiLpQHSuvQIbain2sN9RyTt/TBLZiatqKlnnOUX9wH0AmNi6eou86Xnl528L5uE9ckt8aF/VQwKlKpiLsLWHiskrAOPH/8ol0YyFEYatGKtrsYGzrhaiAc4SuQgWh68ayZSEDz0CBNoxxRB3OtPcEHMBD4Sb3cxDygWqSirBaXkAngpRWOCIJLdxhF5EDRA6vF09pa/4+iq/VqgCWkdwQhqYBqMdmECagX0S3YdaVw14rVvMKiAhy/+2sjKqKrFoZScBRaERIVYlRzTmGm8rwVG5y+gqxMeS4UKmAQiWaeNZijjNtFK+y9rJC0IrJBpK0S79tSCUSNWw2yLRWpRiRb4MpIJXIFtAtEUME5ytINqMAbRPiLVhQd5+A7QHWF2htdjmfjy0egAo63mQamJbhWiJL4MO1DTBcSDr5RdJzCrGnIpzZH7a4iC3uCrHRnSxXwrg29wL5C+ja5G2jmIMidu/uGSYYUwf63/KzbB68u26TOKuPvKsc5fUXwCCI2JgohtNy5N/cIpOhZyEA1WreXzkdTlk3Ab5tiiVLHUXvJfYOLRvQsBCYVML9SZ6vVonDb1LeQt6BCarmYgdEUliLX8RWegdaHcd//Gza5rbRCarmKa2wVNKJGhfxd2xf22gkdGmHVoxzzo0JaeEjbaUEbaUStydltQirGXqPyo+rYKAxAxZrc4e6bGL19gCF0FUNvVR0swaYGIqbWvPa+xtQOxNkGMH9Ye4KkfUwk4oESb6m/xhnI91AtQhdmKwgw1ZytmyAPVW4jrfDpSUB3ETFn0W2C0XpP3p2DTbTCt/acpKQfIQqyPb42e34HrMYoiASiwrcjIbekh9DECAOP6shvymCuBqeCYrPjhxgtZ3Gs+h9BHBM7ArRFOkW1JbQaYUgQGn4u/ed0l8DMJ6jzCrFF0dOe/B2ps60vNE9zywc1EJHmeI0c3S0AT8yOCSqoDESMWiYZFhQjntLXIHE4RLEhbnk+UA1CZR/RwgcImnkvxyBYtjmlW/2aavU3wIerj5XKwadr/5nykg9iIFQnKOhX3z0+/KocQFQ+/vaf+8wHiSA0nf3rAKvvHF8ODFRe/d/MEPBBqFj4r/4pwOq7xu+PBwhXvpNfEBVUblP0dxWBVt81PuNnqXzyndwltIKCCv/c6QqvfuC/+q5hPUzll+9kWT99QR1B/L1moNV3jc8fg7yXJcAFma+vEFP+2Xyw1XeM69cKepjP/rPnxtYYVeItpvwTrOvXgwCr7xpXWEMpfPhjAF9B1b8NtPrO8aUCc5wKXTQbqjz1nilNLNVieUVDJJiAEQ0G99fPVMnvuKk7CSqtoGzU/f6lrb6VAKEhUAEwbPJ0eYXYoFKKOGPwrJ+4IE/7rlAhimIj4ie4w4Eyfu5x+gFPPcngSa0Qjf98vZjEvFGR88LKDoncvhzNlz1O+39CEMfvRAOpVmvxML1zq8LQvd5Aju2RPst7IOs6X+nOtL/mMIf4Z7F4eHi6n/TvOh65RPY8nz+Bt6rGgovs+b47TjPrLpOVQbfbUXz+XkfGvNdROtRn3hGyhx5UlNZSQQdGBQajAoNRgZEQKta7TTrElIrDEzvCePyYUlEQHAjh5nGlYgc3TyAVuZqZiJ0UXJVFKB/d6OP1qi1HTRwVZVtCuipW7sLmbokbJYyK7IkzttRsmiEUnOPnOPYkigqhUHdKur+fJ6qr3NHq+CkiK0lUCLXSqqTwvWOPkMu7je9XDS5iSsVF0YayPlp00QldL0zZcmfu46YRxZQKBw71Qfd3rglnvPb3Nx7j5zqVyaAiD8eEKv5YqhYKhdoRlryk2xMRW05qcMJ762ZnmvTJoOJfOJY5RZ8uMroWpItYTU4014mj6HlBF1bI1vANNK6SQQXUCuE9+lAVVqZr6UMZfTDMQQcOrWe5pFABtSKN1D9PJBJl5EgvoKcwfy2R0QdrSjZBVGQJoSygPAI6AyR1nhzPoasKSaGiDiMp+tWWXZbNTOMwkzYj6U2NHBcQQdCqYkpFbc9RowvIBV7YE23TQupFFGod/a6CdVlMqVjJNjEV7+3fm1SUCpgKu6BlZEEJpKJq//5/qBVYprzNQDLIV5Rzrr5iL/6+YpUKJMi+TZCqmXGepLGDPCHHcyXrhomhIo1SiCPyS5RsEHlFvUhMwPlmJkFU4Le+b1kACqC6VRRxDmZlHigC68VrYqiwxNqvmbJkcEGmSS/gEj1fNvxJroDLlhjXIC5UEB2qs1qhXC5UcT52qkdYq8VVv6iVM8WadYGuKMmhwtbgrR8eEh0tI6oIRDfv5jBPtoP12yWICssHOlAynUPO63TGRZy7WO5t3qq7pLgoT7u3sY6MRnCiqHDngihVc27jJhMJo2KveOoU1F6p7q3sk1ixN2ZUIGv33B0TqjYjuCk6JziOcx1ZTMWLCqFYMLDmaYVCvl4qnZ6WSvWjstuE7MV53Rg/r5GH8XLmvctR+yM/WyFdLpYza+jKZeEE9/ONDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDBvgP11N/L1StlUWAAAAAElFTkSuQmCC" alt="The Motley Fool" class="w-10 h-10 rounded object-cover">
+                    
+                    <div>
+                        <h3 class="font-medium text-gray-900">The Motley Fool</h3>
+                        <div class="flex items-center text-xs text-gray-500">
+                            <span class="text-yellow-500">★</span>
+                            <span class="ml-1">4.2</span>
+                        </div>
+                    </div>
+                </div>
+                <p class="text-gray-500 text-xs line-clamp-2">Stock recommendations, analysis, education...</p>
+            </a>
+            
+            <a href="/tool/tipranks.html"
+               class="bg-white p-4 rounded-lg shadow-sm border hover:shadow-md transition">
+                <div class="flex items-center space-x-3 mb-2">
+                    
+                    <img src="data:image/jpeg;base64,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" alt="TipRanks" class="w-10 h-10 rounded object-cover">
+                    
+                    <div>
+                        <h3 class="font-medium text-gray-900">TipRanks</h3>
+                        <div class="flex items-center text-xs text-gray-500">
+                            <span class="text-yellow-500">★</span>
+                            <span class="ml-1">3.7</span>
+                        </div>
+                    </div>
+                </div>
+                <p class="text-gray-500 text-xs line-clamp-2">Analyst ratings, smart scores, insider trading...</p>
+            </a>
+            
+            <a href="/tool/bloomberg.html"
+               class="bg-white p-4 rounded-lg shadow-sm border hover:shadow-md transition">
+                <div class="flex items-center space-x-3 mb-2">
+                    
+                    <img src="data:image/png;base64,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" alt="Bloomberg" class="w-10 h-10 rounded object-cover">
+                    
+                    <div>
+                        <h3 class="font-medium text-gray-900">Bloomberg</h3>
+                        <div class="flex items-center text-xs text-gray-500">
+                            <span class="text-yellow-500">★</span>
+                            <span class="ml-1">4.2</span>
+                        </div>
+                    </div>
+                </div>
+                <p class="text-gray-500 text-xs line-clamp-2">Breaking news, market data, analysis...</p>
+            </a>
+            
+        </div>
+    </section>
+    
+</div>
+
+    </main>
+
+    <!-- Ad Slot: Footer Banner -->
+    <div class="ad-container my-8 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div class="bg-gray-100 border border-dashed border-gray-300 p-6 rounded text-center">
+            <p class="text-gray-400 text-sm">Advertisement</p>
+            <!-- AdSense code goes here -->
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+            <div class="grid grid-cols-1 md:grid-cols-5 gap-8">
+                <!-- Brand -->
+                <div class="col-span-1 md:col-span-2">
+                    <div class="flex items-center space-x-2 mb-4">
+                        <span class="text-2xl">📊</span>
+                        <span class="font-bold text-xl">Financial Tools Directory</span>
+                    </div>
+                    <p class="text-gray-400 text-sm">
+                        Discover the best financial tools, stock screeners, portfolio trackers, and trading platforms.
+                    </p>
+                </div>
+
+                <!-- Categories -->
+                <div>
+                    <h3 class="font-semibold mb-4">Categories</h3>
+                    <ul class="space-y-2 text-sm text-gray-400">
+                        
+                        <li><a href="/category/stock-screeners.html" class="hover:text-white">Stock Screeners</a></li>
+                        
+                        <li><a href="/category/portfolio-trackers.html" class="hover:text-white">Portfolio Trackers</a></li>
+                        
+                        <li><a href="/category/technical-analysis.html" class="hover:text-white">Technical Analysis</a></li>
+                        
+                        <li><a href="/category/fundamental-analysis.html" class="hover:text-white">Fundamental Analysis</a></li>
+                        
+                    </ul>
+                </div>
+
+                <!-- More Categories -->
+                <div>
+                    <h3 class="font-semibold mb-4">More</h3>
+                    <ul class="space-y-2 text-sm text-gray-400">
+                        
+                        <li><a href="/category/data-providers.html" class="hover:text-white">Data Providers</a></li>
+                        
+                        <li><a href="/category/trading-platforms.html" class="hover:text-white">Trading Platforms</a></li>
+                        
+                        <li><a href="/category/research-tools.html" class="hover:text-white">Research Tools</a></li>
+                        
+                        <li><a href="/category/news-alerts.html" class="hover:text-white">News &amp; Alerts</a></li>
+                        
+                    </ul>
+                </div>
+
+                <!-- Legal & Info -->
+                <div>
+                    <h3 class="font-semibold mb-4">Info</h3>
+                    <ul class="space-y-2 text-sm text-gray-400">
+                        <li><a href="/about.html" class="hover:text-white">About</a></li>
+                        <li><a href="/contact.html" class="hover:text-white">Contact</a></li>
+                        <li><a href="/privacy.html" class="hover:text-white">Privacy Policy</a></li>
+                        <li><a href="/terms.html" class="hover:text-white">Terms of Service</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="border-t border-gray-700 mt-8 pt-8 text-center text-sm text-gray-400">
+                <p>&copy; 2026 Financial Tools Directory. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Mobile Menu Script -->
+    <script>
+        document.getElementById('mobile-menu-btn').addEventListener('click', function() {
+            document.getElementById('mobile-menu').classList.toggle('hidden');
+        });
+    </script>
+</body>
+</html>
