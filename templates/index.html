@@ -22,6 +22,64 @@
     </div>
 </section>
 
+<!-- Market Indices Widget -->
+<section class="bg-white border-b">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+        <div id="market-widget" class="flex flex-wrap justify-center items-center gap-6 md:gap-12">
+            <div class="text-center text-gray-400 text-sm">
+                <span id="market-loading">Loading market data...</span>
+            </div>
+        </div>
+        <div id="market-error" class="hidden text-center text-gray-400 text-sm">
+            Market data unavailable
+        </div>
+    </div>
+</section>
+
+<script>
+async function loadMarketData() {
+    const widget = document.getElementById('market-widget');
+    const loading = document.getElementById('market-loading');
+    const error = document.getElementById('market-error');
+    
+    try {
+        const response = await fetch('/.netlify/functions/market-data');
+        if (!response.ok) throw new Error('Failed to fetch');
+        
+        const data = await response.json();
+        
+        if (data.quotes && data.quotes.length > 0) {
+            widget.innerHTML = data.quotes.map(quote => {
+                const isPositive = parseFloat(quote.change) >= 0;
+                const colorClass = isPositive ? 'text-green-600' : 'text-red-600';
+                const arrow = isPositive ? '▲' : '▼';
+                
+                return `
+                    <div class="flex items-center space-x-3">
+                        <div class="text-left">
+                            <div class="text-xs text-gray-500 font-medium">${quote.name}</div>
+                            <div class="text-lg font-bold text-gray-900">$${quote.price}</div>
+                        </div>
+                        <div class="text-right ${colorClass}">
+                            <div class="text-sm font-semibold">${arrow} ${Math.abs(quote.change).toFixed(2)}</div>
+                            <div class="text-xs">(${isPositive ? '+' : ''}${parseFloat(quote.changePercent).toFixed(2)}%)</div>
+                        </div>
+                    </div>
+                `;
+            }).join('<div class="hidden md:block w-px h-10 bg-gray-200"></div>');
+        } else {
+            throw new Error('No data');
+        }
+    } catch (e) {
+        widget.classList.add('hidden');
+        error.classList.remove('hidden');
+    }
+}
+
+// Load on page load
+document.addEventListener('DOMContentLoaded', loadMarketData);
+</script>
+
 <!-- Featured Tools -->
 <section id="featured" class="py-12">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
