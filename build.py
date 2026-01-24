@@ -326,6 +326,13 @@ Sitemap: {config.SITE_URL}/sitemap.xml
     print("Built: robots.txt")
 
 
+def copy_ads_txt():
+    """Copy ads.txt to output directory."""
+    ads_txt_path = Path("ads.txt")
+    if ads_txt_path.exists():
+        shutil.copy(ads_txt_path, config.OUTPUT_DIR / "ads.txt")
+        print("Built: ads.txt")
+
 
 # Static pages configuration
 STATIC_PAGES = [
@@ -403,6 +410,7 @@ def main():
     print("\nBuilding SEO files...")
     build_sitemap(tools)
     build_robots()
+    copy_ads_txt()
 
     print(f"\n{'='*50}")
     print(f"Build complete! Output in: {config.OUTPUT_DIR}")
