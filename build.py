@@ -20,6 +20,12 @@ def get_sample_data():
     """Return sample tools for testing without Airtable."""
     return [
         {
+        'template': 'success.html',
+        'output': 'success/index.html',
+        'title': 'Message Sent',
+        'description': 'Thank you for contacting us.',
+    },
+    {
             "name": "Alpha Vantage",
             "slug": "alpha-vantage",
             "description": "Free APIs for realtime and historical stock data, forex, and cryptocurrency. "
@@ -40,6 +46,12 @@ def get_sample_data():
             "date_added": "2024-01-15",
         },
         {
+        'template': 'success.html',
+        'output': 'success/index.html',
+        'title': 'Message Sent',
+        'description': 'Thank you for contacting us.',
+    },
+    {
             "name": "TradingView",
             "slug": "tradingview",
             "description": "Advanced charting platform with social features. Create, share, and discover "
@@ -60,6 +72,12 @@ def get_sample_data():
             "date_added": "2024-01-10",
         },
         {
+        'template': 'success.html',
+        'output': 'success/index.html',
+        'title': 'Message Sent',
+        'description': 'Thank you for contacting us.',
+    },
+    {
             "name": "Yahoo Finance",
             "slug": "yahoo-finance",
             "description": "Comprehensive financial news, data, and portfolio tracking. One of the most "
@@ -335,6 +353,12 @@ STATIC_PAGES = [
         'title': 'Terms of Service',
         'description': 'Terms and conditions for using Financial Tools Directory.',
     },
+    {
+        'template': 'success.html',
+        'output': 'success/index.html',
+        'title': 'Message Sent',
+        'description': 'Thank you for contacting us.',
+    },
 ]
 
 
@@ -347,6 +371,7 @@ def build_static_pages(env):
             meta_description=page['description'],
         )
         output_path = config.OUTPUT_DIR / page['output']
+        output_path.parent.mkdir(parents=True, exist_ok=True)
         output_path.write_text(html)
         print(f"Built: {page['output']}")
 

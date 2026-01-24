@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Polygon.io - Financial Tools Directory</title>
+    <meta name="description" content="Stocks, options, forex, crypto data
+
+">
+
+    <!-- Google Analytics - Replace GA_MEASUREMENT_ID with your actual ID -->
+    <!-- <script async src="https://www.googletagmanager.com/gtag/js?id=GA_MEASUREMENT_ID"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'GA_MEASUREMENT_ID');
+    </script> -->
+
+    <!-- Google AdSense - Replace with your AdSense code after approval -->
+    <!-- <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX" crossorigin="anonymous"></script> -->
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Custom styles -->
+    <link rel="stylesheet" href="/static/css/custom.css">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📊</text></svg>">
+
+    <style>
+        /* Custom Tailwind config */
+        :root {
+            --color-primary: #2563eb;
+            --color-secondary: #1e40af;
+        }
+        /* Ad container styling */
+        .ad-container {
+            min-height: 90px;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen flex flex-col">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-sm border-b">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <a href="/" class="flex items-center space-x-2">
+                        <span class="text-2xl">📊</span>
+                        <span class="font-bold text-xl text-gray-900">Financial Tools Directory</span>
+                    </a>
+                </div>
+
+                <!-- Desktop Navigation -->
+                <div class="hidden md:flex items-center space-x-4">
+                    <div class="relative group">
+                        <button class="text-gray-700 hover:text-blue-600 px-3 py-2 text-sm font-medium">
+                            Categories ▾
+                        </button>
+                        <div class="absolute left-0 mt-2 w-56 bg-white rounded-md shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+                            <div class="py-1">
+                                
+                                <a href="/category/stock-screeners.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                    Stock Screeners
+                                </a>
+                                
+                                <a href="/category/portfolio-trackers.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                    Portfolio Trackers
+                                </a>
+                                
+                                <a href="/category/technical-analysis.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                    Technical Analysis
+                                </a>
+                                
+                                <a href="/category/fundamental-analysis.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                    Fundamental Analysis
+                                </a>
+                                
+                                <a href="/category/data-providers.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                    Data Providers
+                                </a>
+                                
+                                <a href="/category/trading-platforms.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                    Trading Platforms
+                                </a>
+                                
+                                <a href="/category/research-tools.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                    Research Tools
+                                </a>
+                                
+                                <a href="/category/news-alerts.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                    News &amp; Alerts
+                                </a>
+                                
+                            </div>
+                        </div>
+                    </div>
+                    <a href="/#featured" class="text-gray-700 hover:text-blue-600 px-3 py-2 text-sm font-medium">Featured</a>
+                    <a href="/#recent" class="text-gray-700 hover:text-blue-600 px-3 py-2 text-sm font-medium">Recent</a>
+                    <a href="/about.html" class="text-gray-700 hover:text-blue-600 px-3 py-2 text-sm font-medium">About</a>
+                </div>
+
+                <!-- Mobile menu button -->
+                <div class="md:hidden flex items-center">
+                    <button id="mobile-menu-btn" class="text-gray-700 hover:text-blue-600 p-2">
+                        <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile menu -->
+        <div id="mobile-menu" class="hidden md:hidden">
+            <div class="px-2 pt-2 pb-3 space-y-1">
+                
+                <a href="/category/stock-screeners.html" class="block px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-100 rounded-md">
+                    Stock Screeners
+                </a>
+                
+                <a href="/category/portfolio-trackers.html" class="block px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-100 rounded-md">
+                    Portfolio Trackers
+                </a>
+                
+                <a href="/category/technical-analysis.html" class="block px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-100 rounded-md">
+                    Technical Analysis
+                </a>
+                
+                <a href="/category/fundamental-analysis.html" class="block px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-100 rounded-md">
+                    Fundamental Analysis
+                </a>
+                
+                <a href="/category/data-providers.html" class="block px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-100 rounded-md">
+                    Data Providers
+                </a>
+                
+                <a href="/category/trading-platforms.html" class="block px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-100 rounded-md">
+                    Trading Platforms
+                </a>
+                
+                <a href="/category/research-tools.html" class="block px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-100 rounded-md">
+                    Research Tools
+                </a>
+                
+                <a href="/category/news-alerts.html" class="block px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-100 rounded-md">
+                    News &amp; Alerts
+                </a>
+                
+                <hr class="my-2 border-gray-200">
+                <a href="/about.html" class="block px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-100 rounded-md">
+                    About
+                </a>
+                <a href="/contact.html" class="block px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-100 rounded-md">
+                    Contact
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Ad Slot: Header Banner -->
+    <div class="ad-container my-4 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div class="bg-gray-100 border border-dashed border-gray-300 p-6 rounded text-center">
+            <p class="text-gray-400 text-sm">Advertisement</p>
+            <!-- AdSense code goes here -->
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="flex-grow">
+        
+<!-- Tool Header -->
+<section class="bg-white border-b">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <nav class="text-sm mb-6">
+            <a href="/" class="text-gray-500 hover:text-blue-600">Home</a>
+            
+            <span class="mx-2 text-gray-300">/</span>
+            <a href="/category/data-providers.html" class="text-gray-500 hover:text-blue-600">Data Providers</a>
+            
+            <span class="mx-2 text-gray-300">/</span>
+            <span class="text-gray-900">Polygon.io</span>
+        </nav>
+
+        <div class="flex flex-col md:flex-row md:items-start md:justify-between gap-6">
+            <div class="flex items-start space-x-4">
+                
+                <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAATYAAACjCAMAAAA3vsLfAAAAhFBMVEX6+vz///8AAAD6+voEBAampqdFRUbx8fHDw8MAAAOtra5ubm+7u7z6+f75+fn6+v0tLS9+fn9/f4BcXF3r6+x1dXbc3NwmJifIyMjPz8+oqKk2NjdMTE2zs7PY2Nienp9nZ2dBQUGPj48pKSkPDxAbGx3i4uOIiIldXV0zMzRRUVIeHiBJ3x7FAAADs0lEQVR4nO3d/1PaMBjHcZNSahGLICAoX7QqTv3//78lT5I2rbe7sXErde/XD9InkGz5XJq2k7tdXAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFSujRONNEkmk9MMdf5OF9skSU411LlT8jM5yVhJkvxiqNOM/2+oM9J1FkfoOqpY11kcoeuoYl1ncYSuo4p1ncUR5O+bOEUSJlC4umjU8QyTmO/XbivkJWn0laLw40d6GdtYO09+citf3/n6VqpRFdpooxuGSmXle7MtVfIyc2Pduo6pFOVWt0x7HZteu9l9+PLGlUtXffrQspv2rDdq3W7S98oH8iyvc+n6IMfFqP3hWU9jGwi/KJah9LE9ulqPXbmxZSs2bdry9mrLzcembnBd2p47OZyqkQz4bWIb6IMtr5qxHUL5IOVc5v40rD0t7AD5S9Q0fNiG2NSrthHZrlPpOnex6Yd6gLK/seV2dldVLnVsi6pehbWYa9Wwt32HzbYqNheSWaqJ9n+Eazm0Pt/L2PTnnTZxZEq92epdh9hcipsqmEzqxyuv3Jm2Sxvla2hapPM4NjXwfcchLRfbbfj81WPa39juUvvzTRVmTZitqYpNUtSZhLCuzuFoY/ph7lM+W3tbGce2lw5Lc6Xx2+c32tv0y4WZp9mD5IR7G4fYCjmzphKWv2SY2498UNPvZv8bNNpyG0QVmxti5pLfVbFFI/Q4toHs2Dp9lXN1G2Ir/VJZ+1drFN2j2dZ7E0350mw7uNgkEDuGzsvqPP+y2hb9jS03l0w7UXv8KDOT2HSY7MC94RSZU7zVi9A3ZcmzbRtFsWUySH1VcXvbKqv1ObZwg2YXVVhtbl/a+iWTm0WUjS9rK3fuHhptd1pWYB2bmjXvYVxsad1l19/YtL8dNYcfqortpbrpclfURXhmiE/IdP+1bRnHNg+xXdaxxSdpXx+ufDYbN59VFdu2vsVXQznOwt1vvf3fuDUZ7/F2t4pic/d+g/CQ+20uCZYKz/DPMjNtn0LdknAPlO4BfHbQLYvCnMAte9kVq3WkfKetq+7bH+/nalvuU8Me2dd0HZpGc3nDT7aQYp/JS+XSbufrRtv9WoaVtpW/hmzlHf/Pe7vmEGaQXsZ2JrrO4ghdRxXrOosjdB1VrOssjtB1VLGuszjC38/0JImFwXplcn2dFL/1xYwk+tW5/SqH/Q1LUST/zZc6AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADACbT/byj8BmL7Mz8BODM8zRLCeGUAAAAASUVORK5CYII=" alt="Polygon.io" class="w-20 h-20 rounded-xl object-cover shadow-sm">
+                
+
+                <div>
+                    <div class="flex items-center gap-2 mb-1">
+                        <h1 class="text-2xl md:text-3xl font-bold text-gray-900">Polygon.io</h1>
+                        
+                    </div>
+
+                    <div class="flex items-center space-x-4 text-sm text-gray-500">
+                        <div class="flex items-center space-x-1">
+                            <span class="text-yellow-500">★</span>
+                            <span class="font-medium text-gray-900">3.5</span>
+                            <span>(75 reviews)</span>
+                        </div>
+                        <span>•</span>
+                        <span>Freemium</span>
+                        
+                        <span>•</span>
+                        <span>Free / $29-399/mo</span>
+                        
+                    </div>
+
+                    
+                    <div class="flex flex-wrap gap-2 mt-3">
+                        
+                        <a href="/category/data-providers.html"
+                           class="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded hover:bg-gray-200">
+                            Data Providers
+                        </a>
+                        
+                    </div>
+                    
+                </div>
+            </div>
+
+            <div class="flex flex-col sm:flex-row gap-3">
+                <a href="https://polygon.io" target="_blank" rel="noopener"
+                   class="inline-flex items-center justify-center bg-blue-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-blue-700 transition">
+                    Visit Polygon.io →
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Ad Slot: After Tool Header -->
+<div class="ad-container my-6 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+    <div class="bg-gray-100 border border-dashed border-gray-300 p-6 rounded text-center">
+        <p class="text-gray-400 text-sm">Advertisement</p>
+        <!-- AdSense code goes here -->
+    </div>
+</div>
+
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <!-- Main Content -->
+        <div class="lg:col-span-2 space-y-8">
+            <!-- Description -->
+            <section class="bg-white rounded-lg shadow-sm border p-6">
+                <h2 class="text-lg font-semibold text-gray-900 mb-4">About Polygon.io</h2>
+                <p class="text-gray-600 leading-relaxed">Stocks, options, forex, crypto data
+
+</p>
+            </section>
+
+            <!-- Features -->
+            
+
+            <!-- Target Audience -->
+            
+            <section class="bg-white rounded-lg shadow-sm border p-6">
+                <h2 class="text-lg font-semibold text-gray-900 mb-4">Best For</h2>
+                <div class="flex flex-wrap gap-2">
+                    
+                    <span class="bg-blue-50 text-blue-700 px-3 py-1 rounded-full text-sm">Professionals</span>
+                    
+                </div>
+            </section>
+            
+        </div>
+
+        <!-- Sidebar -->
+        <div class="space-y-6">
+            <!-- Quick Info -->
+            <div class="bg-white rounded-lg shadow-sm border p-6">
+                <h3 class="text-lg font-semibold text-gray-900 mb-4">Quick Info</h3>
+                <dl class="space-y-4">
+                    <div class="flex justify-between">
+                        <dt class="text-gray-500">Pricing</dt>
+                        <dd class="font-medium text-gray-900">Freemium</dd>
+                    </div>
+                    
+                    <div class="flex justify-between">
+                        <dt class="text-gray-500">Price Range</dt>
+                        <dd class="font-medium text-gray-900">Free / $29-399/mo</dd>
+                    </div>
+                    
+                    <div class="flex justify-between">
+                        <dt class="text-gray-500">API Available</dt>
+                        <dd class="font-medium text-gray-900">No</dd>
+                    </div>
+                    <div class="flex justify-between">
+                        <dt class="text-gray-500">Mobile App</dt>
+                        <dd class="font-medium text-gray-900">No</dd>
+                    </div>
+                    
+                </dl>
+            </div>
+
+            <!-- CTA -->
+            <div class="bg-gradient-to-r from-blue-600 to-blue-700 rounded-lg p-6 text-white">
+                <h3 class="font-semibold text-lg mb-2">Try Polygon.io</h3>
+                <p class="text-blue-100 text-sm mb-4">
+                    
+                    Get started with a free account today.
+                    
+                </p>
+                <a href="https://polygon.io" target="_blank" rel="noopener"
+                   class="block w-full bg-white text-blue-600 text-center py-2 rounded-lg font-medium hover:bg-blue-50 transition">
+                    Visit Website →
+                </a>
+            </div>
+
+            <!-- Sidebar Ad Slot -->
+            <div class="ad-container">
+                <div class="bg-gray-100 border border-dashed border-gray-300 p-4 rounded text-center">
+                    <p class="text-gray-400 text-xs">Advertisement</p>
+                    <!-- AdSense code goes here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Ad Slot: Before Related Tools -->
+    <div class="ad-container my-8">
+        <div class="bg-gray-100 border border-dashed border-gray-300 p-6 rounded text-center">
+            <p class="text-gray-400 text-sm">Advertisement</p>
+            <!-- AdSense code goes here -->
+        </div>
+    </div>
+
+    <!-- Related Tools -->
+    
+    <section class="mt-12">
+        <h2 class="text-xl font-bold text-gray-900 mb-6">Related Tools</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            
+            <a href="/tool/finnhub.html"
+               class="bg-white p-4 rounded-lg shadow-sm border hover:shadow-md transition">
+                <div class="flex items-center space-x-3 mb-2">
+                    
+                    <img src="https://finnhub.io/static/img/webp/finnhub-logo.webp" alt="Finnhub" class="w-10 h-10 rounded object-cover">
+                    
+                    <div>
+                        <h3 class="font-medium text-gray-900">Finnhub</h3>
+                        <div class="flex items-center text-xs text-gray-500">
+                            <span class="text-yellow-500">★</span>
+                            <span class="ml-1">3</span>
+                        </div>
+                    </div>
+                </div>
+                <p class="text-gray-500 text-xs line-clamp-2">Real-time data, news, earnings, IPO calendar...</p>
+            </a>
+            
+            <a href="/tool/quandl.html"
+               class="bg-white p-4 rounded-lg shadow-sm border hover:shadow-md transition">
+                <div class="flex items-center space-x-3 mb-2">
+                    
+                    <img src="https://next-pro.cdn.data.nasdaq.com/uploads/vendor/profile_image/41/thumb_quandl-logo.png" alt="Quandl" class="w-10 h-10 rounded object-cover">
+                    
+                    <div>
+                        <h3 class="font-medium text-gray-900">Quandl</h3>
+                        <div class="flex items-center text-xs text-gray-500">
+                            <span class="text-yellow-500">★</span>
+                            <span class="ml-1">3.2</span>
+                        </div>
+                    </div>
+                </div>
+                <p class="text-gray-500 text-xs line-clamp-2">Alternative data, economic data, API access
+
+...</p>
+            </a>
+            
+        </div>
+    </section>
+    
+</div>
+
+    </main>
+
+    <!-- Ad Slot: Footer Banner -->
+    <div class="ad-container my-8 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div class="bg-gray-100 border border-dashed border-gray-300 p-6 rounded text-center">
+            <p class="text-gray-400 text-sm">Advertisement</p>
+            <!-- AdSense code goes here -->
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+            <div class="grid grid-cols-1 md:grid-cols-5 gap-8">
+                <!-- Brand -->
+                <div class="col-span-1 md:col-span-2">
+                    <div class="flex items-center space-x-2 mb-4">
+                        <span class="text-2xl">📊</span>
+                        <span class="font-bold text-xl">Financial Tools Directory</span>
+                    </div>
+                    <p class="text-gray-400 text-sm">
+                        Discover the best financial tools, stock screeners, portfolio trackers, and trading platforms.
+                    </p>
+                </div>
+
+                <!-- Categories -->
+                <div>
+                    <h3 class="font-semibold mb-4">Categories</h3>
+                    <ul class="space-y-2 text-sm text-gray-400">
+                        
+                        <li><a href="/category/stock-screeners.html" class="hover:text-white">Stock Screeners</a></li>
+                        
+                        <li><a href="/category/portfolio-trackers.html" class="hover:text-white">Portfolio Trackers</a></li>
+                        
+                        <li><a href="/category/technical-analysis.html" class="hover:text-white">Technical Analysis</a></li>
+                        
+                        <li><a href="/category/fundamental-analysis.html" class="hover:text-white">Fundamental Analysis</a></li>
+                        
+                    </ul>
+                </div>
+
+                <!-- More Categories -->
+                <div>
+                    <h3 class="font-semibold mb-4">More</h3>
+                    <ul class="space-y-2 text-sm text-gray-400">
+                        
+                        <li><a href="/category/data-providers.html" class="hover:text-white">Data Providers</a></li>
+                        
+                        <li><a href="/category/trading-platforms.html" class="hover:text-white">Trading Platforms</a></li>
+                        
+                        <li><a href="/category/research-tools.html" class="hover:text-white">Research Tools</a></li>
+                        
+                        <li><a href="/category/news-alerts.html" class="hover:text-white">News &amp; Alerts</a></li>
+                        
+                    </ul>
+                </div>
+
+                <!-- Legal & Info -->
+                <div>
+                    <h3 class="font-semibold mb-4">Info</h3>
+                    <ul class="space-y-2 text-sm text-gray-400">
+                        <li><a href="/about.html" class="hover:text-white">About</a></li>
+                        <li><a href="/contact.html" class="hover:text-white">Contact</a></li>
+                        <li><a href="/privacy.html" class="hover:text-white">Privacy Policy</a></li>
+                        <li><a href="/terms.html" class="hover:text-white">Terms of Service</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="border-t border-gray-700 mt-8 pt-8 text-center text-sm text-gray-400">
+                <p>&copy; 2026 Financial Tools Directory. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Mobile Menu Script -->
+    <script>
+        document.getElementById('mobile-menu-btn').addEventListener('click', function() {
+            document.getElementById('mobile-menu').classList.toggle('hidden');
+        });
+    </script>
+</body>
+</html>
