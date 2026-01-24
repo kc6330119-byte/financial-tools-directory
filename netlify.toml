@@ -5,7 +5,7 @@
 [build.environment]
   PYTHON_VERSION = "3.9"
 
-# Enable pretty URLs (serve /contact from /contact.html)
+# Enable pretty URLs
 [[redirects]]
   from = "/contact"
   to = "/contact.html"
@@ -28,5 +28,10 @@
 
 [[redirects]]
   from = "/success"
+  to = "/success/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/success/"
   to = "/success/index.html"
   status = 200
