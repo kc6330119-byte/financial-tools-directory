@@ -35,3 +35,13 @@
   from = "/success/"
   to = "/success/index.html"
   status = 200
+
+[[redirects]]
+  from = "/tools"
+  to = "/tools.html"
+  status = 200
+
+[[redirects]]
+  from = "/blog"
+  to = "/blog.html"
+  status = 200

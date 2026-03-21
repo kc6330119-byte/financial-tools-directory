@@ -5,52 +5,59 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ page_title }}</title>
     <meta name="description" content="{{ meta_description }}">
-    
+
     <!-- Canonical URL -->
     <link rel="canonical" href="{{ site_url }}{{ request_path | default('/') }}">
-    
+
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="{{ site_url }}{{ request_path | default('/') }}">
     <meta property="og:title" content="{{ page_title }}">
     <meta property="og:description" content="{{ meta_description }}">
-    <meta property="og:image" content="{{ site_url }}/static/images/og-image.png">
+    <meta property="og:image" content="{{ page_image or '' }}">
     <meta property="og:site_name" content="{{ site_name }}">
-    
+
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="{{ page_title }}">
     <meta name="twitter:description" content="{{ meta_description }}">
-    <meta name="twitter:image" content="{{ site_url }}/static/images/og-image.png">
-    
-    <!-- Additional SEO -->
-    <meta name="robots" content="index, follow">
-    <meta name="author" content="Financial Tools Directory">
+    <meta name="twitter:image" content="{{ page_image or '' }}">
+
+    <!-- SEO -->
+    <meta name="robots" content="{% if noindex %}noindex, follow{% else %}index, follow{% endif %}">
+    <meta name="author" content="{{ site_name }}">
 
     <!-- Structured Data -->
     <script type="application/ld+json">
     {
         "@context": "https://schema.org",
         "@type": "WebSite",
-        "name": "{{ site_name }}",
-        "url": "{{ site_url }}",
-        "description": "{{ site_description }}",
+        "name": {{ site_name | tojson | safe }},
+        "url": {{ site_url | tojson | safe }},
+        "description": {{ site_description | tojson | safe }},
         "potentialAction": {
             "@type": "SearchAction",
-            "target": "{{ site_url }}/?q={search_term_string}",
-            "query-input": "required name=search_term_string"
+            "target": {
+                "@type": "EntryPoint",
+                "urlTemplate": {{ (site_url ~ "/state/{slug}.html") | tojson | safe }}
+            },
+            "query-input": "required name=slug"
         }
     }
     </script>
 
+    {% block extra_head %}{% endblock %}
+
+    {% if ga_measurement_id %}
     <!-- Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-YN5P6T1YFJ"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id={{ ga_measurement_id }}"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
         function gtag(){dataLayer.push(arguments);}
         gtag('js', new Date());
-        gtag('config', 'G-YN5P6T1YFJ');
+        gtag('config', '{{ ga_measurement_id }}');
     </script>
+    {% endif %}
 
     <!-- Google AdSense -->
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9265762311868507"
@@ -58,63 +65,149 @@
 
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#eff6ff',
+                            100: '#dbeafe',
+                            200: '#bfdbfe',
+                            300: '#93c5fd',
+                            400: '#60a5fa',
+                            500: '#3b82f6',
+                            600: '#2563eb',
+                            700: '#1d4ed8',
+                            800: '#1e40af',
+                            900: '#1e3a8a',
+                        },
+                        secondary: {
+                            50: '#f0fdfa',
+                            100: '#ccfbf1',
+                            200: '#99f6e4',
+                            300: '#5eead4',
+                            400: '#2dd4bf',
+                            500: '#14b8a6',
+                            600: '#0d9488',
+                            700: '#0f766e',
+                            800: '#115e59',
+                            900: '#134e4a',
+                        },
+                        accent: {
+                            50: '#fffbeb',
+                            100: '#fef3c7',
+                            200: '#fde68a',
+                            300: '#fcd34d',
+                            400: '#fbbf24',
+                            500: '#f59e0b',
+                            600: '#d97706',
+                            700: '#b45309',
+                            800: '#92400e',
+                            900: '#78350f',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
 
     <!-- Custom styles -->
     <link rel="stylesheet" href="/static/css/custom.css">
 
     <!-- Favicon -->
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📊</text></svg>">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#128200;</text></svg>">
 
     <style>
-        /* Custom Tailwind config */
-        :root {
-            --color-primary: #2563eb;
-            --color-secondary: #1e40af;
-        }
-        /* Ad container styling */
-        .ad-container {
-            min-height: 90px;
-        }
+        .ad-container { min-height: 90px; }
     </style>
 </head>
 <body class="bg-gray-50 min-h-screen flex flex-col">
+
     <!-- Navigation -->
-    <nav class="bg-white shadow-sm border-b">
+    <nav class="bg-white shadow-sm border-b sticky top-0 z-40">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between h-16">
+                <!-- Logo -->
                 <div class="flex items-center">
                     <a href="/" class="flex items-center space-x-2">
-                        <span class="text-2xl">📊</span>
+                        <span style="font-size:48px;line-height:1;">&#128200;</span>
                         <span class="font-bold text-xl text-gray-900">{{ site_name }}</span>
                     </a>
                 </div>
 
                 <!-- Desktop Navigation -->
-                <div class="hidden md:flex items-center space-x-4">
+                <div class="hidden md:flex items-center space-x-1">
+                    <!-- Find an Advisor dropdown -->
                     <div class="relative group">
-                        <button class="text-gray-700 hover:text-blue-600 px-3 py-2 text-sm font-medium">
-                            Categories ▾
+                        <button class="text-gray-700 hover:text-primary-600 px-3 py-2 text-sm font-medium flex items-center gap-1 rounded-md hover:bg-gray-50">
+                            Find an Advisor
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                            </svg>
                         </button>
-                        <div class="absolute left-0 mt-2 w-56 bg-white rounded-md shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
-                            <div class="py-1">
-                                {% for cat in categories %}
-                                <a href="/category/{{ cat.slug }}.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                                    {{ cat.name }}
-                                </a>
-                                {% endfor %}
-                            </div>
+                        <div class="absolute left-0 mt-1 w-56 bg-white rounded-xl shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-150 z-50 border border-gray-100 py-2">
+                            {% for state in us_states[:10] %}
+                            <a href="/state/{{ state.slug }}.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-primary-50 hover:text-primary-700">
+                                {{ state.name }}
+                            </a>
+                            {% endfor %}
+                            <hr class="my-1 border-gray-100">
+                            <a href="/#states" class="block px-4 py-2 text-sm font-semibold text-primary-600 hover:bg-primary-50">
+                                View all states &rarr;
+                            </a>
                         </div>
                     </div>
-                    <a href="/#featured" class="text-gray-700 hover:text-blue-600 px-3 py-2 text-sm font-medium">Featured</a>
-                    <a href="/#recent" class="text-gray-700 hover:text-blue-600 px-3 py-2 text-sm font-medium">Recent</a>
-                    <a href="/about.html" class="text-gray-700 hover:text-blue-600 px-3 py-2 text-sm font-medium">About</a>
+
+                    <!-- Specialties dropdown -->
+                    <div class="relative group">
+                        <button class="text-gray-700 hover:text-primary-600 px-3 py-2 text-sm font-medium flex items-center gap-1 rounded-md hover:bg-gray-50">
+                            Specialties
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                            </svg>
+                        </button>
+                        <div class="absolute left-0 mt-1 w-64 bg-white rounded-xl shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-150 z-50 border border-gray-100 py-2">
+                            {% for specialty in specialties %}
+                            <a href="/specialty/{{ specialty.slug }}.html" class="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-primary-50 hover:text-primary-700">
+                                <span class="text-base">{{ specialty.icon }}</span>
+                                <span>{{ specialty.name }}</span>
+                            </a>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <a href="/tools.html" class="text-gray-700 hover:text-primary-600 px-3 py-2 text-sm font-medium rounded-md hover:bg-gray-50">Investor Tools</a>
+                    <a href="/blog.html" class="text-gray-700 hover:text-primary-600 px-3 py-2 text-sm font-medium rounded-md hover:bg-gray-50">Blog</a>
+                    <a href="/about.html" class="text-gray-700 hover:text-primary-600 px-3 py-2 text-sm font-medium rounded-md hover:bg-gray-50">About</a>
+
+                    <!-- Desktop Search -->
+                    <div class="relative" id="search-container">
+                        <button id="search-toggle" class="text-gray-700 hover:text-primary-600 p-2 rounded-md hover:bg-gray-50" aria-label="Search advisors">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0"/>
+                            </svg>
+                        </button>
+                        <div id="search-box" class="hidden absolute right-0 top-full mt-2 w-80 bg-white rounded-xl shadow-lg border border-gray-100 z-50">
+                            <div class="p-3">
+                                <input type="text" id="search-input" placeholder="Search by name, city, or state..."
+                                       class="w-full px-4 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none">
+                            </div>
+                            <div id="search-results" class="hidden max-h-72 overflow-y-auto border-t border-gray-100 pb-2"></div>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- Mobile menu button -->
-                <div class="md:hidden flex items-center">
-                    <button id="mobile-menu-btn" class="text-gray-700 hover:text-blue-600 p-2">
+                <div class="md:hidden flex items-center gap-1">
+                    <button id="mobile-search-btn" class="text-gray-700 hover:text-primary-600 p-2 rounded-md" aria-label="Search">
+                        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0"/>
+                        </svg>
+                    </button>
+                    <button id="mobile-menu-btn" class="text-gray-700 hover:text-primary-600 p-2 rounded-md">
                         <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
                         </svg>
                     </button>
                 </div>
@@ -122,102 +215,220 @@
         </div>
 
         <!-- Mobile menu -->
-        <div id="mobile-menu" class="hidden md:hidden">
-            <div class="px-2 pt-2 pb-3 space-y-1">
-                {% for cat in categories %}
-                <a href="/category/{{ cat.slug }}.html" class="block px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-100 rounded-md">
-                    {{ cat.name }}
+        <div id="mobile-menu" class="hidden md:hidden border-t border-gray-100 bg-white">
+            <!-- Mobile Search -->
+            <div class="px-3 pt-3 pb-2">
+                <input type="text" id="mobile-search-input" placeholder="Search advisors..."
+                       class="w-full px-4 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none">
+                <div id="mobile-search-results" class="hidden mt-2 rounded-lg border border-gray-100 bg-white max-h-60 overflow-y-auto shadow-sm"></div>
+            </div>
+            <div class="px-3 pt-2 pb-3 space-y-1">
+                <p class="px-3 py-1 text-xs font-semibold text-gray-400 uppercase tracking-wider">Find an Advisor</p>
+                {% for state in us_states[:10] %}
+                <a href="/state/{{ state.slug }}.html" class="block px-3 py-2 text-sm font-medium text-gray-700 hover:bg-primary-50 hover:text-primary-700 rounded-md">
+                    {{ state.name }}
                 </a>
                 {% endfor %}
-                <hr class="my-2 border-gray-200">
-                <a href="/about.html" class="block px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-100 rounded-md">
-                    About
+                <a href="/#states" class="block px-3 py-2 text-sm font-semibold text-primary-600 hover:bg-primary-50 rounded-md">
+                    View all states &rarr;
                 </a>
-                <a href="/contact.html" class="block px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-100 rounded-md">
-                    Contact
+                <hr class="my-2 border-gray-100">
+                <p class="px-3 py-1 text-xs font-semibold text-gray-400 uppercase tracking-wider">Specialties</p>
+                {% for specialty in specialties %}
+                <a href="/specialty/{{ specialty.slug }}.html" class="flex items-center gap-2 px-3 py-2 text-sm font-medium text-gray-700 hover:bg-primary-50 hover:text-primary-700 rounded-md">
+                    {{ specialty.icon }} {{ specialty.name }}
                 </a>
+                {% endfor %}
+                <hr class="my-2 border-gray-100">
+                <a href="/tools.html" class="block px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 rounded-md">Investor Tools</a>
+                <a href="/blog.html" class="block px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 rounded-md">Blog</a>
+                <a href="/about.html" class="block px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 rounded-md">About</a>
+                <a href="/contact.html" class="block px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 rounded-md">Contact</a>
             </div>
         </div>
     </nav>
-
-    <!-- Ad Slot: Header Banner -->
-    <div class="ad-container my-4 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div class="bg-gray-100 border border-dashed border-gray-300 p-6 rounded text-center">
-            <p class="text-gray-400 text-sm">Advertisement</p>
-            <!-- AdSense code goes here -->
-        </div>
-    </div>
 
     <!-- Main Content -->
     <main class="flex-grow">
         {% block content %}{% endblock %}
     </main>
 
-    <!-- Ad Slot: Footer Banner -->
-    <div class="ad-container my-8 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div class="bg-gray-100 border border-dashed border-gray-300 p-6 rounded text-center">
-            <p class="text-gray-400 text-sm">Advertisement</p>
-            <!-- AdSense code goes here -->
+    <!-- Newsletter Signup -->
+    <section class="bg-primary-600 text-white py-10">
+        <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h2 class="text-xl font-bold mb-2">Stay Informed About Investing</h2>
+            <p class="text-primary-100 text-sm mb-5">Get investing tips, advisor guides, and market insights delivered to your inbox.</p>
+            <form name="newsletter" method="POST" data-netlify="true" netlify-honeypot="bot-field" class="flex flex-col sm:flex-row gap-3 max-w-md mx-auto" id="newsletter-form">
+                <input type="hidden" name="form-name" value="newsletter">
+                <p class="hidden"><label>Don't fill this out: <input name="bot-field"></label></p>
+                <input type="email" name="email" required placeholder="Your email address"
+                       class="flex-1 px-4 py-2.5 rounded-lg text-gray-900 text-sm focus:ring-2 focus:ring-accent-400 outline-none">
+                <button type="submit" class="px-6 py-2.5 bg-accent-500 hover:bg-accent-600 text-white font-semibold rounded-lg text-sm transition-colors whitespace-nowrap">
+                    Subscribe
+                </button>
+            </form>
+            <p id="newsletter-success" class="hidden text-accent-200 text-sm mt-3 font-medium">Thanks for subscribing!</p>
         </div>
-    </div>
+    </section>
 
     <!-- Footer -->
-    <footer class="bg-gray-800 text-white">
+    <footer class="bg-gray-900 text-white">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
             <div class="grid grid-cols-1 md:grid-cols-5 gap-8">
                 <!-- Brand -->
                 <div class="col-span-1 md:col-span-2">
                     <div class="flex items-center space-x-2 mb-4">
-                        <span class="text-2xl">📊</span>
+                        <span class="text-2xl">&#128200;</span>
                         <span class="font-bold text-xl">{{ site_name }}</span>
                     </div>
-                    <p class="text-gray-400 text-sm">
-                        {{ site_description }}
-                    </p>
+                    <p class="text-gray-400 text-sm leading-relaxed mb-4">{{ site_description }}</p>
+                    <p class="text-gray-500 text-xs">&copy; {{ current_year }} {{ site_name }}. All rights reserved.</p>
                 </div>
 
-                <!-- Categories -->
+                <!-- Specialties -->
                 <div>
-                    <h3 class="font-semibold mb-4">Categories</h3>
+                    <h3 class="font-semibold mb-4 text-gray-100">Specialties</h3>
+                    <ul class="space-y-2 text-sm text-gray-400">
+                        {% for specialty in specialties[:5] %}
+                        <li><a href="/specialty/{{ specialty.slug }}.html" class="hover:text-white transition-colors">{{ specialty.name }}</a></li>
+                        {% endfor %}
+                    </ul>
+                </div>
+
+                <!-- Investor Tools -->
+                <div>
+                    <h3 class="font-semibold mb-4 text-gray-100">Investor Tools</h3>
                     <ul class="space-y-2 text-sm text-gray-400">
                         {% for cat in categories[:4] %}
-                        <li><a href="/category/{{ cat.slug }}.html" class="hover:text-white">{{ cat.name }}</a></li>
+                        <li><a href="/category/{{ cat.slug }}.html" class="hover:text-white transition-colors">{{ cat.name }}</a></li>
                         {% endfor %}
                     </ul>
                 </div>
 
-                <!-- More Categories -->
+                <!-- Info -->
                 <div>
-                    <h3 class="font-semibold mb-4">More</h3>
+                    <h3 class="font-semibold mb-4 text-gray-100">Info</h3>
                     <ul class="space-y-2 text-sm text-gray-400">
-                        {% for cat in categories[4:] %}
-                        <li><a href="/category/{{ cat.slug }}.html" class="hover:text-white">{{ cat.name }}</a></li>
-                        {% endfor %}
+                        <li><a href="/about.html" class="hover:text-white transition-colors">About Us</a></li>
+                        <li><a href="/blog.html" class="hover:text-white transition-colors">Blog</a></li>
+                        <li><a href="/contact.html" class="hover:text-white transition-colors">Contact</a></li>
+                        <li><a href="/privacy.html" class="hover:text-white transition-colors">Privacy Policy</a></li>
+                        <li><a href="/terms.html" class="hover:text-white transition-colors">Terms of Service</a></li>
                     </ul>
                 </div>
-
-                <!-- Legal & Info -->
-                <div>
-                    <h3 class="font-semibold mb-4">Info</h3>
-                    <ul class="space-y-2 text-sm text-gray-400">
-                        <li><a href="/about.html" class="hover:text-white">About</a></li>
-                        <li><a href="/contact.html" class="hover:text-white">Contact</a></li>
-                        <li><a href="/privacy.html" class="hover:text-white">Privacy Policy</a></li>
-                        <li><a href="/terms.html" class="hover:text-white">Terms of Service</a></li>
-                    </ul>
-                </div>
-            </div>
-
-            <div class="border-t border-gray-700 mt-8 pt-8 text-center text-sm text-gray-400">
-                <p>&copy; {{ current_year }} {{ site_name }}. All rights reserved.</p>
             </div>
         </div>
     </footer>
 
-    <!-- Mobile Menu Script -->
+    <!-- Nav + Search Script -->
     <script>
+        // Mobile menu toggle
         document.getElementById('mobile-menu-btn').addEventListener('click', function() {
             document.getElementById('mobile-menu').classList.toggle('hidden');
+        });
+
+        // Mobile search icon
+        document.getElementById('mobile-search-btn').addEventListener('click', function() {
+            document.getElementById('mobile-menu').classList.remove('hidden');
+            document.getElementById('mobile-search-input').focus();
+        });
+
+        // Search index
+        let searchIndex = null;
+        function loadSearchIndex(callback) {
+            if (searchIndex) { callback(); return; }
+            fetch('/search-index.json')
+                .then(r => r.json())
+                .then(data => { searchIndex = data; callback(); })
+                .catch(() => {});
+        }
+
+        function filterAdvisors(query) {
+            if (!searchIndex || query.length < 2) return [];
+            const q = query.toLowerCase();
+            return searchIndex.filter(a =>
+                a.name.toLowerCase().includes(q) ||
+                a.city.toLowerCase().includes(q) ||
+                a.state.toLowerCase().includes(q)
+            ).slice(0, 8);
+        }
+
+        function renderResults(matches) {
+            if (matches.length === 0) {
+                return '<p class="px-4 py-3 text-sm text-gray-400">No advisors found</p>';
+            }
+            return matches.map(a => `
+                <a href="/advisor/${a.slug}.html" class="flex items-center gap-3 px-4 py-2.5 hover:bg-primary-50 transition-colors">
+                    <span class="text-primary-400 text-sm">&#128200;</span>
+                    <div>
+                        <p class="text-sm font-medium text-gray-900">${a.name}</p>
+                        <p class="text-xs text-gray-400">${a.city}, ${a.state}</p>
+                    </div>
+                </a>
+            `).join('');
+        }
+
+        // Desktop search
+        const searchToggle = document.getElementById('search-toggle');
+        const searchBox = document.getElementById('search-box');
+        const searchInput = document.getElementById('search-input');
+        const searchResults = document.getElementById('search-results');
+
+        searchToggle.addEventListener('click', function(e) {
+            e.stopPropagation();
+            searchBox.classList.toggle('hidden');
+            if (!searchBox.classList.contains('hidden')) {
+                searchInput.focus();
+                loadSearchIndex(() => {});
+            }
+        });
+
+        searchInput.addEventListener('input', function() {
+            const query = this.value.trim();
+            if (query.length < 2) { searchResults.classList.add('hidden'); return; }
+            loadSearchIndex(() => {
+                searchResults.innerHTML = renderResults(filterAdvisors(query));
+                searchResults.classList.remove('hidden');
+            });
+        });
+
+        // Mobile search
+        const mobileInput = document.getElementById('mobile-search-input');
+        const mobileResults = document.getElementById('mobile-search-results');
+
+        mobileInput.addEventListener('input', function() {
+            const query = this.value.trim();
+            if (query.length < 2) { mobileResults.classList.add('hidden'); return; }
+            loadSearchIndex(() => {
+                mobileResults.innerHTML = renderResults(filterAdvisors(query));
+                mobileResults.classList.remove('hidden');
+            });
+        });
+
+        // Newsletter form
+        const nlForm = document.getElementById('newsletter-form');
+        if (nlForm) {
+            nlForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                fetch('/', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: new URLSearchParams(new FormData(nlForm)).toString()
+                }).then(() => {
+                    nlForm.classList.add('hidden');
+                    document.getElementById('newsletter-success').classList.remove('hidden');
+                }).catch(() => alert('Something went wrong. Please try again.'));
+            });
+        }
+
+        // Close desktop search on outside click or Escape
+        document.addEventListener('click', function(e) {
+            if (!document.getElementById('search-container').contains(e.target)) {
+                searchBox.classList.add('hidden');
+            }
+        });
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') searchBox.classList.add('hidden');
         });
     </script>
 </body>
