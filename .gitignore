@@ -4,3 +4,13 @@ venv/
 __pycache__/
 .DS_Store
 *.pyc
+
+# Content (blog posts managed via Airtable for builds)
+content/
+
+# Airtable exports
+Advisors Table-Grid view.csv
+
+# Project plans
+ADSENSE_RESUBMISSION_PLAN.md
+CLAUDE_PLAN_THAT_LEVERAGES_SENIOR_HOME_CARE.md
