@@ -17,7 +17,7 @@ OUTPUT_DIR = BASE_DIR / "dist"
 CONTENT_DIR = BASE_DIR / "content"
 
 # Site Configuration
-SITE_NAME = os.getenv("SITE_NAME", "Smart Investor")
+SITE_NAME = "Smart Investor"  # Hardcoded — do not use os.getenv, Netlify overrides SITE_NAME with its internal site ID
 SITE_DESCRIPTION = "Find a trusted investment advisor near you. Compare credentials, fee structures, and specialties. Browse fiduciary financial advisors by state and city."
 SITE_URL = os.getenv("SITE_URL", "https://smart-investor-financial-tools.com")
 SITE_AUTHOR = "Smart Investor"
