@@ -494,11 +494,9 @@ def load_local_blog_posts():
 
 
 def fetch_blog_posts():
-    """Fetch published blog posts — local markdown takes priority over Airtable."""
-    local_posts = load_local_blog_posts()
-    local_slugs = {p["slug"] for p in local_posts}
-
-    airtable_posts = []
+    """Fetch published blog posts from Airtable. Local markdown files in
+    content/blogposts/ are kept as a backup library but are not used in builds."""
+    posts = []
     if config.AIRTABLE_API_KEY and config.AIRTABLE_BASE_ID:
         try:
             from pyairtable import Api
@@ -514,9 +512,6 @@ def fetch_blog_posts():
 
                 title = fields.get("Title", "")
                 slug = (fields.get("Slug", "") or slugify(title)).strip()
-
-                if slug in local_slugs:
-                    continue
 
                 featured_image = fields.get("Featured Image", "")
                 if isinstance(featured_image, list) and featured_image:
@@ -535,16 +530,15 @@ def fetch_blog_posts():
                     "featured": fields.get("Featured", False),
                     "category": fields.get("Category", ""),
                 }
-                airtable_posts.append(post)
+                posts.append(post)
 
-            print(f"  Fetched {len(airtable_posts)} blog posts from Airtable.")
+            print(f"  Fetched {len(posts)} blog posts from Airtable.")
 
         except Exception as e:
             print(f"  Note: Could not fetch blog posts ({e})")
 
-    all_posts = local_posts + airtable_posts
-    all_posts.sort(key=lambda x: x.get("publish_date", ""), reverse=True)
-    return all_posts
+    posts.sort(key=lambda x: x.get("publish_date", ""), reverse=True)
+    return posts
 
 
 # =============================================================================
