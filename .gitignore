@@ -8,8 +8,13 @@ __pycache__/
 # Content (blog posts managed via Airtable for builds)
 content/
 
-# Airtable exports
+# Airtable exports and pipeline working files
 Advisors Table-Grid view.csv
+Advisors_NEW_ONLY.csv
+Advisors_DUPLICATES_SKIPPED.csv
+validation_results.csv
+validation_flagged.csv
+outscraper_advisors.xlsx
 
 # Project plans
 ADSENSE_RESUBMISSION_PLAN.md

@@ -31,7 +31,7 @@ print(f"Original Outscraper rows: {len(df)}")
 
 # Load previous Airtable data if it exists
 if os.path.exists(PREVIOUS_AIRTABLE_FILE):
-    previous = pd.read_csv(PREVIOUS_AIRTABLE_FILE)
+    previous = pd.read_csv(PREVIOUS_AIRTABLE_FILE, encoding="utf-8-sig")
     print(f"Existing Airtable records: {len(previous)}")
 else:
     previous = pd.DataFrame()
@@ -42,21 +42,32 @@ if not previous.empty:
     previous.columns = previous.columns.str.strip().str.lower()
 
 def normalize(series):
+    if isinstance(series, str):
+        return pd.Series([series]).astype(str).str.strip().str.lower()
     return series.astype(str).str.strip().str.lower()
 
+
+def safe_col(dataframe, col_name):
+    """Get a column from a DataFrame, returning empty strings if column doesn't exist."""
+    if col_name in dataframe.columns:
+        return dataframe[col_name]
+    return pd.Series([""] * len(dataframe))
+
+
 # Normalize key fields for dedupe
-df["name_clean"] = normalize(df.get("name", ""))
-df["street_clean"] = normalize(df.get("address", ""))
-df["city_clean"] = normalize(df.get("city", ""))
-df["state_clean"] = normalize(df.get("state", ""))
-df["location_link_clean"] = normalize(df.get("location_link", ""))
+df["name_clean"] = normalize(safe_col(df, "name"))
+df["street_clean"] = normalize(safe_col(df, "address"))
+df["city_clean"] = normalize(safe_col(df, "city"))
+df["state_clean"] = normalize(safe_col(df, "state"))
+df["location_link_clean"] = normalize(safe_col(df, "location_link"))
 
 if not previous.empty:
-    previous["name_clean"] = normalize(previous.get("name", ""))
-    previous["street_clean"] = normalize(previous.get("address", ""))
-    previous["city_clean"] = normalize(previous.get("city", ""))
-    previous["state_clean"] = normalize(previous.get("state", ""))
-    previous["location_link_clean"] = normalize(previous.get("google maps url", ""))
+    previous["name_clean"] = normalize(safe_col(previous, "name"))
+    # Handle both "address" and "adress" (Airtable typo)
+    previous["street_clean"] = normalize(safe_col(previous, "address") if "address" in previous.columns else safe_col(previous, "adress"))
+    previous["city_clean"] = normalize(safe_col(previous, "city"))
+    previous["state_clean"] = normalize(safe_col(previous, "state"))
+    previous["location_link_clean"] = normalize(safe_col(previous, "google maps url"))
 
 # ==============================
 # INTERNAL DEDUPE
@@ -356,26 +367,86 @@ def derive_languages(row):
     return ", ".join(sorted(languages))
 
 def format_hours(hours_raw):
-    """Format working hours from Outscraper JSON format."""
+    """Format working hours from Outscraper data.
+    Handles JSON dict format, raw strings, and encoding issues.
+    Condenses repeated schedules (e.g., Mon-Fri: 9AM-5PM)."""
     if pd.isna(hours_raw):
         return ""
+
+    raw = str(hours_raw).strip()
+    if not raw or raw.lower() == "nan":
+        return ""
+
+    # Fix common encoding issues (Outscraper sometimes outputs garbled UTF-8)
+    raw = raw.replace("\u2013", "-").replace("\u2014", "-")
+    raw = raw.replace("\xc3\xa2\xe2\x82\xac\xe2\x80\x9c", "-")  # garbled en-dash
+    raw = raw.replace("\xe2\x80\x93", "-")  # UTF-8 en-dash bytes
+    # Also catch the common mojibake patterns as literal strings
+    for bad in ["\u00e2\u0080\u0093", "\u00e2\u0080\u0094"]:
+        raw = raw.replace(bad, "-")
+
+    # Try to parse as JSON dict (Outscraper sometimes returns {'Monday': ['9AM-5PM'], ...})
+    hours_dict = None
     try:
-        hours_dict = json.loads(hours_raw.replace("'", '"')) \
-            if isinstance(hours_raw, str) else hours_raw
+        hours_dict = json.loads(raw.replace("'", '"')) \
+            if isinstance(raw, str) and raw.startswith("{") else None
     except:
-        return str(hours_raw)
+        pass
 
-    formatted = []
-    all_times = set()
-    for day, times in hours_dict.items():
-        if times:
-            time_str = " & ".join(times).replace("-", "\u2013")
-            formatted.append(f"{day}: {time_str}")
-            all_times.add(time_str)
+    if isinstance(hours_dict, dict):
+        formatted = []
+        all_times = set()
+        for day, times in hours_dict.items():
+            if times:
+                time_str = " & ".join(times)
+                formatted.append(f"{day}: {time_str}")
+                all_times.add(time_str)
 
-    if len(all_times) == 1:
-        return f"Daily: {list(all_times)[0]}"
-    return ", ".join(formatted)
+        if len(all_times) == 1:
+            return f"Daily: {list(all_times)[0]}"
+        return ", ".join(formatted)
+
+    # Already a string — clean it up and condense
+    # Parse "Monday: 9AM-5PM, Tuesday: 9AM-5PM, ..." into condensed form
+    DAY_ORDER = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
+    DAY_ABBREV = {"Monday": "Mon", "Tuesday": "Tue", "Wednesday": "Wed", "Thursday": "Thu",
+                  "Friday": "Fri", "Saturday": "Sat", "Sunday": "Sun"}
+
+    day_hours = {}
+    for part in raw.split(","):
+        part = part.strip()
+        if ":" in part:
+            day, _, hours = part.partition(":")
+            day = day.strip()
+            hours = hours.strip()
+            if day in DAY_ORDER:
+                day_hours[day] = hours
+
+    if not day_hours:
+        # Can't parse — return cleaned raw string, truncated if too long
+        clean = raw[:80] + "..." if len(raw) > 80 else raw
+        return clean
+
+    # Check if all weekdays are the same
+    weekday_hours = [day_hours.get(d, "Closed") for d in DAY_ORDER[:5]]
+    weekend_hours = [day_hours.get(d, "Closed") for d in DAY_ORDER[5:]]
+
+    if len(set(weekday_hours)) == 1 and len(set(weekend_hours)) == 1:
+        if weekday_hours[0] == weekend_hours[0]:
+            if weekday_hours[0] == "Closed":
+                return ""
+            return f"Daily: {weekday_hours[0]}"
+        elif weekend_hours[0] == "Closed":
+            return f"Mon-Fri: {weekday_hours[0]}"
+        else:
+            return f"Mon-Fri: {weekday_hours[0]}, Sat-Sun: {weekend_hours[0]}"
+
+    # Fall back to abbreviated day listing
+    parts = []
+    for day in DAY_ORDER:
+        if day in day_hours and day_hours[day] != "Closed":
+            parts.append(f"{DAY_ABBREV[day]}: {day_hours[day]}")
+    return ", ".join(parts)
 
 def normalize_state(state):
     """Convert state abbreviations to full names."""
@@ -433,7 +504,7 @@ output = pd.DataFrame()
 output["Name"] = col("name")
 output["Slug"] = df.apply(generate_slug, axis=1)
 output["Description"] = ""  # Left blank -- use auto_descriptions.py to generate
-output["Address"] = col("address")
+output["Address"] = col("street")
 output["City"] = col("city")
 output["State"] = col("state").apply(normalize_state)
 output["Zip"] = col("postal_code")
