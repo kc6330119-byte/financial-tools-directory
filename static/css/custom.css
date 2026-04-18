@@ -2315,6 +2315,218 @@ nav .group .absolute a:hover { background: var(--bg) !important; color: var(--ac
 }
 
 /* -------------------------------------------------------------------------
+   Static pages (about, contact, privacy, terms, success)
+   Milestone 6 — 2026-04-18
+   ------------------------------------------------------------------------- */
+
+.static-page {
+    padding: 32px 0 72px;
+}
+
+/* Static-page prose wrapper — tighter than blog prose */
+.legal-prose {
+    max-width: 68ch;
+    margin: 0 auto;
+}
+.legal-prose h2 {
+    margin-top: 2.4em;
+}
+.legal-prose h2:first-child { margin-top: 0; }
+
+/* Tokenized form controls */
+.form-field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-bottom: 18px;
+}
+.form-field:last-child { margin-bottom: 0; }
+.form-field .form-label,
+.form-label {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+}
+.form-field .form-label .required,
+.form-label .required {
+    color: var(--loss);
+    margin-left: 3px;
+}
+.form-input,
+.form-textarea,
+.form-select {
+    width: 100%;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 11px 14px;
+    font-family: var(--font-sans);
+    font-size: 0.95rem;
+    color: var(--text);
+    line-height: 1.4;
+    transition: border-color 120ms, background 120ms, box-shadow 120ms;
+}
+.form-input:hover,
+.form-textarea:hover,
+.form-select:hover {
+    border-color: var(--border-strong);
+}
+.form-input:focus,
+.form-textarea:focus,
+.form-select:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 18%, transparent);
+    background: var(--surface);
+}
+.form-textarea {
+    resize: vertical;
+    min-height: 140px;
+    line-height: 1.55;
+}
+.form-select {
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='%23596070'%3E%3Cpath d='M5 8l5 5 5-5z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    background-size: 14px;
+    padding-right: 36px;
+}
+[data-theme="dark"] .form-select {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='%239AA3AD'%3E%3Cpath d='M5 8l5 5 5-5z'/%3E%3C/svg%3E");
+}
+.form-help {
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    color: var(--text-faint);
+    margin-top: 6px;
+    letter-spacing: 0.04em;
+}
+
+/* Contact layout — form left, info right */
+.contact-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 32px;
+    padding: 32px 0 0;
+}
+@media (min-width: 1024px) {
+    .contact-grid {
+        grid-template-columns: 1.6fr 1fr;
+        gap: 48px;
+    }
+}
+.contact-info {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+.contact-info-card {
+    padding: 20px 22px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+}
+.contact-info-card h3 {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--text-faint);
+    font-weight: 600;
+    margin: 0 0 10px;
+}
+.contact-info-card p {
+    font-size: 0.92rem;
+    line-height: 1.55;
+    color: var(--text-muted);
+    margin: 0 0 8px;
+}
+.contact-info-card p:last-child { margin-bottom: 0; }
+.contact-info-card strong { color: var(--text); font-weight: 600; }
+
+/* Success page */
+.success-page {
+    padding: 80px 0;
+    text-align: center;
+}
+.success-page .success-mark {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: var(--gain-bg);
+    color: var(--gain);
+    margin-bottom: 24px;
+}
+.success-page .success-mark svg { width: 26px; height: 26px; }
+.success-page h1 {
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-variation-settings: "opsz" 72;
+    font-size: clamp(1.8rem, 3.6vw, 2.4rem);
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    margin: 0 0 14px;
+    color: var(--text);
+}
+.success-page p {
+    font-size: 1.05rem;
+    line-height: 1.6;
+    color: var(--text-muted);
+    margin: 0 auto 28px;
+    max-width: 48ch;
+}
+
+/* About / positioning blocks */
+.positioning-list {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 16px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+@media (min-width: 768px) { .positioning-list { grid-template-columns: repeat(2, 1fr); } }
+.positioning-list li {
+    padding: 20px 22px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--gold);
+    border-radius: var(--radius-md);
+}
+.positioning-list .point {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--gold);
+    font-weight: 700;
+    margin-bottom: 6px;
+}
+.positioning-list strong {
+    display: block;
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: 1.1rem;
+    line-height: 1.25;
+    color: var(--text);
+    margin-bottom: 6px;
+}
+.positioning-list p {
+    font-size: 0.92rem;
+    line-height: 1.55;
+    color: var(--text-muted);
+    margin: 0;
+}
+
+/* -------------------------------------------------------------------------
    Tools hub + category + tool detail
    Milestone 5 — 2026-04-18
    ------------------------------------------------------------------------- */
