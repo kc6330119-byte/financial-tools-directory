@@ -8,80 +8,71 @@
 
 {% block content %}
 
-<!-- Breadcrumbs -->
-<nav class="bg-white border-b border-gray-100">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
-        <ol class="flex items-center text-sm text-gray-500">
-            <li><a href="/" class="hover:text-primary-600">Home</a></li>
-            <li class="mx-2">/</li>
-            <li><a href="/state/{{ state.slug }}.html" class="hover:text-primary-600">{{ state.name }}</a></li>
-            <li class="mx-2">/</li>
-            <li class="text-gray-900 font-medium">{{ city }}</li>
+<nav class="breadcrumb" aria-label="Breadcrumb">
+    <div class="wrap">
+        <ol>
+            <li><a href="/">Home</a></li>
+            <li><a href="/state/{{ state.slug }}.html">{{ state.name }}</a></li>
+            <li aria-current="page">{{ city }}</li>
         </ol>
     </div>
 </nav>
 
-<!-- Hero -->
-<section class="bg-gradient-to-br from-primary-600 to-primary-700 text-white py-12">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h1 class="text-3xl md:text-4xl font-bold mb-3">Investment Advisors in {{ city }}, {{ state.abbr or state.name }}</h1>
-        <p class="text-primary-100 text-lg max-w-2xl">
-            Compare {{ advisors|length }} financial advisor{{ 's' if advisors|length != 1 }} in {{ city }}. Check credentials, verify fiduciary status, and find the right advisor for your financial goals.
+<header class="page-head">
+    <div class="wrap">
+        <div class="eyebrow">{{ state.abbr or state.name }} &middot; {{ city }}</div>
+        <h1>Fiduciary advisors in {{ city }}, {{ state.abbr or state.name }}</h1>
+        <p class="lede">
+            {{ advisors|length }} advisor{{ 's' if advisors|length != 1 else '' }} with offices in {{ city }}. Credentials, fee structures, and minimums are disclosed on each listing.
         </p>
+        <div class="page-head-meta">
+            <span><strong>{{ advisors|length }}</strong> listed</span>
+            {% if noindex %}<span>Low coverage &middot; not indexed</span>{% endif %}
+        </div>
     </div>
-</section>
+</header>
 
-<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+<div class="wrap">
     {% if advisors %}
-
-    <!-- Advisors grid -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-        {% for advisor in advisors %}
-        {% include '_advisor_card.html' %}
-        {% endfor %}
+    <div style="padding: 48px 0;">
+        <div class="results-meta">
+            <span><span class="total">{{ advisors|length }}</span> results in {{ city }}</span>
+        </div>
+        <div class="advisor-list">
+            {% for advisor in advisors %}
+            {% include '_advisor_card.html' %}
+            {% endfor %}
+        </div>
     </div>
-
     {% else %}
-    <!-- Empty state -->
-    <div class="text-center py-16">
-        <div class="text-5xl mb-4 opacity-30">&#128200;</div>
-        <h2 class="text-xl font-semibold text-gray-900 mb-2">No advisors listed yet</h2>
-        <p class="text-gray-500 mb-6">We're working on adding investment advisors in {{ city }}.</p>
-        <div class="flex flex-col sm:flex-row gap-3 justify-center">
-            <a href="/state/{{ state.slug }}.html" class="inline-block px-6 py-3 bg-gray-100 text-gray-700 font-semibold rounded-lg hover:bg-gray-200 transition-colors">
-                View all {{ state.name }} advisors
-            </a>
-            <a href="/" class="inline-block px-6 py-3 bg-primary-600 text-white font-semibold rounded-lg hover:bg-primary-700 transition-colors">
-                Browse All States
-            </a>
+    <div style="padding: 48px 0;">
+        <div class="empty-state">
+            <h2>No listings in {{ city }} yet</h2>
+            <p>We're still expanding coverage. See neighboring cities in {{ state.name }} or browse the full state directory.</p>
+            <div class="actions">
+                <a class="btn btn--ghost" href="/state/{{ state.slug }}.html">All {{ state.name }} advisors</a>
+                <a class="btn btn--primary" href="/#states">Browse other states</a>
+            </div>
         </div>
     </div>
     {% endif %}
 </div>
 
-<!-- SEO Text -->
-<section class="bg-gray-50 border-t border-gray-100 py-10">
-    <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        <h2 class="text-lg font-semibold text-gray-900 mb-3">Financial Advisors in {{ city }}, {{ state.name }}</h2>
-        <p class="text-gray-600 text-sm leading-relaxed mb-4">
-            Finding a qualified financial advisor in {{ city }} is easier with our comprehensive directory. Browse
-            local advisors who specialize in retirement planning, investment management, tax strategy, estate planning,
-            and more. Each listing includes credentials, fiduciary status, fee structures, and client reviews to help
-            you make an informed decision.
+<section class="seo-intro">
+    <div class="wrap editorial">
+        <h2>Financial advisors in {{ city }}, {{ state.name }}</h2>
+        <p>
+            Advisors serving {{ city }} specialize in a range of services &mdash; retirement planning, tax strategy, estate planning, and investment management among them. Local practice context ({{ state.name }}'s tax climate, industry concentration, and cost of living) shapes which specialties are most common; each listing discloses its focus.
         </p>
-        <p class="text-gray-600 text-sm leading-relaxed">
-            Whether you're planning for retirement, managing a portfolio, or need comprehensive wealth management,
-            {{ city }} advisors can create a personalized financial plan tailored to your goals.
+        <p>
+            Before hiring any advisor, verify their registration on FINRA BrokerCheck or the SEC IAPD, confirm fiduciary status in writing, and review the Form ADV Part 2A (the plain-English fee brochure). We link to both regulators from every advisor detail page.
         </p>
     </div>
 </section>
 
-<!-- Back to state -->
-<div class="bg-white border-t border-gray-100 py-6">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        <a href="/state/{{ state.slug }}.html" class="text-primary-600 hover:text-primary-700 font-medium text-sm">
-            &larr; View all advisors in {{ state.name }}
-        </a>
+<div class="back-strip">
+    <div class="wrap">
+        <a href="/state/{{ state.slug }}.html">Back to all {{ state.name }} advisors</a>
     </div>
 </div>
 
