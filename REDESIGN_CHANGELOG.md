@@ -6,6 +6,33 @@ This file is the "release notes" view of the redesign. For the terse one-line-pe
 
 ---
 
+## Side-milestone — Google Search Console verification (2026-04-18)
+
+**Branch:** `chore/gsc-verification`
+**Commit:** `3a5bbeb`
+**Type:** Infrastructure chore — not a design or content milestone
+
+### What changed
+
+- Registered a **URL Prefix** property in Google Search Console for `https://smart-investor-financial-tools.com/` and verified ownership via the **HTML file** method (not DNS TXT — chosen for consistency with Kevin's other four directory sites and because it's faster than waiting on DNS propagation).
+- Token file `google981a97c130472a18.html` lives at the project root. It's a one-liner: `google-site-verification: google981a97c130472a18.html`.
+- `build.py` gets a new `copy_verification_files()` helper that copies any root-level `google*.html` or `BingSiteAuth.xml` into `dist/` on every build. Generic pattern so adding future search-engine verifications is "drop the file at the project root and rebuild."
+- Sitemap submitted in Search Console immediately after verification. Google starts crawling on its own cadence from there; manual "Request indexing" batch ran on the top 10 high-value pages.
+
+### Why it helps
+
+- **Closes AdSense-resubmission Action 6** (Verify Google Search Console + submit sitemap). That was blocking post-resubmission measurement of whether the Outscraper imports and blog posts are actually getting indexed.
+- **Structured-data validation pipeline.** Over the next 1–2 weeks the Enhancements section in GSC will populate with BreadcrumbList / Article / FinancialService / SoftwareApplication / FAQPage status. If anything's malformed in what Milestone 7b shipped, GSC will flag it by schema type with the affected URLs.
+- **Core Web Vitals data.** Once the site has real Chrome user traffic, GSC pulls CrUX data and shows LCP / INP / CLS for the page. That's the ground-truth view of the performance budget we targeted during the redesign (FCP < 1.5 s on 4G), versus the synthetic Lighthouse numbers.
+- **Verification is file-based and survives rebuilds.** Because the build copies the token file on every run, `setup_output_directory`'s wipe of `dist/` can't break verification. Previously a manual-upload approach would be brittle.
+
+### Known gaps
+
+- Only one verification method is active (HTML file). Google recommends a backup (HTML tag or DNS TXT) so that losing the file doesn't un-verify the property. Easy to add later — grab the HTML-tag token from GSC Settings → Ownership verification and wire it into `base.html`.
+- Bing Webmaster Tools, Yandex, and other engines aren't set up yet. The `copy_verification_files()` helper pattern is ready for them when/if Kevin decides to add them.
+
+---
+
 ## Milestone 7b — SEO hardening (2026-04-18)
 
 **Branch:** `redesign/seo-hardening-m7b`
