@@ -6,6 +6,41 @@ This file is the "release notes" view of the redesign. For the terse one-line-pe
 
 ---
 
+## Milestone 4 — Blog templates + prose tokenization (2026-04-18)
+
+**Branch:** `redesign/blog`
+**Commits:** (landed as three scoped commits — see git log)
+**Templates rewritten:** `blog.html` (listing), `post.html` (reading experience)
+**CSS:** `.prose` block fully tokenized; new `.filter-pills`, `.post-index`, `.article-*`, `.disclaimer-box`, `.related-posts`, `.pullquote`, `.data-callout` blocks
+
+### What changed
+
+- **Fixed a real dark-mode bug.** The old `.prose` styles had hardcoded `#1f2937` / `#2563eb` / `#e5e7eb` / `#4b5563` / `#f9fafb` values. Every blog post on dark was rendering near-black headings and table-header text on a near-black background. All replaced with `--text` / `--accent` / `--border` / `--text-muted` / `--bg` tokens. Closes a Milestone-0 known gap.
+- **Blog listing is now a magazine index** — stacked rows with divider lines, mono-caps meta row (category · reading time · date · author), Fraunces title, Geist excerpt. No photo cards. Category-filter pills in the new tokenized chip style; URL-hash deep-linking from the homepage category chips preserved.
+- **Post reading experience rebuilt** as an editorial page head + long-form prose. Large Fraunces h1 with `SOFT` axis for editorial warmth, deck paragraph in Geist 1.2rem, byline + category + reading-time + date in mono-caps. Prose body runs at 1.0625rem / 1.75 line-height / 66ch measure — proper reading typography.
+- **New prose component patterns:** `.pullquote` (Fraunces italic with gold accent rule) and `.data-callout` (big Fraunces numeric figure + mono label + Geist note, gold-accented left border) — optional editorial touches authors can use in markdown via raw HTML.
+- **Reading time** computed in Jinja using the built-in `wordcount` filter — no `build.py` change required. Formula: `(content | striptags | wordcount // 225) + 1`, minimum 1.
+- **Disclaimer box tokenized** — `--warn`-tinted left border and background, mono-caps "Disclaimer" label. Content unchanged (legally load-bearing).
+- **Related posts as a 3-column card row** at desktop, single-column stack at mobile. Uses Jinja's `rejectattr` + list slice pattern (instead of `{% break %}`) to pick the three most recent non-self posts.
+
+### Why it helps
+
+- **Serious long-form reading surface.** Blog posts are the highest-value surface for converting skeptical visitors into trust — finance readers expect editorial typography (not SaaS sans-serif blocks). Fraunces + Geist at this measure and leading reads more like a financial newsletter than a marketing page.
+- **Dark-mode reading actually works now.** The prose bug meant every blog post was effectively broken in dark mode — a real quality leak. AdSense resubmission can't proceed with broken content surfaces.
+- **Reading-time signal for scanning.** Mono-caps "12 min read" meta helps users decide whether to commit. Small thing, real behavioral impact.
+- **Magazine-index listing scales past photo availability.** The 22 more posts on the AdSense critical path don't all need featured images; the listing doesn't pretend they do.
+- **Editorial components are optional opt-in.** Pullquote and data-callout only render if the author uses them in markdown. Nothing forces them on every post; they're available when the content benefits.
+- **Consistent voice across the redesign.** Mono-caps meta, Fraunces headlines, Geist body, tokenized colors — blog reads like it belongs to the same site as the homepage and advisor directory.
+
+### Known gaps
+
+- Can't verify the full blog in local preview because the site's blog posts live in Airtable (per the documented workflow) and we don't have Airtable creds in this session. Template rendering was verified via a direct Jinja render with a mock post — 13/13 structural checks pass. Real Airtable-driven build will run on Netlify.
+- Per-post social-share is preserved (Facebook, X, Pinterest, email). Pinterest is kept since long-form guides can pin well.
+- No table of contents or reading-progress bar this milestone (deferred).
+- Prose image styles tokenized but no lazy-loading or width-intrinsic defaults added — whatever the markdown emits is what renders.
+
+---
+
 ## Milestone 3 — Advisor Compare feature (2026-04-18)
 
 **Branch:** `redesign/advisor-compare`
