@@ -557,6 +557,7 @@ def setup_output_directory():
     (config.OUTPUT_DIR / "category").mkdir()
     (config.OUTPUT_DIR / "tool").mkdir()
     (config.OUTPUT_DIR / "blog").mkdir()
+    (config.OUTPUT_DIR / "calculator").mkdir()
 
     # Copy static files
     if config.STATIC_DIR.exists():
@@ -608,6 +609,7 @@ def create_jinja_env():
     env.globals["credentials"] = config.CREDENTIALS
     env.globals["fee_structures"] = config.FEE_STRUCTURES
     env.globals["blog_categories"] = config.BLOG_CATEGORIES
+    env.globals["calculators"] = config.CALCULATORS
     env.globals["current_year"] = datetime.now().year
     env.globals["ga_measurement_id"] = config.GA_MEASUREMENT_ID
 
@@ -926,6 +928,36 @@ def build_tool_pages(env, tools):
 # BUILD: BLOG
 # =============================================================================
 
+def build_calculators_hub(env, calculators):
+    """Build the /calculators.html hub page listing every calculator."""
+    template = env.get_template("calculators.html")
+    html = template.render(
+        calculators=calculators,
+        page_title=f"Investor Calculators - {config.SITE_NAME}",
+        meta_description="Free calculators for retirement planning, compound interest, savings goals, Social Security, RMDs, and safe withdrawal rates. Live results, no signup required.",
+        request_path="/calculators.html",
+    )
+    output_path = config.OUTPUT_DIR / "calculators.html"
+    output_path.write_text(html)
+    print(f"Built: calculators.html ({len(calculators)} calculators)")
+
+
+def build_calculator_pages(env, calculators):
+    """Build one page per calculator at /calculator/<slug>.html."""
+    for calc in calculators:
+        template = env.get_template(calc["template"])
+        html = template.render(
+            calculator=calc,
+            all_calculators=calculators,
+            page_title=f"{calc['name']} - {config.SITE_NAME}",
+            meta_description=calc["description"],
+            request_path=f"/calculator/{calc['slug']}.html",
+        )
+        output_path = config.OUTPUT_DIR / "calculator" / f"{calc['slug']}.html"
+        output_path.write_text(html)
+        print(f"Built: calculator/{calc['slug']}.html")
+
+
 def build_blog_page(env, posts):
     """Build the blog listing page with category filtering."""
     template = env.get_template("blog.html")
@@ -1017,12 +1049,16 @@ def build_sitemap(tools, advisors, posts, indexed_states=None, indexed_cities=No
     urls = [
         f"{config.SITE_URL}/",
         f"{config.SITE_URL}/tools.html",
+        f"{config.SITE_URL}/calculators.html",
         f"{config.SITE_URL}/blog.html",
         f"{config.SITE_URL}/about.html",
         f"{config.SITE_URL}/contact.html",
         f"{config.SITE_URL}/privacy.html",
         f"{config.SITE_URL}/terms.html",
     ]
+    # Calculator pages
+    for calc in config.CALCULATORS:
+        urls.append(f"{config.SITE_URL}/calculator/{calc['slug']}.html")
 
     # State pages — only indexed ones
     if indexed_states:
@@ -1205,6 +1241,10 @@ def main():
     # Build blog
     build_blog_page(env, posts)
     build_post_pages(env, posts)
+
+    # Build calculators
+    build_calculators_hub(env, config.CALCULATORS)
+    build_calculator_pages(env, config.CALCULATORS)
 
     # Build static pages
     build_static_pages(env, advisors)

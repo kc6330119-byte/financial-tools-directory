@@ -179,6 +179,7 @@
                         </div>
                     </div>
 
+                    <a href="/calculators.html" class="text-gray-700 hover:text-primary-600 px-3 py-2 text-sm font-medium rounded-md hover:bg-gray-50">Calculators</a>
                     <a href="/tools.html" class="text-gray-700 hover:text-primary-600 px-3 py-2 text-sm font-medium rounded-md hover:bg-gray-50">Tools</a>
                     <a href="/blog.html" class="text-gray-700 hover:text-primary-600 px-3 py-2 text-sm font-medium rounded-md hover:bg-gray-50">Blog</a>
                     <a href="/about.html" class="text-gray-700 hover:text-primary-600 px-3 py-2 text-sm font-medium rounded-md hover:bg-gray-50">About</a>
@@ -263,6 +264,7 @@
                 </a>
                 {% endfor %}
                 <hr class="my-2 border-gray-100">
+                <a href="/calculators.html" class="block px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 rounded-md">Calculators</a>
                 <a href="/tools.html" class="block px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 rounded-md">Investor Tools</a>
                 <a href="/blog.html" class="block px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 rounded-md">Blog</a>
                 <a href="/about.html" class="block px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 rounded-md">About</a>
@@ -347,12 +349,12 @@
                     </ul>
                 </div>
 
-                <!-- Investor Tools -->
+                <!-- Calculators -->
                 <div>
-                    <h3 class="font-semibold mb-4 text-gray-100">Tools</h3>
+                    <h3 class="font-semibold mb-4 text-gray-100">Calculators</h3>
                     <ul class="space-y-2 text-sm text-gray-400">
-                        {% for cat in categories[:4] %}
-                        <li><a href="/category/{{ cat.slug }}.html" class="hover:text-white transition-colors">{{ cat.name }}</a></li>
+                        {% for calc in calculators %}
+                        <li><a href="/calculator/{{ calc.slug }}.html" class="hover:text-white transition-colors">{{ calc.name | replace(' Calculator', '') }}</a></li>
                         {% endfor %}
                     </ul>
                 </div>

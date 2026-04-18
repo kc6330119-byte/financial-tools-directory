@@ -215,6 +215,37 @@ FIRM_TYPES = [
     "Robo-Advisor",
 ]
 
+# Investor calculators (Milestone 7: first 3 of 6 planned)
+CALCULATORS = [
+    {
+        "slug": "compound-interest",
+        "name": "Compound Interest Calculator",
+        "short": "How will my money grow?",
+        "description": "See how an initial investment plus regular contributions compounds over time at a given rate of return.",
+        "tagline": "The most important number in investing, visualized.",
+        "category": "Growth",
+        "template": "calc_compound_interest.html",
+    },
+    {
+        "slug": "retirement",
+        "name": "Retirement Calculator",
+        "short": "How much do I need to retire?",
+        "description": "Estimate the nest egg you need at retirement, the value of your current savings path, and the gap between them.",
+        "tagline": "The number that tells you when you can stop working.",
+        "category": "Retirement",
+        "template": "calc_retirement.html",
+    },
+    {
+        "slug": "savings-goal",
+        "name": "Savings Goal Calculator",
+        "short": "How much should I save each month?",
+        "description": "Work backward from a savings target to the monthly contribution that gets you there by your deadline.",
+        "tagline": "Reverse-engineer any savings goal.",
+        "category": "Planning",
+        "template": "calc_savings_goal.html",
+    },
+]
+
 # Blog categories
 BLOG_CATEGORIES = [
     {"name": "Guides", "slug": "guides", "icon": "📖", "description": "Step-by-step guides for finding and working with financial advisors"},
