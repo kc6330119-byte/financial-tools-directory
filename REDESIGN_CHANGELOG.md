@@ -28,8 +28,13 @@ This file is the "release notes" view of the redesign. For the terse one-line-pe
 
 ### Known gaps
 
-- Only one verification method is active (HTML file). Google recommends a backup (HTML tag or DNS TXT) so that losing the file doesn't un-verify the property. Easy to add later — grab the HTML-tag token from GSC Settings → Ownership verification and wire it into `base.html`.
-- Bing Webmaster Tools, Yandex, and other engines aren't set up yet. The `copy_verification_files()` helper pattern is ready for them when/if Kevin decides to add them.
+- Yandex, Pinterest, and other verification providers aren't set up yet — only Google and Bing. The `copy_verification_files()` helper and the "Site verification" meta-tag block in `base.html` are ready for additions when/if needed.
+
+### Follow-up adds (same day)
+
+- **Bing Webmaster Tools verified via HTML meta tag** (`msvalidate.01`). The `<meta>` lives in the "Site verification" comment block in `base.html` so it lands on every rendered page. Bing will accept verification from any crawlable URL, so template-inherited placement is the right approach.
+- **Google Search Console HTML-tag backup verification added** (`google-site-verification`). Now two active ownership methods for Google: the HTML file at the project root (primary) and the meta tag site-wide (backup). Google considers the property verified as long as *any* active method holds — losing one no longer un-verifies the property.
+- Both tokens sit side-by-side in `base.html`. Future additions (Yandex, Pinterest, Ahrefs, etc.) land in the same block with their own `<meta>` line.
 
 ---
 
