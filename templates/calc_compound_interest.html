@@ -1,0 +1,239 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<nav class="breadcrumb" aria-label="Breadcrumb">
+    <div class="wrap">
+        <ol>
+            <li><a href="/">Home</a></li>
+            <li><a href="/calculators.html">Calculators</a></li>
+            <li aria-current="page">{{ calculator.name }}</li>
+        </ol>
+    </div>
+</nav>
+
+<header class="page-head">
+    <div class="wrap">
+        <div class="eyebrow">{{ calculator.category }}</div>
+        <h1>{{ calculator.name }}</h1>
+        <p class="lede">{{ calculator.description }}</p>
+    </div>
+</header>
+
+<div class="wrap calc-page">
+    <form class="calc-shell" id="calc-form" onsubmit="return false;" autocomplete="off">
+        <div class="calc-layout">
+            <section class="calc-form" aria-label="Inputs">
+                <span class="calc-form-title">Inputs</span>
+
+                <div class="form-field">
+                    <label class="form-label" for="ci-principal">Initial investment</label>
+                    <div class="input-with-prefix">
+                        <span class="prefix" aria-hidden="true">$</span>
+                        <input class="form-input" type="number" id="ci-principal" value="10000" min="0" step="100" inputmode="numeric">
+                    </div>
+                </div>
+
+                <div class="form-field">
+                    <label class="form-label" for="ci-monthly">Monthly contribution</label>
+                    <div class="input-with-prefix">
+                        <span class="prefix" aria-hidden="true">$</span>
+                        <input class="form-input" type="number" id="ci-monthly" value="500" step="25" inputmode="numeric">
+                    </div>
+                    <span class="form-help">Enter a negative number to model withdrawals.</span>
+                </div>
+
+                <div class="form-field">
+                    <label class="form-label" for="ci-years">Length (years)</label>
+                    <div class="input-with-suffix">
+                        <input class="form-input" type="number" id="ci-years" value="20" min="1" max="60" step="1" inputmode="numeric">
+                        <span class="suffix" aria-hidden="true">yrs</span>
+                    </div>
+                </div>
+
+                <div class="form-field">
+                    <label class="form-label" for="ci-rate">Annual return</label>
+                    <div class="input-with-suffix">
+                        <input class="form-input" type="number" id="ci-rate" value="7" min="-10" max="30" step="0.1" inputmode="decimal">
+                        <span class="suffix" aria-hidden="true">%</span>
+                    </div>
+                </div>
+
+                <div class="form-field">
+                    <label class="form-label" for="ci-freq">Compounding frequency</label>
+                    <select class="form-select" id="ci-freq">
+                        <option value="12">Monthly</option>
+                        <option value="4">Quarterly</option>
+                        <option value="1">Annually</option>
+                    </select>
+                </div>
+            </section>
+
+            <section class="calc-result" aria-label="Results" aria-live="polite">
+                <div class="calc-result-headline">
+                    <span class="label">Final balance after <span id="ci-label-years">20</span> years</span>
+                    <span class="figure" id="ci-final">$0</span>
+                    <p class="sub" id="ci-sub">Assumes consistent contributions and no withdrawals before the end of the period.</p>
+                </div>
+
+                <div class="calc-breakdown cols-3">
+                    <div class="item">
+                        <span class="item-label">Principal</span>
+                        <span class="item-value" id="ci-principal-out">$0</span>
+                    </div>
+                    <div class="item">
+                        <span class="item-label">Contributions</span>
+                        <span class="item-value" id="ci-contribs-out">$0</span>
+                    </div>
+                    <div class="item">
+                        <span class="item-label">Interest earned</span>
+                        <span class="item-value is-gain" id="ci-interest-out">$0</span>
+                    </div>
+                </div>
+
+                <div class="calc-chart" aria-hidden="true">
+                    <span class="chart-label">Balance over time</span>
+                    <svg id="ci-chart" viewBox="0 0 400 160" preserveAspectRatio="none" role="img"></svg>
+                </div>
+            </section>
+        </div>
+    </form>
+
+    <div class="calc-explain prose">
+        <h2>What the calculator is doing</h2>
+        <p>
+            This is a straightforward compound-interest simulation. Each compounding period, your balance grows by the periodic interest rate (annual rate divided by compounding periods per year), and your monthly contribution is added to the balance. Compounding monthly means the interest earned this month starts earning interest next month &mdash; the "interest on interest" effect that Einstein allegedly (but probably didn't) call the most powerful force in finance.
+        </p>
+
+        <h2>A note on assumptions</h2>
+        <p>
+            The annual return is assumed to be constant for the entire period. In real markets, returns vary year to year, and <strong>sequence-of-returns risk</strong> &mdash; getting a bad stretch right before you need the money &mdash; can meaningfully change outcomes. For long horizons (20+ years), the constant-rate simplification is usually reasonable for planning; for shorter horizons or retirement-withdrawal scenarios, it's less accurate.
+        </p>
+        <p>
+            Returns here are <em>nominal</em> &mdash; not adjusted for inflation. If you want a purchasing-power estimate, subtract your inflation assumption from your return rate. A nominal 7% with 3% inflation gives you ~4% real growth.
+        </p>
+
+        <h2>How to use the result</h2>
+        <p>
+            The most useful comparison is usually <strong>interest earned vs. contributions</strong>. In the first few years, most of your balance growth comes from contributions; by year fifteen or twenty, compounding takes over and interest dominates. Extending the timeline by even a few years often has a bigger effect than raising the monthly contribution &mdash; which is why starting early matters more than starting with a big number.
+        </p>
+    </div>
+
+    <aside class="calc-cta">
+        <span class="eyebrow">Not just numbers</span>
+        <h3>Ready to translate this into a real plan?</h3>
+        <p>These are estimates. A fiduciary advisor can model this against your actual tax situation, Social Security timing, and risk tolerance &mdash; things a single-input calculator can't capture.</p>
+        <a class="btn btn--primary" href="/">Find a fiduciary advisor &rarr;</a>
+    </aside>
+
+    <nav class="calc-also" aria-label="Other calculators">
+        <h3>Other calculators</h3>
+        <div class="chips">
+            {% for c in all_calculators if c.slug != calculator.slug %}
+            <a href="/calculator/{{ c.slug }}.html">{{ c.short }}</a>
+            {% endfor %}
+            <a href="/calculators.html" style="border-color: var(--accent); color: var(--accent);">See all &rarr;</a>
+        </div>
+    </nav>
+
+    <div class="disclaimer-box" style="margin-top: 40px;">
+        <strong>Disclaimer</strong> This calculator is for informational purposes only. Results are estimates based on the inputs you provide and do not account for taxes, fees, inflation, or real-world market volatility. Nothing here constitutes financial, investment, tax, or legal advice. Consult a qualified financial advisor before making decisions based on these numbers.
+    </div>
+</div>
+
+<script>
+(function () {
+    const fmtMoney = (n) => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(Math.round(n));
+
+    const $ = (id) => document.getElementById(id);
+    const principal = $('ci-principal');
+    const monthly = $('ci-monthly');
+    const years = $('ci-years');
+    const rate = $('ci-rate');
+    const freq = $('ci-freq');
+
+    function simulate(P, monthlyPMT, yrs, annualRate, freqN) {
+        const r = (annualRate / 100) / freqN;
+        const periods = yrs * freqN;
+        const perPeriodPMT = monthlyPMT * 12 / freqN;
+        const points = [{ year: 0, balance: P }];
+        let balance = P;
+        for (let i = 1; i <= periods; i++) {
+            balance = balance * (1 + r) + perPeriodPMT;
+            if (i % freqN === 0) {
+                points.push({ year: i / freqN, balance: balance });
+            }
+        }
+        return points;
+    }
+
+    function renderChart(points, svgEl) {
+        const W = 400, H = 160, PAD_L = 48, PAD_R = 8, PAD_T = 8, PAD_B = 22;
+        const minY = Math.min(0, ...points.map(p => p.balance));
+        const maxY = Math.max(...points.map(p => p.balance), 1);
+        const maxX = points[points.length - 1].year;
+
+        const xScale = (year) => PAD_L + (year / maxX) * (W - PAD_L - PAD_R);
+        const yScale = (bal) => PAD_T + (1 - (bal - minY) / (maxY - minY || 1)) * (H - PAD_T - PAD_B);
+
+        const linePath = points.map((p, i) => `${i === 0 ? 'M' : 'L'}${xScale(p.year).toFixed(1)},${yScale(p.balance).toFixed(1)}`).join(' ');
+        const baselineY = yScale(Math.max(0, minY));
+        const areaPath = linePath + ` L${xScale(maxX).toFixed(1)},${baselineY.toFixed(1)} L${xScale(0).toFixed(1)},${baselineY.toFixed(1)} Z`;
+
+        const yTicks = 4;
+        const gridlines = Array.from({ length: yTicks + 1 }, (_, i) => {
+            const y = PAD_T + (i / yTicks) * (H - PAD_T - PAD_B);
+            return `<line class="chart-gridline" x1="${PAD_L}" y1="${y}" x2="${W - PAD_R}" y2="${y}"/>`;
+        }).join('');
+
+        const yLabels = Array.from({ length: yTicks + 1 }, (_, i) => {
+            const v = maxY - (i / yTicks) * (maxY - minY);
+            const y = PAD_T + (i / yTicks) * (H - PAD_T - PAD_B);
+            const label = Math.abs(v) >= 1e6 ? `$${(v/1e6).toFixed(1)}M` : Math.abs(v) >= 1e3 ? `$${(v/1e3).toFixed(0)}K` : `$${v.toFixed(0)}`;
+            return `<text class="axis-text" x="${PAD_L - 6}" y="${y + 3}" text-anchor="end">${label}</text>`;
+        }).join('');
+
+        const xLabels = `
+            <text class="axis-text" x="${xScale(0)}" y="${H - 6}" text-anchor="start">yr 0</text>
+            <text class="axis-text" x="${xScale(maxX)}" y="${H - 6}" text-anchor="end">yr ${maxX}</text>
+        `;
+
+        const endpoint = points[points.length - 1];
+        const ep = `<circle class="chart-endpoint" cx="${xScale(endpoint.year)}" cy="${yScale(endpoint.balance)}" r="3"/>`;
+
+        svgEl.innerHTML = gridlines + yLabels + xLabels + `<path class="chart-area" d="${areaPath}"/>` + `<path class="chart-line" d="${linePath}"/>` + ep;
+    }
+
+    function recalc() {
+        const P = Math.max(0, parseFloat(principal.value) || 0);
+        const PMT = parseFloat(monthly.value) || 0;
+        const yrs = Math.max(1, parseInt(years.value) || 1);
+        const r = parseFloat(rate.value) || 0;
+        const f = parseInt(freq.value) || 12;
+
+        const points = simulate(P, PMT, yrs, r, f);
+        const finalBalance = points[points.length - 1].balance;
+        const totalContribs = PMT * 12 * yrs;
+        const interest = finalBalance - P - totalContribs;
+
+        $('ci-label-years').textContent = yrs;
+        $('ci-final').textContent = fmtMoney(finalBalance);
+        $('ci-principal-out').textContent = fmtMoney(P);
+        $('ci-contribs-out').textContent = (totalContribs >= 0 ? '' : '') + fmtMoney(totalContribs);
+        const intEl = $('ci-interest-out');
+        intEl.textContent = fmtMoney(interest);
+        intEl.classList.toggle('is-gain', interest >= 0);
+        intEl.classList.toggle('is-loss', interest < 0);
+
+        renderChart(points, $('ci-chart'));
+    }
+
+    [principal, monthly, years, rate, freq].forEach(el => {
+        el.addEventListener('input', recalc);
+        el.addEventListener('change', recalc);
+    });
+    recalc();
+})();
+</script>
+
+{% endblock %}

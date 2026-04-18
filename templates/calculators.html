@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<nav class="breadcrumb" aria-label="Breadcrumb">
+    <div class="wrap">
+        <ol>
+            <li><a href="/">Home</a></li>
+            <li aria-current="page">Calculators</li>
+        </ol>
+    </div>
+</nav>
+
+<header class="page-head">
+    <div class="wrap">
+        <div class="eyebrow">Calculators</div>
+        <h1>Answer the numeric questions that drive the planning questions.</h1>
+        <p class="lede">
+            Clean, plain-English calculators for the math that matters. Live results as you type, editorial explanations of what the numbers mean, and a path to a fiduciary advisor when you're ready to translate estimates into a plan.
+        </p>
+        <div class="page-head-meta">
+            <span><strong>{{ calculators|length }}</strong> calculator{{ 's' if calculators|length != 1 else '' }}</span>
+            <span>No signup, no email capture</span>
+            <span>Updated live as you type</span>
+        </div>
+    </div>
+</header>
+
+<div class="wrap">
+    {% if calculators %}
+    <div class="calc-hub">
+        {% for calc in calculators %}
+        <a class="calc-hub-card" href="/calculator/{{ calc.slug }}.html">
+            <span class="category">{{ calc.category }} &middot; {{ calc.name }}</span>
+            <h2 class="short-q">{{ calc.short }}</h2>
+            <p class="desc">{{ calc.description }}</p>
+            <span class="open-link">Open calculator</span>
+        </a>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div style="padding: 80px 0;">
+        <div class="empty-state">
+            <h2>Calculators coming soon</h2>
+            <p>We're building a suite of live, no-signup calculators for retirement, compound interest, savings goals, and more.</p>
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+<section class="seo-intro">
+    <div class="wrap editorial">
+        <span class="eyebrow">Why these, specifically</span>
+        <h2>The calculators that actually get planning unstuck</h2>
+        <p>
+            Most financial decisions hinge on a small number of numeric questions: <strong>Will my current savings path get me to retirement?</strong> <strong>How much do I need to save each month to hit a specific goal?</strong> <strong>Should I claim Social Security at 62, 67, or 70?</strong> These calculators answer those questions with live arithmetic, the kind a spreadsheet would &mdash; no black-box projections, no "premium tier" gate.
+        </p>
+        <p>
+            The numbers are estimates by definition: they can't model your actual tax situation, pension nuance, asset location, or sequence-of-returns risk. That's what a fiduciary advisor does. But the estimates are usually enough to know whether to be comfortable or to start panicking, and that's the first decision.
+        </p>
+    </div>
+</section>
+
+{% endblock %}

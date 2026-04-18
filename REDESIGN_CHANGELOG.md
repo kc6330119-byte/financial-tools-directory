@@ -6,6 +6,45 @@ This file is the "release notes" view of the redesign. For the terse one-line-pe
 
 ---
 
+## Milestone 7 — Calculator suite foundation + first 3 calculators (2026-04-18)
+
+**Branch:** `redesign/calculators-m7`
+**Commits:** three scoped commits
+**New top-level section:** `/calculators.html` + `/calculator/<slug>.html`
+**Calculators shipped:** Compound Interest, Retirement, Savings Goal
+**Coming in Milestone 8:** Social Security, RMD, 4% Rule / Safe Withdrawal
+
+### What changed
+
+- **New top-level nav item: Calculators.** Added to the desktop nav (between Tools and Blog) and the mobile menu. Calculator list also populates the "Calculators" column in the footer on every page.
+- **Hub at `/calculators.html`** — page head with confident positioning ("Answer the numeric questions that drive the planning questions"), three-column grid of calculator cards (category + name + short question as the Fraunces headline + description + open-link arrow), editorial intro explaining why these specific calculators.
+- **Three calculator pages**, each with the same shape: breadcrumb + page-head → two-column `.calc-shell` (form + live results) → SVG line chart of balance-over-time → editorial explanation of the math and its limits → closing advisor CTA → other-calculators chip row → YMYL disclaimer box.
+- **Live calculation, no "Calculate" button** — every input and select fires `input`/`change` handlers that immediately recompute results and re-render the chart. Dramatically better UX than the SEC's step-based form.
+- **Inline SVG charts** — ~60 lines of vanilla JS per calculator, no library. Axis grid, y-axis money labels (auto-formatted to `$K` / `$M`), area fill, line path, endpoint dot, optional dashed "target" line where applicable (retirement target nest egg, savings goal).
+- **Big Fraunces figures for the result headline** using the `opsz 144, SOFT 20` variable-font axes. Theme-aware `.is-gain` / `.is-loss` color on the headline when the result is a surplus or shortfall (retirement calculator).
+- **Three-column breakdown grid** under each headline shows sub-figures in Geist Mono with tabular figures.
+- **Tokenized form controls** — reuses the `.form-field` / `.form-input` / `.form-select` components shipped with Milestone 6. New `.input-with-prefix` and `.input-with-suffix` wrappers for the `$` / `%` / `yrs` adornments.
+- **Infrastructure** — `CALCULATORS` list in `config.py` (slug, name, short-question, description, category, template). New `build_calculators_hub()` + `build_calculator_pages()` in `build.py`. Sitemap includes calculator URLs. `dist/calculator/` directory created in `setup_output_directory()`.
+- **Every calculator page links back to the advisor directory** at the bottom with the editorial CTA copy we agreed on — "These are estimates. A fiduciary advisor can model this against your actual tax situation, Social Security timing, and risk tolerance — things a single-input calculator can't capture." → primary button to `/`.
+
+### Why it helps
+
+- **High-intent SEO traffic.** "Compound interest calculator," "retirement calculator," and "savings goal calculator" are high-volume US search queries. Each page is a standalone ranking target with genuine utility — not the thin affiliate-filler that dominates the niche.
+- **AdSense-amplifying behavior.** Calculator pages have strong dwell time and scroll depth (user types, sees results, reads the explanation below). That's exactly the signal AdSense rewards with higher CPMs post-approval.
+- **Differentiation vs. every other advisor directory.** No competitor in this space has functioning calculators. A visitor who lands on a calculator and then sees a "find a fiduciary advisor" CTA below it is a much warmer lead than someone browsing the directory directly.
+- **Progressive enhancement.** The form, explanation, disclaimer, and chart wrapper all render server-side, so the page indexes cleanly. JS turns the form into a live calculator. No frameworks, no Chart.js, no jQuery — zero new dependencies.
+- **Reusable chart + form patterns.** Milestone 8 (three more calculators) will be ~60% the work of this milestone because the CSS + SVG-chart pattern is already in place.
+- **Editorial explanations raise quality signal.** Each calculator page has ~300 words of real prose explaining what the math does, what assumptions it bakes in, and where it breaks down. That's unusual for calculator pages and reads as human-written, not AI-generated.
+
+### Known gaps
+
+- SVG charts are single-series. Milestone 8's Social Security calculator will likely need a two-series chart (claim at 62 vs. claim at 70); that's a small extension to the existing chart helper.
+- Retirement calculator uses real return + today's-dollar framing (simpler), not nominal return + explicit inflation input (more accurate). Tradeoff chosen for clarity; noted in the editorial explanation.
+- No print stylesheet variant for the calculator pages. Users who want to print their results see a reasonable default but the chart's SVG doesn't always render identically.
+- The `Intl.NumberFormat` calls don't handle a zero-rate division-by-zero edge case cleanly on the compound-interest calculator when both rate and principal are zero (it displays `$0`, which is correct, but through a defensive path). Not worth more code for the edge case.
+
+---
+
 ## Milestone 6 — Static pages + copy pivot (2026-04-18)
 
 **Branch:** `redesign/static-pages`

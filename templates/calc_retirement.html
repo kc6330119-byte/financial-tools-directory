@@ -1,0 +1,267 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<nav class="breadcrumb" aria-label="Breadcrumb">
+    <div class="wrap">
+        <ol>
+            <li><a href="/">Home</a></li>
+            <li><a href="/calculators.html">Calculators</a></li>
+            <li aria-current="page">{{ calculator.name }}</li>
+        </ol>
+    </div>
+</nav>
+
+<header class="page-head">
+    <div class="wrap">
+        <div class="eyebrow">{{ calculator.category }}</div>
+        <h1>{{ calculator.name }}</h1>
+        <p class="lede">{{ calculator.description }}</p>
+    </div>
+</header>
+
+<div class="wrap calc-page">
+    <form class="calc-shell" id="calc-form" onsubmit="return false;" autocomplete="off">
+        <div class="calc-layout">
+            <section class="calc-form" aria-label="Inputs">
+                <span class="calc-form-title">Inputs</span>
+
+                <div class="form-field">
+                    <label class="form-label" for="r-current-age">Current age</label>
+                    <div class="input-with-suffix">
+                        <input class="form-input" type="number" id="r-current-age" value="35" min="18" max="90" step="1" inputmode="numeric">
+                        <span class="suffix" aria-hidden="true">yrs</span>
+                    </div>
+                </div>
+
+                <div class="form-field">
+                    <label class="form-label" for="r-retire-age">Retirement age</label>
+                    <div class="input-with-suffix">
+                        <input class="form-input" type="number" id="r-retire-age" value="65" min="40" max="95" step="1" inputmode="numeric">
+                        <span class="suffix" aria-hidden="true">yrs</span>
+                    </div>
+                </div>
+
+                <div class="form-field">
+                    <label class="form-label" for="r-current-savings">Current retirement savings</label>
+                    <div class="input-with-prefix">
+                        <span class="prefix" aria-hidden="true">$</span>
+                        <input class="form-input" type="number" id="r-current-savings" value="50000" min="0" step="1000" inputmode="numeric">
+                    </div>
+                </div>
+
+                <div class="form-field">
+                    <label class="form-label" for="r-annual-contrib">Annual contribution</label>
+                    <div class="input-with-prefix">
+                        <span class="prefix" aria-hidden="true">$</span>
+                        <input class="form-input" type="number" id="r-annual-contrib" value="10000" min="0" step="500" inputmode="numeric">
+                    </div>
+                    <span class="form-help">Combined 401(k), IRA, and taxable savings per year.</span>
+                </div>
+
+                <div class="form-field">
+                    <label class="form-label" for="r-real-return">Expected real return</label>
+                    <div class="input-with-suffix">
+                        <input class="form-input" type="number" id="r-real-return" value="5" min="0" max="15" step="0.1" inputmode="decimal">
+                        <span class="suffix" aria-hidden="true">%</span>
+                    </div>
+                    <span class="form-help">After inflation. A common balanced-portfolio assumption is 4&ndash;6%.</span>
+                </div>
+
+                <div class="form-field">
+                    <label class="form-label" for="r-annual-expenses">Annual expenses in retirement</label>
+                    <div class="input-with-prefix">
+                        <span class="prefix" aria-hidden="true">$</span>
+                        <input class="form-input" type="number" id="r-annual-expenses" value="60000" min="0" step="1000" inputmode="numeric">
+                    </div>
+                    <span class="form-help">In today's dollars. Covers all living costs.</span>
+                </div>
+            </section>
+
+            <section class="calc-result" aria-label="Results" aria-live="polite">
+                <div class="calc-result-headline">
+                    <span class="label" id="r-headline-label">Projected savings at retirement</span>
+                    <span class="figure" id="r-projected">$0</span>
+                    <p class="sub" id="r-verdict">Calculating&hellip;</p>
+                </div>
+
+                <div class="calc-breakdown cols-3">
+                    <div class="item">
+                        <span class="item-label">Target nest egg</span>
+                        <span class="item-value" id="r-target">$0</span>
+                    </div>
+                    <div class="item">
+                        <span class="item-label">Gap / surplus</span>
+                        <span class="item-value" id="r-gap">$0</span>
+                    </div>
+                    <div class="item">
+                        <span class="item-label">Years until retirement</span>
+                        <span class="item-value" id="r-years">0</span>
+                    </div>
+                </div>
+
+                <div class="calc-chart" aria-hidden="true">
+                    <span class="chart-label">Projected savings growth (today's dollars)</span>
+                    <svg id="r-chart" viewBox="0 0 400 160" preserveAspectRatio="none" role="img"></svg>
+                </div>
+            </section>
+        </div>
+    </form>
+
+    <div class="calc-explain prose">
+        <h2>What "target nest egg" means here</h2>
+        <p>
+            This calculator uses the widely-cited <strong>25&times; rule</strong> to estimate your target: you need roughly 25 times your annual retirement spending invested, which corresponds to a 4% initial withdrawal rate plus inflation adjustments. It's not a law of physics &mdash; it was derived from historical U.S. market data over rolling 30-year periods &mdash; but it's a useful first-pass benchmark.
+        </p>
+
+        <h2>Why we use <em>real</em> return</h2>
+        <p>
+            Everything here runs in today's-dollar purchasing power. The "expected real return" input is your portfolio return <em>after</em> inflation &mdash; typically 1&ndash;3 percentage points less than nominal return. This keeps the target and projection comparable without inflating them over 30 years and making the numbers look like Monopoly money. 4&ndash;6% real return is a common balanced-portfolio assumption; more aggressive allocations assume 6&ndash;8%, more conservative 2&ndash;4%.
+        </p>
+
+        <h2>What this calculator cannot capture</h2>
+        <p>
+            Social Security income. Pension income. Part-time work in early retirement. Market volatility and sequence-of-returns risk. Unexpected medical costs. Changes in spending patterns at age 75+. Taxes on retirement distributions. Home equity. Inheritance. These can swing the required nest egg by <strong>20% or more</strong> in either direction. This is the "first number to see if you're in the ballpark" &mdash; a real retirement plan is a 20-page document built with someone who knows your situation.
+        </p>
+    </div>
+
+    <aside class="calc-cta">
+        <span class="eyebrow">Not just numbers</span>
+        <h3>Ready to turn this estimate into a plan?</h3>
+        <p>These are estimates. A fiduciary advisor can model this against your actual tax situation, Social Security timing, and risk tolerance &mdash; things a single-input calculator can't capture.</p>
+        <a class="btn btn--primary" href="/">Find a fiduciary advisor &rarr;</a>
+    </aside>
+
+    <nav class="calc-also" aria-label="Other calculators">
+        <h3>Other calculators</h3>
+        <div class="chips">
+            {% for c in all_calculators if c.slug != calculator.slug %}
+            <a href="/calculator/{{ c.slug }}.html">{{ c.short }}</a>
+            {% endfor %}
+            <a href="/calculators.html" style="border-color: var(--accent); color: var(--accent);">See all &rarr;</a>
+        </div>
+    </nav>
+
+    <div class="disclaimer-box" style="margin-top: 40px;">
+        <strong>Disclaimer</strong> This calculator is for informational purposes only. Results are estimates based on the inputs you provide and do not account for taxes, fees, Social Security income, pension income, market volatility, sequence-of-returns risk, or changes in spending patterns. Nothing here constitutes financial, investment, tax, or legal advice. Consult a qualified financial advisor before making retirement decisions based on these numbers.
+    </div>
+</div>
+
+<script>
+(function () {
+    const fmtMoney = (n) => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(Math.round(n));
+    const fmtMoneySigned = (n) => (n >= 0 ? '+' : '−') + fmtMoney(Math.abs(n));
+
+    const $ = (id) => document.getElementById(id);
+    const els = {
+        currentAge: $('r-current-age'),
+        retireAge: $('r-retire-age'),
+        currentSavings: $('r-current-savings'),
+        annualContrib: $('r-annual-contrib'),
+        realReturn: $('r-real-return'),
+        annualExpenses: $('r-annual-expenses'),
+    };
+
+    function simulate(pv, contrib, yrs, realRate) {
+        const points = [{ year: 0, balance: pv }];
+        let balance = pv;
+        for (let i = 1; i <= yrs; i++) {
+            balance = balance * (1 + realRate) + contrib;
+            points.push({ year: i, balance: balance });
+        }
+        return points;
+    }
+
+    function renderChart(points, svgEl, targetLine) {
+        const W = 400, H = 160, PAD_L = 48, PAD_R = 8, PAD_T = 8, PAD_B = 22;
+        const minY = 0;
+        const maxY = Math.max(...points.map(p => p.balance), targetLine || 0, 1) * 1.05;
+        const maxX = points[points.length - 1].year || 1;
+
+        const xScale = (year) => PAD_L + (year / maxX) * (W - PAD_L - PAD_R);
+        const yScale = (bal) => PAD_T + (1 - (bal - minY) / (maxY - minY || 1)) * (H - PAD_T - PAD_B);
+
+        const linePath = points.map((p, i) => `${i === 0 ? 'M' : 'L'}${xScale(p.year).toFixed(1)},${yScale(p.balance).toFixed(1)}`).join(' ');
+        const baselineY = yScale(0);
+        const areaPath = linePath + ` L${xScale(maxX).toFixed(1)},${baselineY.toFixed(1)} L${xScale(0).toFixed(1)},${baselineY.toFixed(1)} Z`;
+
+        const yTicks = 4;
+        const gridlines = Array.from({ length: yTicks + 1 }, (_, i) => {
+            const y = PAD_T + (i / yTicks) * (H - PAD_T - PAD_B);
+            return `<line class="chart-gridline" x1="${PAD_L}" y1="${y}" x2="${W - PAD_R}" y2="${y}"/>`;
+        }).join('');
+
+        const yLabels = Array.from({ length: yTicks + 1 }, (_, i) => {
+            const v = maxY - (i / yTicks) * (maxY - minY);
+            const y = PAD_T + (i / yTicks) * (H - PAD_T - PAD_B);
+            const label = v >= 1e6 ? `$${(v/1e6).toFixed(1)}M` : v >= 1e3 ? `$${(v/1e3).toFixed(0)}K` : `$${v.toFixed(0)}`;
+            return `<text class="axis-text" x="${PAD_L - 6}" y="${y + 3}" text-anchor="end">${label}</text>`;
+        }).join('');
+
+        const xLabels = `
+            <text class="axis-text" x="${xScale(0)}" y="${H - 6}" text-anchor="start">now</text>
+            <text class="axis-text" x="${xScale(maxX)}" y="${H - 6}" text-anchor="end">retirement</text>
+        `;
+
+        let targetLineSvg = '';
+        if (targetLine && targetLine < maxY) {
+            const y = yScale(targetLine);
+            targetLineSvg = `<line x1="${PAD_L}" y1="${y}" x2="${W - PAD_R}" y2="${y}" stroke="var(--gold)" stroke-width="1" stroke-dasharray="4 3"/>
+                <text class="axis-text" x="${W - PAD_R}" y="${y - 4}" text-anchor="end" fill="var(--gold)">target</text>`;
+        }
+
+        const endpoint = points[points.length - 1];
+        const ep = `<circle class="chart-endpoint" cx="${xScale(endpoint.year)}" cy="${yScale(endpoint.balance)}" r="3"/>`;
+
+        svgEl.innerHTML = gridlines + yLabels + xLabels + `<path class="chart-area" d="${areaPath}"/>` + `<path class="chart-line" d="${linePath}"/>` + targetLineSvg + ep;
+    }
+
+    function recalc() {
+        const currentAge = parseInt(els.currentAge.value) || 0;
+        const retireAge = parseInt(els.retireAge.value) || 0;
+        const pv = Math.max(0, parseFloat(els.currentSavings.value) || 0);
+        const contrib = Math.max(0, parseFloat(els.annualContrib.value) || 0);
+        const rate = (parseFloat(els.realReturn.value) || 0) / 100;
+        const annualExpenses = Math.max(0, parseFloat(els.annualExpenses.value) || 0);
+
+        const years = Math.max(1, retireAge - currentAge);
+        const points = simulate(pv, contrib, years, rate);
+        const projected = points[points.length - 1].balance;
+        const target = annualExpenses * 25;
+        const gap = projected - target;
+
+        $('r-projected').textContent = fmtMoney(projected);
+        $('r-target').textContent = fmtMoney(target);
+
+        const gapEl = $('r-gap');
+        gapEl.textContent = fmtMoneySigned(gap);
+        gapEl.classList.toggle('is-gain', gap >= 0);
+        gapEl.classList.toggle('is-loss', gap < 0);
+
+        $('r-years').textContent = years;
+
+        const figureEl = $('r-projected');
+        figureEl.classList.toggle('is-gain', gap >= 0);
+        figureEl.classList.toggle('is-loss', gap < 0);
+
+        const verdictEl = $('r-verdict');
+        if (retireAge <= currentAge) {
+            verdictEl.textContent = 'Retirement age must be greater than your current age.';
+        } else if (gap >= 0) {
+            verdictEl.innerHTML = `On this path, you'd retire at <strong>${retireAge}</strong> with a surplus of <strong>${fmtMoney(gap)}</strong> over the 25&times; benchmark.`;
+        } else {
+            verdictEl.innerHTML = `On this path, you'd fall <strong>${fmtMoney(Math.abs(gap))}</strong> short of the 25&times; benchmark by age <strong>${retireAge}</strong>.`;
+        }
+
+        renderChart(points, $('r-chart'), target);
+    }
+
+    Object.values(els).forEach(el => {
+        el.addEventListener('input', recalc);
+        el.addEventListener('change', recalc);
+    });
+    recalc();
+})();
+</script>
+
+{% endblock %}

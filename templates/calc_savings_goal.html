@@ -1,0 +1,256 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<nav class="breadcrumb" aria-label="Breadcrumb">
+    <div class="wrap">
+        <ol>
+            <li><a href="/">Home</a></li>
+            <li><a href="/calculators.html">Calculators</a></li>
+            <li aria-current="page">{{ calculator.name }}</li>
+        </ol>
+    </div>
+</nav>
+
+<header class="page-head">
+    <div class="wrap">
+        <div class="eyebrow">{{ calculator.category }}</div>
+        <h1>{{ calculator.name }}</h1>
+        <p class="lede">{{ calculator.description }}</p>
+    </div>
+</header>
+
+<div class="wrap calc-page">
+    <form class="calc-shell" id="calc-form" onsubmit="return false;" autocomplete="off">
+        <div class="calc-layout">
+            <section class="calc-form" aria-label="Inputs">
+                <span class="calc-form-title">Inputs</span>
+
+                <div class="form-field">
+                    <label class="form-label" for="sg-target">Savings target</label>
+                    <div class="input-with-prefix">
+                        <span class="prefix" aria-hidden="true">$</span>
+                        <input class="form-input" type="number" id="sg-target" value="100000" min="0" step="1000" inputmode="numeric">
+                    </div>
+                </div>
+
+                <div class="form-field">
+                    <label class="form-label" for="sg-years">Time horizon</label>
+                    <div class="input-with-suffix">
+                        <input class="form-input" type="number" id="sg-years" value="10" min="1" max="50" step="1" inputmode="numeric">
+                        <span class="suffix" aria-hidden="true">yrs</span>
+                    </div>
+                </div>
+
+                <div class="form-field">
+                    <label class="form-label" for="sg-current">Current savings</label>
+                    <div class="input-with-prefix">
+                        <span class="prefix" aria-hidden="true">$</span>
+                        <input class="form-input" type="number" id="sg-current" value="5000" min="0" step="500" inputmode="numeric">
+                    </div>
+                </div>
+
+                <div class="form-field">
+                    <label class="form-label" for="sg-rate">Expected annual return</label>
+                    <div class="input-with-suffix">
+                        <input class="form-input" type="number" id="sg-rate" value="7" min="0" max="20" step="0.1" inputmode="decimal">
+                        <span class="suffix" aria-hidden="true">%</span>
+                    </div>
+                    <span class="form-help">Cash / high-yield savings: ~4%. Balanced portfolio: ~6&ndash;7%. Stocks: ~7&ndash;10%.</span>
+                </div>
+            </section>
+
+            <section class="calc-result" aria-label="Results" aria-live="polite">
+                <div class="calc-result-headline">
+                    <span class="label">Required monthly contribution</span>
+                    <span class="figure" id="sg-monthly">$0</span>
+                    <p class="sub" id="sg-verdict">Calculating&hellip;</p>
+                </div>
+
+                <div class="calc-breakdown cols-3">
+                    <div class="item">
+                        <span class="item-label">Total contributions</span>
+                        <span class="item-value" id="sg-total-contribs">$0</span>
+                    </div>
+                    <div class="item">
+                        <span class="item-label">Growth / interest</span>
+                        <span class="item-value is-gain" id="sg-growth">$0</span>
+                    </div>
+                    <div class="item">
+                        <span class="item-label">Final balance</span>
+                        <span class="item-value" id="sg-final">$0</span>
+                    </div>
+                </div>
+
+                <div class="calc-chart" aria-hidden="true">
+                    <span class="chart-label">Balance over time (if you save the required amount)</span>
+                    <svg id="sg-chart" viewBox="0 0 400 160" preserveAspectRatio="none" role="img"></svg>
+                </div>
+            </section>
+        </div>
+    </form>
+
+    <div class="calc-explain prose">
+        <h2>What this is solving for</h2>
+        <p>
+            Most calculators ask: <em>if I save X per month, how much will I have in Y years?</em> This one asks the opposite, which is usually the more useful question: <em>if I need X dollars by Y years from now, how much do I have to save per month to get there?</em> It solves the compound-interest formula for the monthly payment instead of the final balance.
+        </p>
+
+        <h2>How the math runs</h2>
+        <p>
+            We use monthly compounding with contributions treated as an ordinary annuity &mdash; payment at the end of each month. Your current savings grows at the same rate without any additional input from you; the required monthly contribution is whatever additional amount closes the gap between that growth and your target. If your current savings alone would already beat the target at the given rate, the required contribution drops to $0 and the verdict changes accordingly.
+        </p>
+
+        <h2>Where this breaks down</h2>
+        <p>
+            Real returns aren't constant. Inflation erodes the target. Tax treatment of growth depends on account type (Roth, traditional, taxable). Most importantly: for short horizons &mdash; anything under about 5 years &mdash; the return assumption matters less than your ability to contribute consistently. Budget first, optimize return second.
+        </p>
+    </div>
+
+    <aside class="calc-cta">
+        <span class="eyebrow">Not just numbers</span>
+        <h3>Ready to build this into a real plan?</h3>
+        <p>These are estimates. A fiduciary advisor can model this against your actual tax situation, Social Security timing, and risk tolerance &mdash; things a single-input calculator can't capture.</p>
+        <a class="btn btn--primary" href="/">Find a fiduciary advisor &rarr;</a>
+    </aside>
+
+    <nav class="calc-also" aria-label="Other calculators">
+        <h3>Other calculators</h3>
+        <div class="chips">
+            {% for c in all_calculators if c.slug != calculator.slug %}
+            <a href="/calculator/{{ c.slug }}.html">{{ c.short }}</a>
+            {% endfor %}
+            <a href="/calculators.html" style="border-color: var(--accent); color: var(--accent);">See all &rarr;</a>
+        </div>
+    </nav>
+
+    <div class="disclaimer-box" style="margin-top: 40px;">
+        <strong>Disclaimer</strong> This calculator is for informational purposes only. Results are estimates based on the inputs you provide and do not account for taxes, fees, inflation, or real-world market volatility. Nothing here constitutes financial, investment, tax, or legal advice. Consult a qualified financial advisor before making savings decisions based on these numbers.
+    </div>
+</div>
+
+<script>
+(function () {
+    const fmtMoney = (n) => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(Math.round(n));
+
+    const $ = (id) => document.getElementById(id);
+    const els = {
+        target: $('sg-target'),
+        years: $('sg-years'),
+        current: $('sg-current'),
+        rate: $('sg-rate'),
+    };
+
+    function simulate(pv, monthlyPMT, yrs, annualRate) {
+        const r = (annualRate / 100) / 12;
+        const months = yrs * 12;
+        const points = [{ year: 0, balance: pv }];
+        let balance = pv;
+        for (let i = 1; i <= months; i++) {
+            balance = balance * (1 + r) + monthlyPMT;
+            if (i % 12 === 0) points.push({ year: i / 12, balance: balance });
+        }
+        return points;
+    }
+
+    function renderChart(points, svgEl, targetLine) {
+        const W = 400, H = 160, PAD_L = 48, PAD_R = 8, PAD_T = 8, PAD_B = 22;
+        const minY = 0;
+        const maxY = Math.max(...points.map(p => p.balance), targetLine || 0, 1) * 1.05;
+        const maxX = points[points.length - 1].year || 1;
+
+        const xScale = (year) => PAD_L + (year / maxX) * (W - PAD_L - PAD_R);
+        const yScale = (bal) => PAD_T + (1 - (bal - minY) / (maxY - minY || 1)) * (H - PAD_T - PAD_B);
+
+        const linePath = points.map((p, i) => `${i === 0 ? 'M' : 'L'}${xScale(p.year).toFixed(1)},${yScale(p.balance).toFixed(1)}`).join(' ');
+        const baselineY = yScale(0);
+        const areaPath = linePath + ` L${xScale(maxX).toFixed(1)},${baselineY.toFixed(1)} L${xScale(0).toFixed(1)},${baselineY.toFixed(1)} Z`;
+
+        const yTicks = 4;
+        const gridlines = Array.from({ length: yTicks + 1 }, (_, i) => {
+            const y = PAD_T + (i / yTicks) * (H - PAD_T - PAD_B);
+            return `<line class="chart-gridline" x1="${PAD_L}" y1="${y}" x2="${W - PAD_R}" y2="${y}"/>`;
+        }).join('');
+
+        const yLabels = Array.from({ length: yTicks + 1 }, (_, i) => {
+            const v = maxY - (i / yTicks) * (maxY - minY);
+            const y = PAD_T + (i / yTicks) * (H - PAD_T - PAD_B);
+            const label = v >= 1e6 ? `$${(v/1e6).toFixed(1)}M` : v >= 1e3 ? `$${(v/1e3).toFixed(0)}K` : `$${v.toFixed(0)}`;
+            return `<text class="axis-text" x="${PAD_L - 6}" y="${y + 3}" text-anchor="end">${label}</text>`;
+        }).join('');
+
+        const xLabels = `
+            <text class="axis-text" x="${xScale(0)}" y="${H - 6}" text-anchor="start">yr 0</text>
+            <text class="axis-text" x="${xScale(maxX)}" y="${H - 6}" text-anchor="end">yr ${maxX}</text>
+        `;
+
+        let targetLineSvg = '';
+        if (targetLine && targetLine < maxY) {
+            const y = yScale(targetLine);
+            targetLineSvg = `<line x1="${PAD_L}" y1="${y}" x2="${W - PAD_R}" y2="${y}" stroke="var(--gold)" stroke-width="1" stroke-dasharray="4 3"/>
+                <text class="axis-text" x="${W - PAD_R}" y="${y - 4}" text-anchor="end" fill="var(--gold)">target</text>`;
+        }
+
+        const endpoint = points[points.length - 1];
+        const ep = `<circle class="chart-endpoint" cx="${xScale(endpoint.year)}" cy="${yScale(endpoint.balance)}" r="3"/>`;
+
+        svgEl.innerHTML = gridlines + yLabels + xLabels + `<path class="chart-area" d="${areaPath}"/>` + `<path class="chart-line" d="${linePath}"/>` + targetLineSvg + ep;
+    }
+
+    function recalc() {
+        const target = Math.max(0, parseFloat(els.target.value) || 0);
+        const yrs = Math.max(1, parseInt(els.years.value) || 1);
+        const pv = Math.max(0, parseFloat(els.current.value) || 0);
+        const rate = Math.max(0, parseFloat(els.rate.value) || 0) / 100;
+
+        const monthlyRate = rate / 12;
+        const nMonths = yrs * 12;
+
+        // FV of current savings without contributions
+        const fvOfPV = pv * Math.pow(1 + monthlyRate, nMonths);
+
+        let required, finalBalance, totalContribs, growth;
+        let onTrack = false;
+
+        if (fvOfPV >= target) {
+            onTrack = true;
+            required = 0;
+            finalBalance = fvOfPV;
+            totalContribs = 0;
+            growth = finalBalance - pv;
+        } else {
+            // Solve for PMT: target = fvOfPV + PMT * ((1+r)^n - 1) / r
+            const annuityFactor = monthlyRate === 0
+                ? nMonths
+                : (Math.pow(1 + monthlyRate, nMonths) - 1) / monthlyRate;
+            required = (target - fvOfPV) / annuityFactor;
+            finalBalance = target;
+            totalContribs = required * nMonths;
+            growth = finalBalance - pv - totalContribs;
+        }
+
+        $('sg-monthly').textContent = fmtMoney(required);
+        $('sg-total-contribs').textContent = fmtMoney(totalContribs);
+        $('sg-growth').textContent = fmtMoney(growth);
+        $('sg-final').textContent = fmtMoney(finalBalance);
+
+        const verdict = $('sg-verdict');
+        if (onTrack) {
+            verdict.innerHTML = `Your current savings alone would grow past <strong>${fmtMoney(target)}</strong> in ${yrs} years at this rate. No monthly contribution required.`;
+        } else {
+            verdict.innerHTML = `Save <strong>${fmtMoney(required)}</strong> per month for ${yrs} years to reach <strong>${fmtMoney(target)}</strong> at ${els.rate.value}% annually.`;
+        }
+
+        const points = simulate(pv, required, yrs, parseFloat(els.rate.value) || 0);
+        renderChart(points, $('sg-chart'), target);
+    }
+
+    Object.values(els).forEach(el => {
+        el.addEventListener('input', recalc);
+        el.addEventListener('change', recalc);
+    });
+    recalc();
+})();
+</script>
+
+{% endblock %}
