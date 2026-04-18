@@ -1404,20 +1404,26 @@ nav .group .absolute a:hover { background: var(--bg) !important; color: var(--ac
     list-style: none;
 }
 .advisor-row {
-    display: block;
+    position: relative;
     background: var(--surface);
     border: 1px solid var(--border);
     border-radius: var(--radius-lg);
-    padding: 20px 22px;
-    text-decoration: none;
-    color: var(--text);
     transition: border-color 150ms, transform 150ms, box-shadow 150ms;
-    position: relative;
 }
 .advisor-row:hover {
     border-color: var(--accent);
     transform: translateY(-1px);
     box-shadow: var(--shadow-sm);
+}
+.advisor-row-link {
+    display: block;
+    padding: 20px 22px;
+    padding-right: 132px;
+    text-decoration: none;
+    color: var(--text);
+}
+@media (max-width: 540px) {
+    .advisor-row-link { padding-right: 22px; padding-bottom: 56px; }
 }
 .advisor-row .row-top {
     display: flex;
@@ -1923,6 +1929,374 @@ nav .group .absolute a:hover { background: var(--bg) !important; color: var(--ac
     letter-spacing: -0.01em;
     margin: 0 0 20px;
     color: var(--text);
+}
+
+/* -------------------------------------------------------------------------
+   Advisor Compare — toggle, sticky bar, compare page
+   Milestone 3 — 2026-04-18
+   ------------------------------------------------------------------------- */
+
+/* Toggle button on advisor rows (absolute-positioned, outside the anchor) */
+.compare-toggle {
+    position: absolute;
+    top: 14px;
+    right: 16px;
+    z-index: 2;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 5px 9px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    font-family: var(--font-mono);
+    font-size: 0.64rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: border-color 120ms, color 120ms, background 120ms;
+}
+.compare-toggle:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+}
+.compare-toggle[aria-pressed="true"] {
+    background: var(--accent);
+    color: var(--accent-ink);
+    border-color: var(--accent);
+}
+.compare-toggle[disabled] {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+.compare-toggle .sign {
+    display: inline-block;
+    width: 10px;
+    text-align: center;
+    font-family: var(--font-sans);
+    font-weight: 600;
+    font-size: 0.82rem;
+    line-height: 1;
+}
+.compare-toggle .label-remove { display: none; }
+.compare-toggle[aria-pressed="true"] .label-add { display: none; }
+.compare-toggle[aria-pressed="true"] .label-remove { display: inline; }
+.compare-toggle[aria-pressed="true"] .sign::before { content: "✓"; }
+.compare-toggle[aria-pressed="false"] .sign::before { content: "+"; }
+
+@media (max-width: 540px) {
+    .compare-toggle {
+        top: auto;
+        bottom: 14px;
+        right: 16px;
+    }
+}
+
+/* Inline toggle on advisor-detail actions row — sized like a .btn */
+.compare-toggle--detail {
+    position: static;
+    padding: 10px 18px;
+    font-size: 0.72rem;
+    gap: 8px;
+}
+
+/* Sticky compare bar (appears site-wide when 1+ selected) */
+.compare-bar {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 60;
+    background: var(--surface);
+    border-top: 1px solid var(--border-strong);
+    box-shadow: 0 -6px 24px rgba(15, 20, 30, 0.08);
+    padding: 12px 0;
+    transform: translateY(110%);
+    transition: transform 200ms cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+[data-theme="dark"] .compare-bar {
+    box-shadow: 0 -6px 24px rgba(0, 0, 0, 0.35);
+}
+.compare-bar.is-open { transform: translateY(0); }
+.compare-bar .compare-bar-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+.compare-bar .compare-bar-left {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    color: var(--text-muted);
+}
+.compare-bar .compare-count {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 22px;
+    height: 22px;
+    padding: 0 7px;
+    background: var(--accent);
+    color: var(--accent-ink);
+    font-family: var(--font-mono);
+    font-weight: 700;
+    font-size: 0.78rem;
+    border-radius: 11px;
+}
+.compare-bar .compare-chips {
+    display: inline-flex;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+.compare-bar .compare-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 8px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    font-size: 0.78rem;
+    color: var(--text);
+    font-family: var(--font-sans);
+    max-width: 200px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.compare-bar .compare-chip button {
+    background: transparent;
+    border: 0;
+    color: var(--text-faint);
+    cursor: pointer;
+    padding: 0 0 0 4px;
+    font-size: 0.82rem;
+    font-family: var(--font-sans);
+    line-height: 1;
+}
+.compare-bar .compare-chip button:hover { color: var(--loss); }
+.compare-bar .compare-bar-actions {
+    display: inline-flex;
+    gap: 10px;
+    align-items: center;
+}
+.compare-bar .compare-clear {
+    background: transparent;
+    border: 0;
+    color: var(--text-muted);
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    cursor: pointer;
+    padding: 8px 12px;
+}
+.compare-bar .compare-clear:hover { color: var(--loss); }
+
+/* -------- Compare page (compare.html) -------- */
+
+.compare-page {
+    padding: 48px 0 72px;
+    min-height: 60vh;
+}
+.compare-page .page-head {
+    border-bottom: 0;
+    padding-bottom: 16px;
+}
+.compare-page .intro-line {
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    color: var(--text-faint);
+    letter-spacing: 0.04em;
+    margin: 0 0 24px;
+}
+
+/* Compare sheet — grid of columns on desktop, vertical stack on mobile */
+.compare-sheet {
+    display: grid;
+    gap: 0;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    background: var(--surface);
+    overflow: hidden;
+}
+@media (min-width: 768px) {
+    .compare-sheet {
+        grid-auto-flow: column;
+        grid-auto-columns: minmax(0, 1fr);
+    }
+}
+
+.compare-col {
+    border-top: 1px solid var(--border);
+    padding: 24px 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    min-width: 0;
+}
+.compare-col:first-child { border-top: 0; }
+@media (min-width: 768px) {
+    .compare-col {
+        border-top: 0;
+        border-left: 1px solid var(--border);
+    }
+    .compare-col:first-child { border-left: 0; }
+}
+
+.compare-col .col-head {
+    position: relative;
+    padding-right: 28px;
+}
+.compare-col .firm-link {
+    display: inline-block;
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-variation-settings: "opsz" 48;
+    font-size: 1.25rem;
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+    color: var(--text);
+    text-decoration: none;
+    margin: 0 0 4px;
+    text-wrap: balance;
+}
+.compare-col .firm-link:hover { color: var(--accent); }
+.compare-col .col-location {
+    font-size: 0.88rem;
+    color: var(--text-muted);
+}
+.compare-col .col-remove {
+    position: absolute;
+    top: -4px;
+    right: -4px;
+    background: transparent;
+    border: 0;
+    color: var(--text-faint);
+    cursor: pointer;
+    padding: 4px;
+    font-family: var(--font-sans);
+    font-size: 1.1rem;
+    line-height: 1;
+}
+.compare-col .col-remove:hover { color: var(--loss); }
+
+.compare-col .col-field {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding-top: 14px;
+    border-top: 1px solid var(--divider);
+}
+.compare-col .col-field-label {
+    font-family: var(--font-mono);
+    font-size: 0.64rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--text-faint);
+    font-weight: 600;
+}
+.compare-col .col-field-value {
+    font-size: 0.92rem;
+    color: var(--text);
+    line-height: 1.45;
+}
+.compare-col .col-field-value.is-nums {
+    font-family: var(--font-mono);
+    font-weight: 500;
+}
+.compare-col .col-field-value.is-gain { color: var(--gain); font-family: var(--font-mono); font-weight: 600; }
+.compare-col .col-field-value.is-muted { color: var(--text-faint); }
+.compare-col .chips-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+}
+.compare-col .chips-row .chip {
+    padding: 2px 7px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    font-family: var(--font-mono);
+    font-size: 0.66rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    color: var(--text);
+}
+.compare-col .chips-row .chip--specialty {
+    font-family: var(--font-sans);
+    font-weight: 500;
+    font-size: 0.78rem;
+    letter-spacing: 0;
+    color: var(--text-muted);
+}
+
+/* Placeholder column — "+ Add another" slot */
+.compare-col.is-placeholder {
+    background: var(--bg);
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    color: var(--text-muted);
+    min-height: 280px;
+    padding: 32px 22px;
+}
+.compare-col.is-placeholder .plus {
+    font-family: var(--font-display);
+    font-weight: 300;
+    font-size: 2rem;
+    color: var(--text-faint);
+    margin-bottom: 8px;
+}
+.compare-col.is-placeholder .prompt {
+    font-family: var(--font-sans);
+    font-size: 0.92rem;
+    color: var(--text-muted);
+    margin: 0 0 10px;
+}
+.compare-col.is-placeholder a {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-weight: 600;
+    color: var(--accent);
+    text-decoration: none;
+}
+
+/* Empty state — no advisors selected at all */
+.compare-empty {
+    padding: 80px 20px;
+    text-align: center;
+    background: var(--surface);
+    border: 1px dashed var(--border);
+    border-radius: var(--radius-lg);
+}
+.compare-empty h2 {
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: 1.5rem;
+    color: var(--text);
+    margin: 0 0 12px;
+}
+.compare-empty p {
+    font-size: 0.95rem;
+    color: var(--text-muted);
+    max-width: 44ch;
+    margin: 0 auto 24px;
+    line-height: 1.55;
+}
+.compare-empty .actions {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    flex-wrap: wrap;
 }
 
 /* -------------------------------------------------------------------------

@@ -41,3 +41,15 @@ One line per non-obvious design decision. Append as we go. Format: `YYYY-MM-DD �
 - **Photo removed from `_advisor_card.html`** — most advisory firms don't have photos, and the gradient placeholder reads SaaS-generic. Type-first card is more finance-native and reduces LCP candidate elements on listing pages.
 - **Page-head editorial voice** — h1 changes from "Investment Advisors in {{ state.name }}" to "Fiduciary advisors in {{ state.name }}" across state/city/specialty. Meta title and meta description unchanged (preserves SEO/CTR). State editorial paragraph (`state.description`) becomes the lede under the h1.
 - **Specialty emoji icons dropped** — replaced with the same `--gold` accent rule used in section eyebrows and the state heatmap legend. Icons read childlike against the finance-native voice; we already dropped them in the homepage specialty matrix.
+
+## 2026-04-18 — Milestone 3: Advisor Compare (new feature)
+
+- **Branch** — `redesign/advisor-compare`. First non-migration milestone — net-new functionality.
+- **State model: URL query string is source of truth** on `/compare.html`; `localStorage` mirrors it on listing pages for cross-page persistence of the compare list.
+  - **Why:** URLs are shareable and survive refresh/back-button without localStorage dependency. localStorage handles the "I'm still browsing" case where a user adds advisors from 3 different pages before clicking Compare.
+  - **How to apply:** new page hydrates columns from `?advisors=slug1,slug2,slug3` first, falls back to localStorage if query empty. Listing-page toggles only touch localStorage; the sticky footer's "Compare →" link is rebuilt from the localStorage list at click time.
+- **Max 3 columns.** Four columns on the spec-sheet starts truncating at 1024px; three is the comfortable ceiling that still gives the comparison real utility.
+- **Compare page noindexed** (`<meta name="robots" content="noindex, follow">`) — it's a tool, not content. Sitemap excludes it.
+- **Data delivery: `/compare-data.json`** emitted at build time with the comparison-relevant fields per advisor (name, slug, city, state, credentials, fee_structure, minimum_investment, specialties, fiduciary, rating, review_count, description, firm_type). Richer than `search-index.json` (which is name/city/state only for nav search), intentionally kept as a separate file so the search index stays small for the nav autocomplete.
+- **Toggle button UX** — absolute-positioned `<button>` on advisor row/card (outside the `<a>` wrapper to keep HTML valid), inline chip-style button in the advisor-detail actions row. Plus/minus icon + mono label. Selected state uses `--accent` token, unselected uses `--border` outline.
+- **No server, no build-pipeline change beyond `build.py` additive.** Compare.html is rendered as a static shell; hydration is client-side JS. Fits the "everything renders at build time" rule from `stack-conventions.md`.
