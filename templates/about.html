@@ -1,65 +1,98 @@
 {% extends "base.html" %}
 
 {% block content %}
-<section class="py-12">
-    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h1 class="text-3xl font-bold text-gray-900 mb-8">About Financial Tools Directory</h1>
-        
-        <div class="prose max-w-none space-y-6">
-            <div class="bg-white rounded-lg shadow-sm p-8">
-                <h2 class="text-2xl font-semibold text-gray-900 mb-4">Our Mission</h2>
-                <p class="text-gray-600 leading-relaxed mb-4">
-                    Financial Tools Directory is dedicated to helping investors, traders, and financial professionals 
-                    discover the best tools for their needs. We curate and review software, platforms, and services 
-                    that can help you make better financial decisions.
-                </p>
-                <p class="text-gray-600 leading-relaxed">
-                    Whether you're a beginner looking for your first portfolio tracker or a professional trader 
-                    seeking advanced technical analysis tools, our directory helps you find and compare the 
-                    right solutions.
-                </p>
-            </div>
-            
-            <div class="bg-white rounded-lg shadow-sm p-8">
-                <h2 class="text-2xl font-semibold text-gray-900 mb-4">What We Cover</h2>
-                <ul class="list-disc list-inside text-gray-600 space-y-2">
-                    <li><strong>Stock Screeners</strong> - Filter and find stocks based on your criteria</li>
-                    <li><strong>Portfolio Trackers</strong> - Monitor your investments across accounts</li>
-                    <li><strong>Technical Analysis</strong> - Chart patterns and technical indicators</li>
-                    <li><strong>Fundamental Analysis</strong> - Financial statements and valuation metrics</li>
-                    <li><strong>Data Providers</strong> - APIs and data feeds for financial data</li>
-                    <li><strong>Trading Platforms</strong> - Execute trades and manage orders</li>
-                    <li><strong>Research Tools</strong> - In-depth research and analysis</li>
-                    <li><strong>News & Alerts</strong> - Financial news and price alerts</li>
-                </ul>
-            </div>
-            
-            <div class="bg-white rounded-lg shadow-sm p-8">
-                <h2 class="text-2xl font-semibold text-gray-900 mb-4">How We Review Tools</h2>
-                <p class="text-gray-600 leading-relaxed mb-4">
-                    Each tool in our directory is evaluated based on:
-                </p>
-                <ul class="list-disc list-inside text-gray-600 space-y-2">
-                    <li>Features and functionality</li>
-                    <li>Ease of use and user experience</li>
-                    <li>Pricing and value for money</li>
-                    <li>Data quality and reliability</li>
-                    <li>Customer support and documentation</li>
-                    <li>Mobile app availability</li>
-                    <li>API access for developers</li>
-                </ul>
-            </div>
-            
-            <div class="bg-white rounded-lg shadow-sm p-8">
-                <h2 class="text-2xl font-semibold text-gray-900 mb-4">Affiliate Disclosure</h2>
-                <p class="text-gray-600 leading-relaxed">
-                    Some links on this site are affiliate links, which means we may earn a commission if you 
-                    click through and make a purchase. This helps support our work in maintaining and updating 
-                    this directory. Our reviews and ratings are independent and not influenced by affiliate 
-                    relationships.
-                </p>
-            </div>
-        </div>
+
+<nav class="breadcrumb" aria-label="Breadcrumb">
+    <div class="wrap">
+        <ol>
+            <li><a href="/">Home</a></li>
+            <li aria-current="page">About</li>
+        </ol>
     </div>
-</section>
+</nav>
+
+<header class="page-head">
+    <div class="wrap">
+        <div class="eyebrow">About {{ site_name }}</div>
+        <h1>A directory of fiduciary advisors, built the way we'd want one for ourselves.</h1>
+        <p class="lede">
+            Most advisor directories run on paid placements and affiliate payouts. We don't. Every firm listed here is included on the strength of what it discloses &mdash; credentials, fee structure, minimums, and fiduciary status &mdash; not what it's willing to pay for visibility.
+        </p>
+    </div>
+</header>
+
+<div class="wrap static-page">
+    <div class="detail-stack" style="max-width: 720px; margin: 0 auto;">
+        <section class="detail-card">
+            <h2>Why this exists</h2>
+            <p class="prose-body">
+                The decision to hire a financial advisor is one of the highest-stakes choices most people make with their money &mdash; and the existing tools for making it well aren't great. Search "financial advisor near me" and the top results are paid listings, lead-generation forms, and directories that hide who paid to be first. The relevant information &mdash; credentials, fee structure, minimum account size, fiduciary posture &mdash; is usually buried or absent.
+            </p>
+            <p class="prose-body" style="margin-top: 14px;">
+                This directory exists to publish that information directly, in one place, with no pay-to-play layer on top. Every advisor page shows what the firm itself discloses, with one click each to the public regulatory records at FINRA BrokerCheck and the SEC Investment Adviser Public Disclosure database so you can verify anything you're skeptical of.
+            </p>
+        </section>
+
+        <section class="detail-card">
+            <h2>What you'll find here</h2>
+            <p class="prose-body" style="margin-bottom: 16px;">
+                Three things, in descending order of emphasis:
+            </p>
+            <ul class="positioning-list">
+                <li>
+                    <span class="point">01 &middot; Core</span>
+                    <strong>A national directory of investment advisors</strong>
+                    <p>Searchable by state, city, and specialty. Every entry lists credentials, fee structure, minimums, fiduciary status, and a link to the firm's own regulatory record.</p>
+                </li>
+                <li>
+                    <span class="point">02 &middot; Research</span>
+                    <strong>Plain-English guides on how to hire one</strong>
+                    <p>What to ask, what to avoid, how to read a Form ADV, how fee structures actually compare. Short, opinionated, and free of generic "choose the right advisor for you" filler.</p>
+                </li>
+                <li>
+                    <span class="point">03 &middot; Tools</span>
+                    <strong>A curated list of investor tools we've tested</strong>
+                    <p>Stock screeners, portfolio trackers, research platforms. Rated on usefulness, not on whoever sponsored us to feature them.</p>
+                </li>
+            </ul>
+        </section>
+
+        <section class="detail-card">
+            <h2>What we don't do</h2>
+            <ul style="list-style: none; padding: 0; margin: 0;">
+                <li style="padding: 12px 0; border-bottom: 1px solid var(--divider); display: grid; grid-template-columns: 20px 1fr; gap: 12px; align-items: start;">
+                    <span style="color: var(--loss); font-family: var(--font-mono); font-weight: 700; font-size: 0.9rem;">&times;</span>
+                    <span style="color: var(--text);">Take placement fees or bump advisors up the list for payment.</span>
+                </li>
+                <li style="padding: 12px 0; border-bottom: 1px solid var(--divider); display: grid; grid-template-columns: 20px 1fr; gap: 12px; align-items: start;">
+                    <span style="color: var(--loss); font-family: var(--font-mono); font-weight: 700; font-size: 0.9rem;">&times;</span>
+                    <span style="color: var(--text);">Recommend specific advisors or send you to a referral network.</span>
+                </li>
+                <li style="padding: 12px 0; border-bottom: 1px solid var(--divider); display: grid; grid-template-columns: 20px 1fr; gap: 12px; align-items: start;">
+                    <span style="color: var(--loss); font-family: var(--font-mono); font-weight: 700; font-size: 0.9rem;">&times;</span>
+                    <span style="color: var(--text);">Publish AI-generated advisor reviews or synthetic-sounding puffery.</span>
+                </li>
+                <li style="padding: 12px 0; display: grid; grid-template-columns: 20px 1fr; gap: 12px; align-items: start;">
+                    <span style="color: var(--loss); font-family: var(--font-mono); font-weight: 700; font-size: 0.9rem;">&times;</span>
+                    <span style="color: var(--text);">Provide financial advice, portfolio recommendations, or planning &mdash; we publish information about advisors, not investment guidance.</span>
+                </li>
+            </ul>
+        </section>
+
+        <section class="detail-card">
+            <h2>How listings get added and removed</h2>
+            <p class="prose-body">
+                Firms are added from public regulatory sources (BrokerCheck, SEC IAPD, state RIA registries). Descriptions are checked against the firm's own website and Form ADV Part 2A. If a firm disputes a listing &mdash; credentials displayed incorrectly, fiduciary status misrepresented, an outdated address &mdash; email us from <a href="/contact.html">the contact page</a> and we'll correct or remove the entry within one business day.
+            </p>
+        </section>
+
+        <section class="detail-card">
+            <h2>Disclosure</h2>
+            <p class="prose-body">
+                Smart Investor is independently operated. The site earns revenue through display advertising and, on the Tools section only, a small number of affiliate links where clicking through to a tool vendor may pay us a referral fee. Affiliate status is noted on each affected page; it never affects a tool's rating or inclusion. The advisor directory contains no affiliate links of any kind.
+            </p>
+        </section>
+    </div>
+</div>
+
 {% endblock %}

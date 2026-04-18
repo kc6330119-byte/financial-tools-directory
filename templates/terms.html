@@ -1,120 +1,72 @@
 {% extends "base.html" %}
 
 {% block content %}
-<section class="py-12">
-    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h1 class="text-3xl font-bold text-gray-900 mb-8">Terms of Service</h1>
-        <p class="text-gray-500 mb-8">Last updated: January 2025</p>
-        
-        <div class="prose max-w-none space-y-6">
-            <div class="bg-white rounded-lg shadow-sm p-8">
-                <h2 class="text-2xl font-semibold text-gray-900 mb-4">Agreement to Terms</h2>
-                <p class="text-gray-600 leading-relaxed">
-                    By accessing and using Financial Tools Directory ("the Website"), you agree to be bound 
-                    by these Terms of Service. If you do not agree with any part of these terms, you may 
-                    not access the Website.
-                </p>
-            </div>
-            
-            <div class="bg-white rounded-lg shadow-sm p-8">
-                <h2 class="text-2xl font-semibold text-gray-900 mb-4">Use of the Website</h2>
-                <p class="text-gray-600 leading-relaxed mb-4">
-                    The content on this Website is provided for informational purposes only. You agree to 
-                    use the Website only for lawful purposes and in accordance with these Terms.
-                </p>
-                <p class="text-gray-600 leading-relaxed">You agree not to:</p>
-                <ul class="list-disc list-inside text-gray-600 space-y-2 mt-4">
-                    <li>Use the Website in any way that violates applicable laws or regulations</li>
-                    <li>Attempt to gain unauthorized access to any part of the Website</li>
-                    <li>Use automated systems to access the Website without permission</li>
-                    <li>Interfere with the proper functioning of the Website</li>
-                    <li>Copy, reproduce, or distribute content without permission</li>
-                </ul>
-            </div>
-            
-            <div class="bg-white rounded-lg shadow-sm p-8">
-                <h2 class="text-2xl font-semibold text-gray-900 mb-4">Disclaimer</h2>
-                <p class="text-gray-600 leading-relaxed mb-4">
-                    <strong>Not Financial Advice:</strong> The information provided on this Website is for 
-                    general informational purposes only and should not be construed as financial, investment, 
-                    tax, or legal advice. We are not financial advisors.
-                </p>
-                <p class="text-gray-600 leading-relaxed mb-4">
-                    <strong>No Warranty:</strong> The Website and its content are provided "as is" without 
-                    any warranties of any kind, either express or implied. We do not guarantee the accuracy, 
-                    completeness, or reliability of any information on the Website.
-                </p>
-                <p class="text-gray-600 leading-relaxed">
-                    <strong>Third-Party Tools:</strong> We list and review third-party financial tools and 
-                    services. We are not responsible for the content, accuracy, or practices of these 
-                    third-party websites and services. Use them at your own risk.
-                </p>
-            </div>
-            
-            <div class="bg-white rounded-lg shadow-sm p-8">
-                <h2 class="text-2xl font-semibold text-gray-900 mb-4">Affiliate Disclosure</h2>
-                <p class="text-gray-600 leading-relaxed">
-                    Some links on this Website are affiliate links. This means we may earn a commission 
-                    if you click on a link and make a purchase or sign up for a service. This comes at 
-                    no additional cost to you. Our reviews and ratings are independent and not influenced 
-                    by affiliate relationships.
-                </p>
-            </div>
-            
-            <div class="bg-white rounded-lg shadow-sm p-8">
-                <h2 class="text-2xl font-semibold text-gray-900 mb-4">Intellectual Property</h2>
-                <p class="text-gray-600 leading-relaxed">
-                    The content on this Website, including text, graphics, logos, and images, is owned by 
-                    Financial Tools Directory or its content suppliers and is protected by copyright and 
-                    other intellectual property laws. You may not reproduce, distribute, or create 
-                    derivative works without our written permission.
-                </p>
-            </div>
-            
-            <div class="bg-white rounded-lg shadow-sm p-8">
-                <h2 class="text-2xl font-semibold text-gray-900 mb-4">Limitation of Liability</h2>
-                <p class="text-gray-600 leading-relaxed">
-                    To the fullest extent permitted by law, Financial Tools Directory shall not be liable 
-                    for any indirect, incidental, special, consequential, or punitive damages, or any loss 
-                    of profits or revenues, whether incurred directly or indirectly, or any loss of data, 
-                    use, goodwill, or other intangible losses resulting from your use of the Website.
-                </p>
-            </div>
-            
-            <div class="bg-white rounded-lg shadow-sm p-8">
-                <h2 class="text-2xl font-semibold text-gray-900 mb-4">External Links</h2>
-                <p class="text-gray-600 leading-relaxed">
-                    This Website contains links to external websites that are not operated by us. We have 
-                    no control over the content and practices of these sites and cannot accept responsibility 
-                    for their content or privacy policies.
-                </p>
-            </div>
-            
-            <div class="bg-white rounded-lg shadow-sm p-8">
-                <h2 class="text-2xl font-semibold text-gray-900 mb-4">Changes to Terms</h2>
-                <p class="text-gray-600 leading-relaxed">
-                    We reserve the right to modify these Terms of Service at any time. We will notify users 
-                    of any changes by updating the "Last updated" date. Your continued use of the Website 
-                    after any changes constitutes acceptance of the new Terms.
-                </p>
-            </div>
-            
-            <div class="bg-white rounded-lg shadow-sm p-8">
-                <h2 class="text-2xl font-semibold text-gray-900 mb-4">Governing Law</h2>
-                <p class="text-gray-600 leading-relaxed">
-                    These Terms shall be governed by and construed in accordance with applicable laws, 
-                    without regard to conflict of law principles.
-                </p>
-            </div>
-            
-            <div class="bg-white rounded-lg shadow-sm p-8">
-                <h2 class="text-2xl font-semibold text-gray-900 mb-4">Contact</h2>
-                <p class="text-gray-600 leading-relaxed">
-                    If you have questions about these Terms of Service, please 
-                    <a href="/contact.html" class="text-blue-600 hover:underline">contact us</a>.
-                </p>
-            </div>
-        </div>
+
+<nav class="breadcrumb" aria-label="Breadcrumb">
+    <div class="wrap">
+        <ol>
+            <li><a href="/">Home</a></li>
+            <li aria-current="page">Terms</li>
+        </ol>
     </div>
-</section>
+</nav>
+
+<header class="page-head">
+    <div class="wrap">
+        <div class="eyebrow">Last updated: April 18, 2026</div>
+        <h1>Terms of service</h1>
+        <p class="lede">The rules for using this site. Short version: we publish information about investment advisors and investor tools for free; we are not an investment advisor ourselves; please verify anything important before acting on it.</p>
+    </div>
+</header>
+
+<div class="wrap static-page">
+    <div class="legal-prose prose">
+        <h2>Acceptance</h2>
+        <p>By accessing {{ site_url }} you agree to these terms. If you don't, please don't use the site.</p>
+
+        <h2>What this site is &mdash; and isn't</h2>
+        <p>{{ site_name }} is an <strong>informational directory</strong> of investment advisors, investor tools, and related editorial content. We are <strong>not</strong> a registered investment advisor, broker-dealer, financial planner, insurance agent, tax preparer, or attorney. Nothing on this site constitutes financial, investment, tax, legal, or insurance advice. Listings are not endorsements. A firm's presence in the directory is not a recommendation, and no listing guarantees the accuracy, currency, or completeness of the information shown.</p>
+
+        <h2>Your money, your decisions</h2>
+        <p>Before hiring any advisor you find here, verify the firm's registration on <a href="https://brokercheck.finra.org/" rel="nofollow noopener" target="_blank">FINRA BrokerCheck</a> or <a href="https://adviserinfo.sec.gov/" rel="nofollow noopener" target="_blank">SEC IAPD</a>, read their Form ADV Part 2A brochure, and ask for their fee disclosure in writing. We link out to both regulators from every advisor detail page. The information in a government filing supersedes anything on this site in the event of a discrepancy.</p>
+
+        <h2>Use of the site</h2>
+        <p>You agree not to:</p>
+        <ul>
+            <li>Violate applicable laws or regulations.</li>
+            <li>Attempt to access areas of the site that aren't public.</li>
+            <li>Scrape or automate bulk download of the directory &mdash; public regulatory sources are the appropriate place for that.</li>
+            <li>Interfere with the site's operation or security.</li>
+            <li>Reproduce, republish, or redistribute site content without permission.</li>
+        </ul>
+
+        <h2>Accuracy and corrections</h2>
+        <p>We work to keep listings current and correct, but we can't guarantee accuracy at any given moment. Advisor regulatory data changes continuously. If you find an error &mdash; wrong credentials, outdated address, misrepresented fiduciary status, anything else &mdash; please <a href="/contact.html">tell us</a>. We correct or remove entries within one business day of a credible report.</p>
+
+        <h2>Affiliate disclosure</h2>
+        <p>The <strong>advisor directory</strong> contains no affiliate links of any kind. No firm pays to be listed, listed higher, or displayed differently. The <strong>tools section</strong> includes a small number of affiliate links where clicking through to a tool's vendor may result in us earning a referral fee at no additional cost to you. Affiliate status never affects a tool's rating, inclusion, or position in the list. When we do receive a referral fee, it goes toward site operating costs.</p>
+
+        <h2>Third-party links and content</h2>
+        <p>We link to external websites, including advisor firm sites, tool vendors, regulator databases, and social platforms. We don't control those sites; their content, accuracy, and privacy practices are their own responsibility. Your use of any external site is subject to its terms.</p>
+
+        <h2>Intellectual property</h2>
+        <p>Editorial content on this site &mdash; written guides, site design, code, and original copy &mdash; is ours and protected under copyright. Advisor firm names, credentials, and disclosure data belong to the firms themselves or are derived from public regulatory filings. You may reference and link to our content with attribution; you may not wholesale republish it.</p>
+
+        <h2>Limitation of liability</h2>
+        <p>To the fullest extent permitted by law, we are not liable for any indirect, incidental, consequential, or punitive damages, or for loss of profits, data, or other intangibles, arising from your use of this site or from acting on information found here. The site is provided "as is" without warranties of any kind.</p>
+
+        <h2>Indemnification</h2>
+        <p>You agree to hold us harmless from any claim arising out of your misuse of the site or your violation of these terms.</p>
+
+        <h2>Changes to these terms</h2>
+        <p>We may update these terms from time to time. Material changes are noted by updating the "Last updated" date at the top of this page. Continued use after a change means you accept the new terms.</p>
+
+        <h2>Governing law</h2>
+        <p>These terms are governed by the laws of the United States and, where applicable, the state in which the site operator resides, without regard to conflict-of-law principles.</p>
+
+        <h2>Contact</h2>
+        <p>Questions about these terms? <a href="/contact.html">Write in</a>.</p>
+    </div>
+</div>
+
 {% endblock %}

@@ -6,6 +6,39 @@ This file is the "release notes" view of the redesign. For the terse one-line-pe
 
 ---
 
+## Milestone 6 — Static pages + copy pivot (2026-04-18)
+
+**Branch:** `redesign/static-pages`
+**Commits:** two scoped commits
+**Templates rewritten:** `about.html`, `contact.html`, `privacy.html`, `terms.html`, `success.html`
+**CSS:** new `.static-page`, `.legal-prose`, `.form-field` / `.form-label` / `.form-input` / `.form-textarea` / `.form-select`, `.contact-grid` + `.contact-info-card`, `.success-page`, `.positioning-list`
+
+### What changed
+
+- **Dual-purpose milestone.** Every static page gets the finance-native style refresh **and** a copy rewrite. Drops every trace of the obsolete "Financial Tools Directory" brand (verified by grep after the build — zero remaining references across the five templates). Closes the final Milestone-0 known gap and closes Action 4 in the AdSense resubmission plan.
+- **About page rewritten top to bottom.** New mission statement ("A directory of fiduciary advisors, built the way we'd want one for ourselves"), a "Why this exists" editorial explaining the gap we're filling, a "What you'll find here" three-section `.positioning-list` for directory + guides + tools, a "What we don't do" list with red × marks against each anti-position (no placement fees, no referrals, no AI reviews, no financial advice), a "How listings get added and removed" operations note, and a final Disclosure section that cleanly separates advisor-directory (zero affiliate) from tools (some affiliate).
+- **Contact page.** New page head with editorial invitation, a left-column `.detail-card` hosting the Netlify Forms form (attributes preserved verbatim), a right-column `.contact-info` sidebar with four tokenized info cards (Response time, Before you write, Verifying an advisor, Are you an advisor?). Subject dropdown options updated for the advisor-directory era: "Suggest an advisor," "Report a listing correction," "Remove my firm from the directory," "Suggest a tool," "Business inquiry," "Feedback." Form fields moved to tokenized `.form-field` / `.form-input` / `.form-textarea` / `.form-select` components.
+- **Privacy policy.** Updated to the current stack: Netlify, Airtable, Mailchimp, Google Analytics, Google AdSense, FINRA BrokerCheck, SEC IAPD. New section on how advisor listings are sourced from public regulatory records (not from user data), with a clear removal-request pathway. Data-retention window specified (14 months for analytics, indefinite for form submissions until deletion requested). Jurisdiction-agnostic data rights language ("we don't treat it as a GDPR-specific right, just the right thing to do").
+- **Terms of service.** Dropped the tools-first framing. Added a "What this site is — and isn't" section making explicit that Smart Investor is not a registered investment advisor. Reframed the affiliate disclosure: advisor directory has **zero** affiliates, tools section has a small number. Added explicit "listings are not endorsements" and "a firm's presence is not a recommendation" clauses — required YMYL posture.
+- **Success page.** Editorial voice ("Message received"), tokenized success checkmark in `--gain`-tinted circle, back-to-home + browse-guides CTAs. Response-time copy tightened to "within one business day."
+- **New CSS components** — `.form-field` and siblings replace all of the Tailwind `border-gray-300 focus:ring-blue-500` utility stacks on the contact form. Tokenized focus state uses `color-mix(in srgb, var(--accent) 18%, transparent)` for the ring, which themes cleanly across light and dark.
+
+### Why it helps
+
+- **AdSense resubmission unblocker.** The resubmission plan's Action 4 specifically called out that static pages still described the old tools-directory brand. That's now closed. Legal pages (privacy, terms) now accurately describe the current product, which matters for YMYL content review.
+- **Voice consistency end-to-end.** Every surface — homepage, directory, tools, blog, newsletter, about, legal — now speaks in the same editorial-finance register. No more tonal whiplash navigating between sections.
+- **Reusable form-field components.** First use is the contact form. When the "submit an advisor" form ships (also in the AdSense plan), the fields will inherit the same tokenized styling automatically.
+- **Stronger trust signals for a YMYL site.** The explicit anti-positioning on the About page ("we don't take placement fees," "we are not financial advisors") and the Terms clarity ("listings are not endorsements") matter more on a financial-services site than on a typical directory — both for user trust and AdSense review.
+- **Founder-voice authenticity.** The About copy's plain-English phrasing ("Most advisor directories run on paid placements. We don't.") reads as human and opinionated, not AI-generated. That's a meaningful differentiator right now.
+
+### Known gaps
+
+- About page doesn't yet include a founder bio or team section. Kevin can add that at any point — the existing detail-card layout accommodates one more section cleanly.
+- No "submit an advisor" dedicated form yet (separate from the contact-form topic). Flagged in the AdSense plan as an optional add.
+- Governing-law clause in Terms is intentionally vague ("laws of the United States and, where applicable, the state in which the site operator resides"). If Kevin wants to pin a specific state, that's a one-line edit.
+
+---
+
 ## Side-milestone — Mailchimp newsletter integration (2026-04-18)
 
 **Branch:** `redesign/mailchimp-newsletter`
