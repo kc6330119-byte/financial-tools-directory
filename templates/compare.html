@@ -1,0 +1,262 @@
+{% extends "base.html" %}
+
+{% block extra_head %}
+<meta name="robots" content="noindex, follow">
+{% endblock %}
+
+{% block content %}
+
+<nav class="breadcrumb" aria-label="Breadcrumb">
+    <div class="wrap">
+        <ol>
+            <li><a href="/">Home</a></li>
+            <li aria-current="page">Compare</li>
+        </ol>
+    </div>
+</nav>
+
+<header class="page-head">
+    <div class="wrap">
+        <div class="eyebrow">Tool</div>
+        <h1>Compare advisors side by side</h1>
+        <p class="lede">Up to three firms at a time. Credentials, fees, minimums, and specialties in one sheet — no placement order, no promoted slots.</p>
+    </div>
+</header>
+
+<div class="wrap compare-page">
+    <p class="intro-line" id="compare-count-line">Loading comparison&hellip;</p>
+
+    <!-- Empty state (shown when no advisors selected) -->
+    <div class="compare-empty" id="compare-empty" hidden>
+        <h2>No advisors selected</h2>
+        <p>Use the <strong>+ Compare</strong> toggle on any advisor listing to add up to three firms. They'll appear here side by side for a disclosure-level comparison.</p>
+        <div class="actions">
+            <a class="btn btn--primary" href="/">Browse by state</a>
+            <a class="btn btn--ghost" href="/#specialty">Or by specialty</a>
+        </div>
+    </div>
+
+    <!-- Compare sheet (populated by client JS) -->
+    <div class="compare-sheet" id="compare-sheet" hidden></div>
+</div>
+
+<script id="compare-template" type="text/template">
+<div class="compare-col" data-slug="__SLUG__">
+    <div class="col-head">
+        <a class="firm-link" href="/advisor/__SLUG__.html">__NAME__</a>
+        <div class="col-location">__LOCATION__</div>
+        <button class="col-remove js-col-remove" data-slug="__SLUG__" type="button" aria-label="Remove from comparison">&times;</button>
+    </div>
+    __FIELDS__
+</div>
+</script>
+
+<script id="compare-placeholder-template" type="text/template">
+<div class="compare-col is-placeholder">
+    <span class="plus" aria-hidden="true">+</span>
+    <p class="prompt">Add another advisor</p>
+    <a href="/">Browse listings</a>
+</div>
+</script>
+
+<script>
+(function () {
+    var KEY = 'smart-investor-compare';
+    var MAX = 3;
+
+    function escapeHtml(s) {
+        return String(s == null ? '' : s).replace(/[<>&"]/g, function (c) {
+            return { '<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;' }[c];
+        });
+    }
+
+    function getSlugsFromUrl() {
+        var params = new URLSearchParams(window.location.search);
+        var raw = params.get('advisors');
+        if (!raw) return null;
+        return raw.split(',').map(function (s) { return decodeURIComponent(s.trim()); }).filter(Boolean).slice(0, MAX);
+    }
+
+    function readStorage() {
+        try {
+            var raw = localStorage.getItem(KEY);
+            if (!raw) return [];
+            var list = JSON.parse(raw);
+            return Array.isArray(list) ? list : [];
+        } catch (_) { return []; }
+    }
+
+    function writeStorage(list) {
+        try { localStorage.setItem(KEY, JSON.stringify(list.slice(0, MAX))); } catch (_) {}
+    }
+
+    function setUrl(slugs) {
+        var qs = slugs.length ? '?advisors=' + slugs.map(encodeURIComponent).join(',') : '';
+        var next = window.location.pathname + qs + window.location.hash;
+        window.history.replaceState({}, '', next);
+    }
+
+    function fieldBlock(label, value, mods) {
+        if (value === undefined || value === null || value === '') return '';
+        var cls = 'col-field-value';
+        if (mods && mods.nums) cls += ' is-nums';
+        if (mods && mods.gain) cls += ' is-gain';
+        if (mods && mods.muted) cls += ' is-muted';
+        return (
+            '<div class="col-field">' +
+                '<span class="col-field-label">' + escapeHtml(label) + '</span>' +
+                '<span class="' + cls + '">' + value + '</span>' +
+            '</div>'
+        );
+    }
+
+    function chipsField(label, items, cls) {
+        if (!items || !items.length) return '';
+        var chipCls = 'chip' + (cls ? ' ' + cls : '');
+        var chips = items.map(function (it) {
+            return '<span class="' + chipCls + '">' + escapeHtml(it) + '</span>';
+        }).join('');
+        return (
+            '<div class="col-field">' +
+                '<span class="col-field-label">' + escapeHtml(label) + '</span>' +
+                '<div class="chips-row">' + chips + '</div>' +
+            '</div>'
+        );
+    }
+
+    function buildColumn(advisor) {
+        var tpl = document.getElementById('compare-template').textContent;
+        var location = escapeHtml([advisor.city, advisor.state].filter(Boolean).join(', '));
+        var fields = [
+            fieldBlock('Fiduciary',
+                advisor.fiduciary ? 'Yes' : 'No',
+                advisor.fiduciary ? { gain: true } : { muted: true, nums: true }),
+            fieldBlock('Rating',
+                (advisor.rating ? '<span style="color: var(--gold);">&#9733;</span> ' + Number(advisor.rating).toFixed(1) : null) +
+                    (advisor.review_count ? ' <span style="color: var(--text-faint);">(' + advisor.review_count + ')</span>' : ''),
+                { nums: true }),
+            chipsField('Credentials', advisor.credentials, ''),
+            fieldBlock('Fee structure',
+                advisor.fee_structure && advisor.fee_structure.length
+                    ? escapeHtml(advisor.fee_structure.join(' + '))
+                    : null),
+            fieldBlock('Minimum investment',
+                advisor.minimum_investment ? escapeHtml(advisor.minimum_investment) : '—',
+                { nums: true }),
+            fieldBlock('Firm type',
+                advisor.firm_type ? escapeHtml(advisor.firm_type) : null),
+            chipsField('Specialties', advisor.specialties, 'chip--specialty'),
+            fieldBlock('Description',
+                advisor.description ? escapeHtml(advisor.description) : null)
+        ].join('');
+
+        return tpl
+            .replace(/__SLUG__/g, escapeHtml(advisor.slug))
+            .replace(/__NAME__/g, escapeHtml(advisor.name))
+            .replace(/__LOCATION__/g, location)
+            .replace(/__FIELDS__/g, fields);
+    }
+
+    function buildPlaceholder() {
+        return document.getElementById('compare-placeholder-template').textContent;
+    }
+
+    function render(advisors, slugs) {
+        var sheet = document.getElementById('compare-sheet');
+        var empty = document.getElementById('compare-empty');
+        var countLine = document.getElementById('compare-count-line');
+
+        if (!slugs.length) {
+            sheet.hidden = true;
+            empty.hidden = false;
+            countLine.textContent = 'Nothing selected yet';
+            return;
+        }
+
+        var found = slugs.map(function (slug) {
+            return advisors.find(function (a) { return a.slug === slug; });
+        }).filter(Boolean);
+
+        if (!found.length) {
+            sheet.hidden = true;
+            empty.hidden = false;
+            countLine.textContent = 'Those advisors aren\'t in our directory';
+            return;
+        }
+
+        var columns = found.map(buildColumn);
+        while (columns.length < Math.max(2, found.length + 1) && columns.length < MAX) {
+            columns.push(buildPlaceholder());
+        }
+        // If we have exactly 1, the loop above gives 1 + placeholder = 2 columns — good.
+        // If we have 2, loop gives 2 + placeholder = 3. If we have 3, no placeholder.
+
+        sheet.innerHTML = columns.join('');
+        sheet.hidden = false;
+        empty.hidden = true;
+        countLine.textContent = found.length + ' of ' + MAX + ' selected';
+    }
+
+    function resolveSlugs() {
+        var fromUrl = getSlugsFromUrl();
+        if (fromUrl && fromUrl.length) {
+            writeStorage(fromUrl.map(function (s) { return { slug: s, name: s }; }));
+            return fromUrl;
+        }
+        return readStorage().map(function (a) { return a.slug; });
+    }
+
+    function removeSlug(slug) {
+        var slugs = resolveSlugs().filter(function (s) { return s !== slug; });
+        writeStorage(slugs.map(function (s) { return { slug: s, name: s }; }));
+        setUrl(slugs);
+        start();
+    }
+
+    document.addEventListener('click', function (e) {
+        var btn = e.target.closest('.js-col-remove');
+        if (!btn) return;
+        removeSlug(btn.getAttribute('data-slug'));
+    });
+
+    var advisorsCache = null;
+    function loadAdvisors() {
+        if (advisorsCache) return Promise.resolve(advisorsCache);
+        return fetch('/compare-data.json').then(function (r) {
+            if (!r.ok) throw new Error('fetch failed');
+            return r.json();
+        }).then(function (data) {
+            advisorsCache = Array.isArray(data) ? data : [];
+            return advisorsCache;
+        });
+    }
+
+    function start() {
+        var slugs = resolveSlugs();
+        if (!slugs.length) {
+            render([], []);
+            // Update the storage display + name labels on the bar
+            if (typeof window.dispatchEvent === 'function') {
+                window.dispatchEvent(new StorageEvent('storage', { key: 'smart-investor-compare' }));
+            }
+            return;
+        }
+        loadAdvisors().then(function (advisors) {
+            // Rewrite storage with full names now that we have them
+            var enriched = slugs.map(function (slug) {
+                var found = advisors.find(function (a) { return a.slug === slug; });
+                return { slug: slug, name: found ? found.name : slug };
+            });
+            writeStorage(enriched);
+            render(advisors, slugs);
+        }).catch(function () {
+            render([], []);
+            document.getElementById('compare-count-line').textContent = 'Couldn\'t load advisor data';
+        });
+    }
+
+    start();
+})();
+</script>
+
+{% endblock %}

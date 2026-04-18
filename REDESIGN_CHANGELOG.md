@@ -6,6 +6,38 @@ This file is the "release notes" view of the redesign. For the terse one-line-pe
 
 ---
 
+## Milestone 3 — Advisor Compare feature (2026-04-18)
+
+**Branch:** `redesign/advisor-compare`
+**Commits:** (landed as four scoped commits — see git log)
+**Type:** First non-migration milestone — net-new functionality, not a template rewrite.
+
+### What changed
+
+- **New page: `/compare.html`.** A disclosure-level side-by-side comparison of up to three fiduciary advisors. Renders columns for fiduciary status, rating, credentials, fee structure, minimum investment, firm type, specialties, and description. No "pros and cons" framing — just the firm's own disclosures laid out so they can be compared at a glance.
+- **"+ Compare" toggle on every advisor listing and detail page.** Absolute-positioned on the card (outside the anchor, valid HTML) so the card's "view details" click behavior stays intact. Inline `.btn`-style toggle in the advisor-detail actions row.
+- **Sticky compare bar** (site-wide, below the main content, above the newsletter). Fades in at ≥1 selected, shows count + chip list + Clear + Compare → CTA. Chips have per-item remove buttons. Cross-tab synced via the `storage` event.
+- **Selection state.** `localStorage` key `smart-investor-compare` holds the list of `{slug, name}` objects (max 3). The compare page treats the URL query string (`?advisors=slug1,slug2`) as the source of truth when present, falling back to localStorage when the page is opened without params. Removing a column updates both the URL and localStorage so reload and share work identically.
+- **Data delivery: new `/compare-data.json`** emitted at build time with richer fields than the existing `/search-index.json` (which stays focused on nav autocomplete). One fetch on page load, cached for the session.
+- **`compare.html` is `noindex, follow`** — it's a tool, not content. Excluded from `sitemap.xml` automatically because it isn't in the sitemap builder's indexable-pages list.
+
+### Why it helps
+
+- **A genuinely finance-native feature, not just a restyle.** Every other advisor directory forces sequential browsing. Side-by-side disclosure comparison is what someone hiring an advisor actually wants to do — and the visual pattern is native to the spec-sheet aesthetic we've been building.
+- **Portfolio reuse.** The pattern is directly portable to the other four directory sites (compare 3 splash pads, 3 dog groomers, 3 home-care agencies, 3 vets) — same URL shape, same localStorage key scheme, same sticky-bar UX. Genuine differentiator for all of them.
+- **Zero backend.** All build-time static + client-side JS. Fits the "nothing runs at request time" constraint from the stack conventions cleanly.
+- **Valid HTML.** The toggle sits outside the advisor card's anchor element (the old pattern of nested `<button>` inside `<a>` is invalid HTML and interacts badly with assistive tech — we avoided it via the new `<article><a/><button/></article>` structure).
+- **Shareable URLs.** A comparison can be linked directly. Good for the audience that sends "check these three" links to a spouse or advisor-committee.
+- **Accessibility.** Toggle is a real `<button>` with `aria-pressed` true/false and a paired `aria-label`. Disabled state guards the full-list case so a user can't accidentally add a fourth.
+
+### Known gaps
+
+- With only 5 sample advisors in the current local build, the compare page is lightly testable; it really shines once the Outscraper data lands and there are thousands of slug-addressable advisors.
+- Compare bar uses a generic `box-shadow` that's slightly heavy on dark; could tune.
+- No keyboard shortcut to open the compare page (e.g., `?`). Deferred.
+
+---
+
 ## Milestone 2 — Directory pages (2026-04-18)
 
 **Branch:** `redesign/directory-pages` (fast-forwarded to main, branch deleted)
