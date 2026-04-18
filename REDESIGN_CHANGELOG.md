@@ -6,6 +6,35 @@ This file is the "release notes" view of the redesign. For the terse one-line-pe
 
 ---
 
+## Side-milestone — Mailchimp newsletter integration (2026-04-18)
+
+**Branch:** `redesign/mailchimp-newsletter`
+**Commits:** single commit
+**Files:** `templates/base.html` only
+**Type:** Infrastructure migration, not a design milestone — kept separate from the redesign numbering.
+
+### What changed
+
+- The site-wide newsletter form (in `base.html`, visible above the footer on every page) now posts directly to Mailchimp instead of Netlify Forms. Form action: `https://doggroomerlocator.us12.list-manage.com/subscribe/post?u=…&id=…&f_id=…`.
+- `target="_blank"` opens Mailchimp's double-opt-in confirmation page in a new tab. Our side optimistically swaps to "Subscribed. Check your inbox to confirm." after the native submit fires.
+- Mailchimp's list-specific bot honeypot (`b_21343a587fbb950d8b649ee6d_970ba04869`) preserved verbatim, kept offscreen with `aria-hidden="true"` and `tabindex="-1"`.
+- Hidden `<input name="SITE" value="smart-investor">` tags every subscription with its source site. Mailchimp silently drops unknown merge fields, so this is a no-op until Kevin adds a `SITE` merge field to the shared audience — at which point source segmentation starts working retroactively.
+- **Contact form on `contact.html` unchanged** — still routes through Netlify Forms, which is where Kevin wants those specific submissions to land.
+
+### Why it helps
+
+- **Real list, not a dashboard.** Netlify Forms collects subscriptions but doesn't actually email anyone. Mailchimp puts subscribers into the shared audience Kevin uses across all five directory sites, making the newsletter operational instead of theoretical.
+- **Zero dependency cost.** None of Mailchimp's embed bloat imported: no jQuery, no `mc-validate.js`, no `classic-061523.css`, no 400-line SMS-phone country dropdown. Critical-path byte count unchanged.
+- **Cross-site source attribution** via the SITE tag — the shared audience can segment subscribers by which of the five sites brought them in, so newsletter content can be targeted later if Kevin wants.
+- **Browser-native email validation** retained (no `novalidate` attribute). Invalid emails don't trigger the optimistic UI swap.
+
+### Known gaps
+
+- The `SITE` merge field isn't configured in the Mailchimp audience yet. Until Kevin adds it, source tagging drops silently — subscribers still get added, just without the `smart-investor` tag.
+- Opening Mailchimp's confirmation page in a new tab is slightly less elegant than an inline thank-you state. The alternative (JSONP to `/subscribe/post-json?&c=?`) adds a small amount of JS complexity for a marginal UX gain. Revisit if subscriber drop-off turns out to be a problem.
+
+---
+
 ## Milestone 5 — Tools hub, category, tool detail (2026-04-18)
 
 **Branch:** `redesign/tools`

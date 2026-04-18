@@ -291,19 +291,29 @@
         </div>
     </div>
 
-    <!-- Newsletter Signup -->
+    <!-- Newsletter Signup — Mailchimp (shared audience, SITE tag segments source) -->
     <section class="bg-primary-600 text-white py-10">
         <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <h2 class="text-xl font-bold mb-2">Get one email a month. Nothing else.</h2>
             <p class="text-primary-100 text-sm mb-5">Advisor selection checklists, fee-disclosure explainers, and research summaries. No sales pitches.</p>
-            <form name="newsletter" method="POST" data-netlify="true" netlify-honeypot="bot-field" class="flex flex-col sm:flex-row gap-3 max-w-md mx-auto" id="newsletter-form">
-                <input type="hidden" name="form-name" value="newsletter">
-                <p class="hidden"><label>Don't fill this out: <input name="bot-field"></label></p>
-                <input type="email" name="email" required placeholder="you@domain.com"
+            <form action="https://doggroomerlocator.us12.list-manage.com/subscribe/post?u=21343a587fbb950d8b649ee6d&amp;id=970ba04869&amp;f_id=00d5e2e3f0"
+                  method="post"
+                  target="_blank"
+                  rel="noopener"
+                  class="flex flex-col sm:flex-row gap-3 max-w-md mx-auto"
+                  id="newsletter-form">
+                <label class="sr-only" for="mc-email">Email address</label>
+                <input type="email" name="EMAIL" id="mc-email" required placeholder="you@domain.com"
                        class="flex-1 px-4 py-2.5 rounded-lg text-gray-900 text-sm focus:ring-2 focus:ring-accent-400 outline-none">
-                <button type="submit" class="px-6 py-2.5 bg-accent-500 hover:bg-accent-600 text-white font-semibold rounded-lg text-sm transition-colors whitespace-nowrap">
+                <button type="submit" name="subscribe" value="Subscribe" class="px-6 py-2.5 bg-accent-500 hover:bg-accent-600 text-white font-semibold rounded-lg text-sm transition-colors whitespace-nowrap">
                     Subscribe
                 </button>
+                {# Mailchimp bot honeypot — the field name is specific to the list and must be preserved verbatim #}
+                <div aria-hidden="true" style="position: absolute; left: -5000px;">
+                    <input type="text" name="b_21343a587fbb950d8b649ee6d_970ba04869" tabindex="-1" autocomplete="off" value="">
+                </div>
+                {# Source tag — populates a SITE merge field if Kevin adds one to the Mailchimp audience; silently ignored otherwise #}
+                <input type="hidden" name="SITE" value="smart-investor">
             </form>
             <p id="newsletter-success" class="hidden text-accent-200 text-sm mt-3 font-medium">Subscribed. Check your inbox to confirm.</p>
         </div>
@@ -459,19 +469,20 @@
             });
         });
 
-        // Newsletter form
+        // Newsletter form — posts directly to Mailchimp (target="_blank" opens
+        // their confirmation page in a new tab). Do NOT preventDefault; let the
+        // native submission go through. Optimistically swap our UI to the
+        // success message once the browser validates and begins the submit.
         const nlForm = document.getElementById('newsletter-form');
         if (nlForm) {
-            nlForm.addEventListener('submit', function(e) {
-                e.preventDefault();
-                fetch('/', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                    body: new URLSearchParams(new FormData(nlForm)).toString()
-                }).then(() => {
+            nlForm.addEventListener('submit', function () {
+                // HTML5 required + type=email means this handler only fires on valid input.
+                // Defer the UI swap a tick so the native submit is definitely in flight.
+                setTimeout(function () {
                     nlForm.classList.add('hidden');
-                    document.getElementById('newsletter-success').classList.remove('hidden');
-                }).catch(() => alert('Something went wrong. Please try again.'));
+                    var success = document.getElementById('newsletter-success');
+                    if (success) success.classList.remove('hidden');
+                }, 50);
             });
         }
 

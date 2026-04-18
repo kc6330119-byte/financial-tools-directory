@@ -76,3 +76,14 @@ One line per non-obvious design decision. Append as we go. Format: `YYYY-MM-DD �
 - **Sidebar spec-sheet** reuses the `.spec-sheet` pattern from advisor detail. Quick-info `<dl>` items: pricing, price range, API availability (gain-tinted when Yes), mobile app, data sources. Consistent voice with the advisor spec-sheet.
 - **"Other categories" chip row** at the foot of category.html reuses the `.specialty-chip-row` component from the specialty page. Same design, different content slot.
 - **Related tools on the detail page** render as a compact 4-column card row at desktop, stack on mobile. Shares the `.related-post` pattern from the blog post template.
+
+## 2026-04-18 — Mailchimp newsletter integration
+
+- **Branch** — `redesign/mailchimp-newsletter`. Scope: `base.html` only (newsletter form + submit JS).
+- **Migrated from Netlify Forms to Mailchimp.** The site-wide newsletter now posts directly to `https://doggroomerlocator.us12.list-manage.com/subscribe/post?u=…&id=…&f_id=…`. Contact form on `contact.html` still uses Netlify Forms — only the newsletter changed.
+- **Shared Mailchimp audience across all five of Kevin's directory sites** (confirmed with Kevin: one audience, tagged by source). Added a hidden `<input type="hidden" name="SITE" value="smart-investor">` so Mailchimp can segment by source once a `SITE` merge field is added to the audience. Safe no-op until the field is configured — Mailchimp silently drops unknown fields.
+- **`target="_blank"` + native form submit**, not AJAX/JSONP. Simplest reliable approach: browser submits to Mailchimp, Mailchimp's confirmation page opens in a new tab, our side optimistically swaps to "Subscribed. Check your inbox to confirm." via a 50 ms setTimeout. Double opt-in is Mailchimp's default for the list so the inbox-confirmation language stays accurate.
+- **Did not import** Mailchimp's `classic-061523.css`, jQuery, `mc-validate.js`, or the ~400-line SMS-phone country dropdown script. Our existing tokenized form styling survives intact; bytes added to the critical path: zero.
+- **Bot honeypot preserved verbatim** (`name="b_21343a587fbb950d8b649ee6d_970ba04869"`) — Mailchimp expects that exact list-specific honeypot name. The field lives inside a `position: absolute; left: -5000px;` div with `aria-hidden="true"` and `tabindex="-1"` so assistive tech and keyboard users skip it.
+- **Submit-button `name="subscribe" value="Subscribe"`** is preserved from the Mailchimp embed — their server expects it.
+- **`rel="noopener"`** added to the form element alongside `target="_blank"` for the usual new-tab security posture. The `novalidate` attribute is intentionally **not** added — we keep the browser's HTML5 email validation on.
