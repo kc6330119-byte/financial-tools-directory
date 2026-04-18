@@ -1,0 +1,241 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<nav class="breadcrumb" aria-label="Breadcrumb">
+    <div class="wrap">
+        <ol>
+            <li><a href="/">Home</a></li>
+            <li><a href="/calculators.html">Calculators</a></li>
+            <li aria-current="page">RMD Calculator</li>
+        </ol>
+    </div>
+</nav>
+
+<header class="page-head">
+    <div class="wrap">
+        <div class="eyebrow">{{ calculator.category }}</div>
+        <h1>{{ calculator.name }}</h1>
+        <p class="lede">{{ calculator.description }}</p>
+    </div>
+</header>
+
+<div class="wrap calc-page">
+    <form class="calc-shell" id="calc-form" onsubmit="return false;" autocomplete="off">
+        <div class="calc-layout">
+            <section class="calc-form" aria-label="Inputs">
+                <span class="calc-form-title">Inputs</span>
+
+                <div class="form-field">
+                    <label class="form-label" for="rmd-age">Your age this year</label>
+                    <div class="input-with-suffix">
+                        <input class="form-input" type="number" id="rmd-age" value="73" min="73" max="110" step="1" inputmode="numeric">
+                        <span class="suffix" aria-hidden="true">yrs</span>
+                    </div>
+                    <span class="form-help">RMDs begin the year you turn 73 (SECURE 2.0 Act, for anyone turning 73 in 2023 or later).</span>
+                </div>
+
+                <div class="form-field">
+                    <label class="form-label" for="rmd-balance">Account balance on Dec 31 of the prior year</label>
+                    <div class="input-with-prefix">
+                        <span class="prefix" aria-hidden="true">$</span>
+                        <input class="form-input" type="number" id="rmd-balance" value="500000" min="0" step="1000" inputmode="numeric">
+                    </div>
+                    <span class="form-help">Sum across all traditional IRA and 401(k) accounts. Roth IRAs are exempt.</span>
+                </div>
+
+                <div class="form-field">
+                    <label class="form-label" for="rmd-return">Assumed annual return for projection</label>
+                    <div class="input-with-suffix">
+                        <input class="form-input" type="number" id="rmd-return" value="5" min="-10" max="20" step="0.1" inputmode="decimal">
+                        <span class="suffix" aria-hidden="true">%</span>
+                    </div>
+                </div>
+            </section>
+
+            <section class="calc-result" aria-label="Results" aria-live="polite">
+                <div class="calc-result-headline">
+                    <span class="label">Your RMD for age <span id="rmd-age-label">73</span></span>
+                    <span class="figure" id="rmd-amount">$0</span>
+                    <p class="sub" id="rmd-sub">Calculating&hellip;</p>
+                </div>
+
+                <div class="calc-breakdown cols-3">
+                    <div class="item">
+                        <span class="item-label">Distribution factor</span>
+                        <span class="item-value" id="rmd-factor">0</span>
+                    </div>
+                    <div class="item">
+                        <span class="item-label">Monthly equivalent</span>
+                        <span class="item-value" id="rmd-monthly">$0</span>
+                    </div>
+                    <div class="item">
+                        <span class="item-label">% of balance</span>
+                        <span class="item-value" id="rmd-percent">0%</span>
+                    </div>
+                </div>
+
+                <div class="calc-chart" aria-hidden="true">
+                    <span class="chart-label">Projected RMD amount through age 95</span>
+                    <svg id="rmd-chart" viewBox="0 0 400 160" preserveAspectRatio="none" role="img"></svg>
+                </div>
+            </section>
+        </div>
+    </form>
+
+    <div class="calc-explain prose">
+        <h2>What the IRS Uniform Lifetime Table does</h2>
+        <p>
+            The IRS publishes a <strong>Uniform Lifetime Table</strong> with a "distribution period" for each age. Your annual RMD is your prior-year-end balance divided by that factor. At age 73 the factor is 26.5 &mdash; so you must withdraw roughly <strong>1/26.5</strong> of the balance, or about 3.77%. At age 90 the factor drops to 12.2 &mdash; about 8.2%. The percentage grows each year as the table assumes less remaining lifespan.
+        </p>
+        <p>
+            The table applies to traditional IRAs, SEP IRAs, SIMPLE IRAs, and most employer-sponsored plans (401(k), 403(b), 457). <strong>Roth IRAs are exempt from RMDs for the original owner</strong>. Inherited accounts have different rules.
+        </p>
+
+        <h2>The 25% penalty</h2>
+        <p>
+            If you miss an RMD, the IRS previously charged a <strong>50% excise tax</strong> on the shortfall. SECURE 2.0 reduced that to <strong>25%</strong>, and to <strong>10%</strong> if you correct the mistake quickly (typically within two years). It's still one of the steepest penalties in the tax code for a paperwork error.
+        </p>
+
+        <h2>What this calculator projects</h2>
+        <p>
+            The chart projects your RMD each year through age 95, assuming your balance grows at the rate you specify (minus the RMD withdrawn each year). In reality, your actual RMDs will depend on the balance on December 31 of the <em>prior</em> year &mdash; so market performance year to year swings the number meaningfully. This projection is a rough-order-of-magnitude view, not a forecast.
+        </p>
+
+        <h2>What to do with the RMD money</h2>
+        <p>
+            The IRS requires you to withdraw it; nothing requires you to spend it. If you don't need the income, common moves include: reinvesting in a taxable brokerage account, gifting up to the annual exclusion ($18,000 for 2024) to children or grandchildren, or doing a <strong>qualified charitable distribution (QCD)</strong> directly from the IRA to a charity &mdash; which satisfies your RMD without the withdrawal counting as taxable income. The QCD is one of the most under-used tax optimizations for retirees who are charitably inclined.
+        </p>
+    </div>
+
+    <aside class="calc-cta">
+        <span class="eyebrow">Not just numbers</span>
+        <h3>Ready to plan this around your tax picture?</h3>
+        <p>These are estimates. A fiduciary advisor can model this against your actual tax situation, Social Security timing, and risk tolerance &mdash; things a single-input calculator can't capture.</p>
+        <a class="btn btn--primary" href="/">Find a fiduciary advisor &rarr;</a>
+    </aside>
+
+    <nav class="calc-also" aria-label="Other calculators">
+        <h3>Other calculators</h3>
+        <div class="chips">
+            {% for c in all_calculators if c.slug != calculator.slug %}
+            <a href="/calculator/{{ c.slug }}.html">{{ c.short }}</a>
+            {% endfor %}
+            <a href="/calculators.html" style="border-color: var(--accent); color: var(--accent);">See all &rarr;</a>
+        </div>
+    </nav>
+
+    <div class="disclaimer-box" style="margin-top: 40px;">
+        <strong>Disclaimer</strong> This calculator uses the IRS Uniform Lifetime Table for single account owners whose spouse is not more than 10 years younger. If your sole beneficiary is a spouse more than 10 years younger, the IRS Joint Life and Last Survivor Expectancy Table applies and will produce different numbers. Inherited IRAs follow separate rules. This is not tax or financial advice &mdash; consult a qualified advisor or CPA for your specific situation.
+    </div>
+</div>
+
+<script>
+(function () {
+    const fmtMoney = (n) => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(Math.round(n));
+
+    // IRS Uniform Lifetime Table (2022+, applies to most single owners)
+    const UL_TABLE = {
+        73: 26.5, 74: 25.5, 75: 24.6, 76: 23.7, 77: 22.9, 78: 22.0, 79: 21.1,
+        80: 20.2, 81: 19.4, 82: 18.5, 83: 17.7, 84: 16.8, 85: 16.0, 86: 15.2,
+        87: 14.4, 88: 13.7, 89: 12.9, 90: 12.2, 91: 11.5, 92: 10.8, 93: 10.1,
+        94: 9.5, 95: 8.9, 96: 8.4, 97: 7.8, 98: 7.3, 99: 6.8, 100: 6.4,
+        101: 6.0, 102: 5.6, 103: 5.2, 104: 4.9, 105: 4.6, 106: 4.3, 107: 4.1,
+        108: 3.9, 109: 3.7, 110: 3.5
+    };
+
+    const $ = (id) => document.getElementById(id);
+    const ageEl = $('rmd-age');
+    const balEl = $('rmd-balance');
+    const rateEl = $('rmd-return');
+
+    function factorFor(age) {
+        if (age in UL_TABLE) return UL_TABLE[age];
+        if (age < 73) return UL_TABLE[73];
+        if (age > 110) return UL_TABLE[110];
+        return UL_TABLE[73];
+    }
+
+    function projectSeries(startAge, startBal, annualReturn) {
+        const r = annualReturn / 100;
+        const maxAge = Math.min(95, Math.max(startAge + 20, 95));
+        const points = [];
+        let bal = startBal;
+        for (let age = startAge; age <= maxAge; age++) {
+            const factor = factorFor(age);
+            const rmd = bal / factor;
+            points.push({ age, rmd });
+            bal = (bal - rmd) * (1 + r);
+            if (bal < 0) bal = 0;
+        }
+        return points;
+    }
+
+    function renderChart(points, svgEl) {
+        const W = 400, H = 160, PAD_L = 56, PAD_R = 10, PAD_T = 8, PAD_B = 22;
+        const maxX = points[points.length - 1].age;
+        const minX = points[0].age;
+        const maxY = Math.max(...points.map(p => p.rmd), 1) * 1.05;
+
+        const xScale = (age) => PAD_L + ((age - minX) / (maxX - minX || 1)) * (W - PAD_L - PAD_R);
+        const yScale = (v) => PAD_T + (1 - v / maxY) * (H - PAD_T - PAD_B);
+
+        const linePath = points.map((p, i) => `${i === 0 ? 'M' : 'L'}${xScale(p.age).toFixed(1)},${yScale(p.rmd).toFixed(1)}`).join(' ');
+        const baselineY = yScale(0);
+        const areaPath = linePath + ` L${xScale(maxX).toFixed(1)},${baselineY.toFixed(1)} L${xScale(minX).toFixed(1)},${baselineY.toFixed(1)} Z`;
+
+        const yTicks = 4;
+        const gridlines = Array.from({ length: yTicks + 1 }, (_, i) => {
+            const y = PAD_T + (i / yTicks) * (H - PAD_T - PAD_B);
+            return `<line class="chart-gridline" x1="${PAD_L}" y1="${y}" x2="${W - PAD_R}" y2="${y}"/>`;
+        }).join('');
+
+        const yLabels = Array.from({ length: yTicks + 1 }, (_, i) => {
+            const v = maxY - (i / yTicks) * maxY;
+            const y = PAD_T + (i / yTicks) * (H - PAD_T - PAD_B);
+            const label = v >= 1e6 ? `$${(v/1e6).toFixed(1)}M` : v >= 1e3 ? `$${(v/1e3).toFixed(0)}K` : `$${v.toFixed(0)}`;
+            return `<text class="axis-text" x="${PAD_L - 6}" y="${y + 3}" text-anchor="end">${label}</text>`;
+        }).join('');
+
+        const xLabels = `
+            <text class="axis-text" x="${xScale(minX)}" y="${H - 6}" text-anchor="start">age ${minX}</text>
+            <text class="axis-text" x="${xScale(maxX)}" y="${H - 6}" text-anchor="end">age ${maxX}</text>
+        `;
+
+        const endpoint = points[points.length - 1];
+        const ep = `<circle class="chart-endpoint" cx="${xScale(endpoint.age)}" cy="${yScale(endpoint.rmd)}" r="3"/>`;
+
+        svgEl.innerHTML = gridlines + yLabels + xLabels + `<path class="chart-area" d="${areaPath}"/>` + `<path class="chart-line" d="${linePath}"/>` + ep;
+    }
+
+    function recalc() {
+        const age = Math.max(73, parseInt(ageEl.value) || 73);
+        const bal = Math.max(0, parseFloat(balEl.value) || 0);
+        const rate = parseFloat(rateEl.value) || 0;
+
+        const factor = factorFor(age);
+        const rmd = bal / factor;
+        const monthly = rmd / 12;
+        const pct = bal > 0 ? (rmd / bal) * 100 : 0;
+
+        $('rmd-age-label').textContent = age;
+        $('rmd-amount').textContent = fmtMoney(rmd);
+        $('rmd-factor').textContent = factor.toFixed(1);
+        $('rmd-monthly').textContent = fmtMoney(monthly);
+        $('rmd-percent').textContent = pct.toFixed(2) + '%';
+
+        $('rmd-sub').innerHTML = `Withdraw <strong>${fmtMoney(rmd)}</strong> from your IRAs and qualifying employer plans by <strong>December 31</strong> to avoid the 25% excise tax.`;
+
+        const points = projectSeries(age, bal, rate);
+        renderChart(points, $('rmd-chart'));
+    }
+
+    [ageEl, balEl, rateEl].forEach(el => {
+        el.addEventListener('input', recalc);
+        el.addEventListener('change', recalc);
+    });
+    recalc();
+})();
+</script>
+
+{% endblock %}

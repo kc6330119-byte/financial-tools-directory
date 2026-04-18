@@ -244,6 +244,33 @@ CALCULATORS = [
         "category": "Planning",
         "template": "calc_savings_goal.html",
     },
+    {
+        "slug": "social-security",
+        "name": "Social Security Claim Age Calculator",
+        "short": "When should I claim Social Security?",
+        "description": "Compare your monthly and lifetime Social Security benefit across ages 62, 67, and 70 to find your break-even point.",
+        "tagline": "The single highest-leverage financial decision most retirees make.",
+        "category": "Retirement",
+        "template": "calc_social_security.html",
+    },
+    {
+        "slug": "rmd",
+        "name": "Required Minimum Distribution Calculator",
+        "short": "How much do I have to withdraw from my IRA?",
+        "description": "Compute your annual Required Minimum Distribution from traditional IRAs and 401(k)s using the IRS Uniform Lifetime Table.",
+        "tagline": "Miss it, and the penalty is 25% of what you should've taken out.",
+        "category": "Distribution",
+        "template": "calc_rmd.html",
+    },
+    {
+        "slug": "safe-withdrawal",
+        "name": "Safe Withdrawal Rate Calculator (4% Rule)",
+        "short": "How much can I safely spend in retirement?",
+        "description": "Apply the 4% rule (or any other rate) to your portfolio and see how long your money lasts under different return assumptions.",
+        "tagline": "How much your portfolio can actually sustain.",
+        "category": "Distribution",
+        "template": "calc_safe_withdrawal.html",
+    },
 ]
 
 # Blog categories

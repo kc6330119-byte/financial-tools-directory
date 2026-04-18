@@ -1,0 +1,267 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<nav class="breadcrumb" aria-label="Breadcrumb">
+    <div class="wrap">
+        <ol>
+            <li><a href="/">Home</a></li>
+            <li><a href="/calculators.html">Calculators</a></li>
+            <li aria-current="page">Safe Withdrawal Rate</li>
+        </ol>
+    </div>
+</nav>
+
+<header class="page-head">
+    <div class="wrap">
+        <div class="eyebrow">{{ calculator.category }}</div>
+        <h1>{{ calculator.name }}</h1>
+        <p class="lede">{{ calculator.description }}</p>
+    </div>
+</header>
+
+<div class="wrap calc-page">
+    <form class="calc-shell" id="calc-form" onsubmit="return false;" autocomplete="off">
+        <div class="calc-layout">
+            <section class="calc-form" aria-label="Inputs">
+                <span class="calc-form-title">Inputs</span>
+
+                <div class="form-field">
+                    <label class="form-label" for="sw-balance">Portfolio balance at retirement</label>
+                    <div class="input-with-prefix">
+                        <span class="prefix" aria-hidden="true">$</span>
+                        <input class="form-input" type="number" id="sw-balance" value="1000000" min="0" step="10000" inputmode="numeric">
+                    </div>
+                </div>
+
+                <div class="form-field">
+                    <label class="form-label" for="sw-rate">Withdrawal rate</label>
+                    <div class="input-with-suffix">
+                        <input class="form-input" type="number" id="sw-rate" value="4" min="1" max="10" step="0.1" inputmode="decimal">
+                        <span class="suffix" aria-hidden="true">%</span>
+                    </div>
+                    <span class="form-help">4% is the classic benchmark (Bengen, 1994). More conservative: 3&ndash;3.5%. More aggressive: 5&ndash;6% if you're willing to adjust in down markets.</span>
+                </div>
+
+                <div class="form-field">
+                    <label class="form-label" for="sw-return">Expected real return</label>
+                    <div class="input-with-suffix">
+                        <input class="form-input" type="number" id="sw-return" value="5" min="0" max="15" step="0.1" inputmode="decimal">
+                        <span class="suffix" aria-hidden="true">%</span>
+                    </div>
+                    <span class="form-help">After inflation. A balanced 60/40 portfolio has historically returned ~5% real.</span>
+                </div>
+
+                <div class="form-field">
+                    <label class="form-label" for="sw-years">Retirement horizon</label>
+                    <div class="input-with-suffix">
+                        <input class="form-input" type="number" id="sw-years" value="30" min="5" max="50" step="1" inputmode="numeric">
+                        <span class="suffix" aria-hidden="true">yrs</span>
+                    </div>
+                </div>
+            </section>
+
+            <section class="calc-result" aria-label="Results" aria-live="polite">
+                <div class="calc-result-headline">
+                    <span class="label">Annual withdrawal</span>
+                    <span class="figure" id="sw-annual">$0</span>
+                    <p class="sub" id="sw-sub">Calculating&hellip;</p>
+                </div>
+
+                <div class="calc-breakdown cols-3">
+                    <div class="item">
+                        <span class="item-label">Monthly withdrawal</span>
+                        <span class="item-value" id="sw-monthly">$0</span>
+                    </div>
+                    <div class="item">
+                        <span class="item-label">Ending balance</span>
+                        <span class="item-value" id="sw-ending">$0</span>
+                    </div>
+                    <div class="item">
+                        <span class="item-label">Money lasts</span>
+                        <span class="item-value" id="sw-duration">&mdash;</span>
+                    </div>
+                </div>
+
+                <div class="calc-chart" aria-hidden="true">
+                    <span class="chart-label">Portfolio balance over retirement (today's dollars)</span>
+                    <svg id="sw-chart" viewBox="0 0 400 160" preserveAspectRatio="none" role="img"></svg>
+                </div>
+            </section>
+        </div>
+    </form>
+
+    <div class="calc-explain prose">
+        <h2>Where the 4% rule comes from</h2>
+        <p>
+            In 1994, financial planner <strong>Bill Bengen</strong> looked at rolling 30-year periods of U.S. market history going back to 1926 and asked: what's the highest initial withdrawal rate that would have survived every single 30-year window, including the worst cases (retiring in 1929 or 1966)? The answer was roughly 4% &mdash; withdraw 4% of your initial portfolio in year one, adjust the dollar amount for inflation each year after, and you'd have run out of money in zero of the historical periods.
+        </p>
+
+        <h2>What the rule actually says</h2>
+        <p>
+            Contrary to how it's often summarized, the 4% rule is <em>not</em> "withdraw 4% of your remaining balance each year." It's: <strong>withdraw 4% of your <em>initial</em> balance in year one, then adjust that dollar amount for inflation each year after</strong>. So if you retire with $1,000,000 and inflation is 3%, you'd withdraw $40,000 in year one, $41,200 in year two, $42,436 in year three, and so on &mdash; regardless of what the portfolio does in the market.
+        </p>
+
+        <h2>Where the rule breaks</h2>
+        <p>
+            The 4% rule was based on U.S. historical data &mdash; a singular outlier in global equity returns. If future returns are lower than past ones (many economists think they will be), 3.5% may be more appropriate. The rule also assumes rigid behavior: no spending cuts in down markets, no adjustments for longer retirements. A <strong>dynamic withdrawal strategy</strong> (e.g., Guyton-Klinger "guardrails," or simply cutting spending in bad years) often outperforms the fixed 4% rule for both safety and total spending.
+        </p>
+        <p>
+            Also: 30 years. If you retire at 55 and might live to 95, you need 40 years of withdrawals, and 4% starts to look generous. If you retire at 70, 3.5%/25-year math is more forgiving than 4%/30.
+        </p>
+
+        <h2>How to use this calculator</h2>
+        <p>
+            Start with the defaults ($1M, 4%, 5% real, 30 years). That's the baseline case that inspired the whole rule. Then stress-test: drop the real return to 3% (what some researchers think the next 30 years look like). Raise the withdrawal rate to 5% or 6%. Shorten the horizon to 20 years or extend to 40. The model runs deterministically &mdash; it doesn't simulate sequence-of-returns risk, which is the single biggest threat to early retirees. A Monte Carlo simulation would tell a richer story; that's what an advisor's planning software does.
+        </p>
+    </div>
+
+    <aside class="calc-cta">
+        <span class="eyebrow">Not just numbers</span>
+        <h3>Ready to stress-test this against real markets?</h3>
+        <p>These are estimates. A fiduciary advisor can model this against your actual tax situation, Social Security timing, and risk tolerance &mdash; things a single-input calculator can't capture.</p>
+        <a class="btn btn--primary" href="/specialty/retirement-planning.html">Find a retirement specialist &rarr;</a>
+    </aside>
+
+    <nav class="calc-also" aria-label="Other calculators">
+        <h3>Other calculators</h3>
+        <div class="chips">
+            {% for c in all_calculators if c.slug != calculator.slug %}
+            <a href="/calculator/{{ c.slug }}.html">{{ c.short }}</a>
+            {% endfor %}
+            <a href="/calculators.html" style="border-color: var(--accent); color: var(--accent);">See all &rarr;</a>
+        </div>
+    </nav>
+
+    <div class="disclaimer-box" style="margin-top: 40px;">
+        <strong>Disclaimer</strong> Results are estimates based on a constant-rate-of-return assumption that does not model market volatility or sequence-of-returns risk. Real retirement planning uses Monte Carlo simulation and dynamic spending rules, which can materially change the conclusions. Nothing here constitutes financial advice. Consult a qualified advisor before making retirement-spending decisions.
+    </div>
+</div>
+
+<script>
+(function () {
+    const fmtMoney = (n) => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(Math.round(n));
+
+    const $ = (id) => document.getElementById(id);
+    const balEl = $('sw-balance');
+    const rateEl = $('sw-rate');
+    const returnEl = $('sw-return');
+    const yearsEl = $('sw-years');
+
+    function simulate(startBal, annualWithdrawal, years, realReturn) {
+        const r = realReturn / 100;
+        let bal = startBal;
+        const points = [{ year: 0, balance: bal }];
+        let depletionYear = null;
+        for (let y = 1; y <= Math.max(years, 50); y++) {
+            bal = bal * (1 + r) - annualWithdrawal;
+            if (bal <= 0 && !depletionYear) {
+                depletionYear = y;
+                bal = 0;
+            }
+            points.push({ year: y, balance: Math.max(0, bal) });
+            if (y >= years && depletionYear) break;
+            if (y >= years) break;
+        }
+        return { points, depletionYear, endingBalance: points[Math.min(years, points.length - 1)].balance };
+    }
+
+    function renderChart(points, svgEl, horizon) {
+        const W = 400, H = 160, PAD_L = 56, PAD_R = 10, PAD_T = 8, PAD_B = 22;
+        const maxX = Math.max(horizon, points[points.length - 1].year);
+        const maxY = Math.max(...points.map(p => p.balance), 1) * 1.05;
+
+        const xScale = (year) => PAD_L + (year / maxX) * (W - PAD_L - PAD_R);
+        const yScale = (v) => PAD_T + (1 - v / maxY) * (H - PAD_T - PAD_B);
+
+        const linePath = points.map((p, i) => `${i === 0 ? 'M' : 'L'}${xScale(p.year).toFixed(1)},${yScale(p.balance).toFixed(1)}`).join(' ');
+        const baselineY = yScale(0);
+        const areaPath = linePath + ` L${xScale(points[points.length - 1].year).toFixed(1)},${baselineY.toFixed(1)} L${xScale(0).toFixed(1)},${baselineY.toFixed(1)} Z`;
+
+        const yTicks = 4;
+        const gridlines = Array.from({ length: yTicks + 1 }, (_, i) => {
+            const y = PAD_T + (i / yTicks) * (H - PAD_T - PAD_B);
+            return `<line class="chart-gridline" x1="${PAD_L}" y1="${y}" x2="${W - PAD_R}" y2="${y}"/>`;
+        }).join('');
+
+        const yLabels = Array.from({ length: yTicks + 1 }, (_, i) => {
+            const v = maxY - (i / yTicks) * maxY;
+            const y = PAD_T + (i / yTicks) * (H - PAD_T - PAD_B);
+            const label = v >= 1e6 ? `$${(v/1e6).toFixed(1)}M` : v >= 1e3 ? `$${(v/1e3).toFixed(0)}K` : `$${v.toFixed(0)}`;
+            return `<text class="axis-text" x="${PAD_L - 6}" y="${y + 3}" text-anchor="end">${label}</text>`;
+        }).join('');
+
+        const xLabels = `
+            <text class="axis-text" x="${xScale(0)}" y="${H - 6}" text-anchor="start">yr 0</text>
+            <text class="axis-text" x="${xScale(maxX)}" y="${H - 6}" text-anchor="end">yr ${maxX}</text>
+        `;
+
+        // Horizon marker (dashed line at user's retirement horizon if chart extends beyond)
+        let horizonLine = '';
+        if (horizon < maxX) {
+            const x = xScale(horizon);
+            horizonLine = `<line x1="${x}" y1="${PAD_T}" x2="${x}" y2="${H - PAD_B}" stroke="var(--gold)" stroke-width="1" stroke-dasharray="3 3"/>
+                <text class="axis-text" x="${x + 4}" y="${PAD_T + 10}" text-anchor="start" fill="var(--gold)">horizon</text>`;
+        }
+
+        const endpoint = points[Math.min(horizon, points.length - 1)];
+        const ep = endpoint ? `<circle class="chart-endpoint" cx="${xScale(endpoint.year)}" cy="${yScale(endpoint.balance)}" r="3"/>` : '';
+
+        svgEl.innerHTML = gridlines + yLabels + xLabels + `<path class="chart-area" d="${areaPath}"/>` + `<path class="chart-line" d="${linePath}"/>` + horizonLine + ep;
+    }
+
+    function recalc() {
+        const bal = Math.max(0, parseFloat(balEl.value) || 0);
+        const rate = Math.max(0, parseFloat(rateEl.value) || 0);
+        const ret = parseFloat(returnEl.value) || 0;
+        const years = Math.max(1, parseInt(yearsEl.value) || 30);
+
+        const annual = bal * (rate / 100);
+        const monthly = annual / 12;
+        const { points, depletionYear, endingBalance } = simulate(bal, annual, years, ret);
+
+        $('sw-annual').textContent = fmtMoney(annual);
+        $('sw-monthly').textContent = fmtMoney(monthly);
+
+        const figEl = $('sw-annual');
+        figEl.classList.remove('is-gain', 'is-loss');
+
+        const endEl = $('sw-ending');
+        const durEl = $('sw-duration');
+        const subEl = $('sw-sub');
+
+        if (depletionYear && depletionYear <= years) {
+            endEl.textContent = '$0';
+            endEl.classList.add('is-loss');
+            endEl.classList.remove('is-gain');
+            durEl.textContent = depletionYear + ' yrs';
+            durEl.classList.add('is-loss');
+            durEl.classList.remove('is-gain');
+            figEl.classList.add('is-loss');
+            subEl.innerHTML = `At this rate and return, your portfolio would be depleted in <strong>year ${depletionYear}</strong> &mdash; before the end of your ${years}-year horizon.`;
+        } else {
+            endEl.textContent = fmtMoney(endingBalance);
+            endEl.classList.toggle('is-gain', endingBalance >= bal);
+            endEl.classList.remove('is-loss');
+            durEl.textContent = 'beyond horizon';
+            durEl.classList.remove('is-loss', 'is-gain');
+            figEl.classList.add('is-gain');
+            if (endingBalance >= bal) {
+                subEl.innerHTML = `At ${rate.toFixed(1)}% withdrawal and ${ret.toFixed(1)}% real return, your portfolio would <strong>grow</strong> over the ${years}-year horizon to ${fmtMoney(endingBalance)}.`;
+            } else {
+                subEl.innerHTML = `Your portfolio would last the full ${years}-year horizon and end at <strong>${fmtMoney(endingBalance)}</strong>.`;
+            }
+        }
+
+        renderChart(points, $('sw-chart'), years);
+    }
+
+    [balEl, rateEl, returnEl, yearsEl].forEach(el => {
+        el.addEventListener('input', recalc);
+        el.addEventListener('change', recalc);
+    });
+    recalc();
+})();
+</script>
+
+{% endblock %}

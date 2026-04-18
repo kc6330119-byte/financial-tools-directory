@@ -6,6 +6,38 @@ This file is the "release notes" view of the redesign. For the terse one-line-pe
 
 ---
 
+## Milestone 8 — Three more calculators: Social Security, RMD, Safe Withdrawal (2026-04-18)
+
+**Branch:** `redesign/calculators-m8`
+**Commits:** single scoped commit (config + three templates + changelog)
+**Calculators shipped:** Social Security Claim Age, Required Minimum Distribution, Safe Withdrawal Rate (4% Rule)
+**Completes:** the calculator suite started in Milestone 7. Six total.
+
+### What changed
+
+- **`/calculator/social-security.html`** — claim-age comparison between 62, FRA (67), and 70. Uses the post-1960 birth cohort benefit-adjustment factors (0.70 / 1.00 / 1.24 at the three benchmark ages, interpolated in between). Results show monthly benefit at the chosen age, all three benchmark ages side-by-side, and a three-line chart of cumulative lifetime benefit that visually surfaces the break-even points (typically ~78 for 62-vs-FRA, ~83 for FRA-vs-70). CTA goes directly to the specialty/social-security page instead of the generic homepage, since this calculator converts specifically.
+- **`/calculator/rmd.html`** — Required Minimum Distribution using the IRS Uniform Lifetime Table (ages 73–110 embedded inline). Shows current-year RMD, distribution-period factor, monthly equivalent, percentage of balance. Multi-year chart projects RMDs through age 95 given an assumed return, so the user can see how the percentage climbs each year as the table factor shrinks. Editorial explains the 25% SECURE 2.0 penalty and the qualified-charitable-distribution workaround — both commonly under-used by retirees.
+- **`/calculator/safe-withdrawal.html`** — classic 4% rule (Bengen 1994) with adjustable withdrawal rate, real return, and horizon. Simulates year-by-year balance, reports whether the portfolio survives the horizon, and if not, in what year it depletes. Gold dashed horizon line on the chart. Gain-tinted when surplus, loss-tinted when depleted. CTA goes to the retirement-planning specialty page.
+- **Multi-line chart helper** added inline on the Social Security calculator — extends the existing single-line SVG pattern to render three stroked paths with a color legend. Reusable pattern for any future multi-scenario comparison (Roth conversion breakeven, pension-vs-lump-sum, etc.).
+- **Hub** (`/calculators.html`) now displays all 6 calculators in its grid. Sitemap updated automatically (calculator URLs are emitted from `config.CALCULATORS`).
+
+### Why it helps
+
+- **Highest-intent calculator in the set.** "Social Security calculator" and "when should I claim Social Security" are enormous-volume queries from an audience with specific buying intent (pre-retirement, affluent enough to care, often in the window where an advisor fee pays for itself). The calculator directly demonstrates the value of the Social Security specialist page we already maintain.
+- **RMD is the most niche but most lucrative.** Anyone searching "RMD calculator" is 72+ and has real money in tax-deferred accounts. The conversion-to-advisor rate on that audience is meaningfully higher than general retirement traffic.
+- **4% Rule rounds out the distribution-phase suite.** Together with Social Security (income) and RMD (forced distributions), retirees now have three connected tools on the site covering the three main moving parts of retirement income.
+- **Editorial depth matters more here than on the accumulation calculators.** Distribution-phase planning is where people actually get hurt by bad advice (sequence-of-returns risk, forced selling in drawdowns, missed RMDs). Each calculator's explain section acknowledges what the math can't capture and points to the specialists — strong YMYL signal.
+- **Reuses everything from Milestone 7.** CSS components, SVG chart helpers, form controls, page layout, disclaimer box, CTA pattern, "other calculators" chip row. ~60% less code per calculator than M7 took.
+
+### Known gaps
+
+- Social Security calc assumes FRA = 67. For anyone born before 1960 (roughly 65+ today), FRA is younger (65 to 66-and-10-months); the benefit-factor lookup needs adjustment. Most near-term users will be post-1960 so the current simplification is fine, but a birth-year selector would make the tool bulletproof.
+- RMD table is for single owners whose spouse is not more than 10 years younger. The Joint Life and Last Survivor Expectancy Table isn't modeled. Disclaimer box calls this out.
+- Safe Withdrawal uses constant-rate arithmetic, not Monte Carlo. A real retirement plan uses 10,000+ simulations with varying return sequences; that's beyond what vanilla JS should attempt in a browser. Disclaimer notes this.
+- None of the three calculators model taxes directly. Taxable vs. Roth vs. traditional withdrawal ordering dramatically affects real outcomes; it'd need a much more sophisticated UI. Out of scope for v1.
+
+---
+
 ## Milestone 7 — Calculator suite foundation + first 3 calculators (2026-04-18)
 
 **Branch:** `redesign/calculators-m7`
