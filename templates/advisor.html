@@ -73,6 +73,15 @@
             {% if advisor.website_url %}
             <a class="btn btn--ghost" href="{{ advisor.website_url }}" rel="noopener" target="_blank">Visit website &rarr;</a>
             {% endif %}
+            <button type="button"
+                    class="btn btn--ghost compare-toggle compare-toggle--detail js-compare-toggle"
+                    data-slug="{{ advisor.slug }}"
+                    data-name="{{ advisor.name }}"
+                    aria-pressed="false">
+                <span class="sign" aria-hidden="true"></span>
+                <span class="label-add">Add to compare</span>
+                <span class="label-remove">In compare</span>
+            </button>
         </div>
     </div>
 </header>

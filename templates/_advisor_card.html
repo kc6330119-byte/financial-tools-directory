@@ -1,51 +1,63 @@
-<a class="advisor-row" href="/advisor/{{ advisor.slug }}.html">
-    <div class="row-top">
-        <h3 class="firm-name">{{ advisor.name }}</h3>
-        <div class="row-right">
-            {% if advisor.fiduciary %}
-            <span class="fiduciary-mark">Fiduciary</span>
+<article class="advisor-row">
+    <a class="advisor-row-link" href="/advisor/{{ advisor.slug }}.html">
+        <div class="row-top">
+            <h3 class="firm-name">{{ advisor.name }}</h3>
+            <div class="row-right">
+                {% if advisor.fiduciary %}
+                <span class="fiduciary-mark">Fiduciary</span>
+                {% endif %}
+                {% if advisor.rating %}
+                <span>
+                    <span class="star">&#9733;</span><span class="rating-num">{{ "%.1f"|format(advisor.rating) }}</span>{% if advisor.review_count %}<span class="rating-count">({{ advisor.review_count }})</span>{% endif %}
+                </span>
+                {% endif %}
+            </div>
+        </div>
+
+        <p class="location">{{ advisor.city }}{% if advisor.state %}, {{ advisor.state }}{% endif %}</p>
+
+        {% if advisor.credentials %}
+        <div class="chips">
+            {% for cred in advisor.credentials[:4] %}
+            <span class="chip">{{ cred }}</span>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <p class="stats-line">
+            {% if advisor.fee_structure %}
+                {% if advisor.fee_structure is string %}<span>{{ advisor.fee_structure }}</span>
+                {% else %}<span>{{ advisor.fee_structure | join(' + ') }}</span>{% endif %}
             {% endif %}
-            {% if advisor.rating %}
-            <span>
-                <span class="star">&#9733;</span><span class="rating-num">{{ "%.1f"|format(advisor.rating) }}</span>{% if advisor.review_count %}<span class="rating-count">({{ advisor.review_count }})</span>{% endif %}
-            </span>
+            {% if advisor.minimum_investment %}<span>Min {{ advisor.minimum_investment }}</span>{% endif %}
+            {% if advisor.firm_type %}<span>{{ advisor.firm_type }}</span>{% endif %}
+        </p>
+
+        {% if advisor.specialties %}
+        <div class="chips">
+            {% for spec in advisor.specialties[:3] %}
+            <span class="chip chip--specialty">{{ spec }}</span>
+            {% endfor %}
+            {% if advisor.specialties|length > 3 %}
+            <span class="chip chip--specialty">+{{ advisor.specialties|length - 3 }}</span>
             {% endif %}
         </div>
-    </div>
-
-    <p class="location">{{ advisor.city }}{% if advisor.state %}, {{ advisor.state }}{% endif %}</p>
-
-    {% if advisor.credentials %}
-    <div class="chips">
-        {% for cred in advisor.credentials[:4] %}
-        <span class="chip">{{ cred }}</span>
-        {% endfor %}
-    </div>
-    {% endif %}
-
-    <p class="stats-line">
-        {% if advisor.fee_structure %}
-            {% if advisor.fee_structure is string %}<span>{{ advisor.fee_structure }}</span>
-            {% else %}<span>{{ advisor.fee_structure | join(' + ') }}</span>{% endif %}
         {% endif %}
-        {% if advisor.minimum_investment %}<span>Min {{ advisor.minimum_investment }}</span>{% endif %}
-        {% if advisor.firm_type %}<span>{{ advisor.firm_type }}</span>{% endif %}
-    </p>
 
-    {% if advisor.specialties %}
-    <div class="chips">
-        {% for spec in advisor.specialties[:3] %}
-        <span class="chip chip--specialty">{{ spec }}</span>
-        {% endfor %}
-        {% if advisor.specialties|length > 3 %}
-        <span class="chip chip--specialty">+{{ advisor.specialties|length - 3 }}</span>
+        {% if advisor.description %}
+        <p class="desc">{{ advisor.description }}</p>
         {% endif %}
-    </div>
-    {% endif %}
 
-    {% if advisor.description %}
-    <p class="desc">{{ advisor.description }}</p>
-    {% endif %}
-
-    <span class="view-link">View details</span>
-</a>
+        <span class="view-link">View details</span>
+    </a>
+    <button type="button"
+            class="compare-toggle js-compare-toggle"
+            data-slug="{{ advisor.slug }}"
+            data-name="{{ advisor.name }}"
+            aria-pressed="false"
+            aria-label="Add {{ advisor.name }} to compare">
+        <span class="sign" aria-hidden="true"></span>
+        <span class="label-add">Compare</span>
+        <span class="label-remove">Added</span>
+    </button>
+</article>

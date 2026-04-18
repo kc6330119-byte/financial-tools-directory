@@ -276,6 +276,21 @@
         {% block content %}{% endblock %}
     </main>
 
+    <!-- Sticky compare bar (site-wide; hidden until ≥1 advisor selected) -->
+    <div class="compare-bar" id="compare-bar" role="region" aria-label="Advisor compare tray">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 compare-bar-inner">
+            <div class="compare-bar-left">
+                <span class="compare-count" id="compare-count">0</span>
+                <span>selected</span>
+                <span class="compare-chips" id="compare-chips"></span>
+            </div>
+            <div class="compare-bar-actions">
+                <button type="button" class="compare-clear" id="compare-clear">Clear</button>
+                <a class="btn btn--primary" id="compare-go" href="/compare.html">Compare &rarr;</a>
+            </div>
+        </div>
+    </div>
+
     <!-- Newsletter Signup -->
     <section class="bg-primary-600 text-white py-10">
         <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
@@ -469,6 +484,133 @@
         document.addEventListener('keydown', function(e) {
             if (e.key === 'Escape') searchBox.classList.add('hidden');
         });
+
+        /* ------------------------------------------------------------------
+           Advisor Compare — localStorage-backed list, sticky bar, toggles
+           ------------------------------------------------------------------ */
+        (function () {
+            var KEY = 'smart-investor-compare';
+            var MAX = 3;
+
+            function readList() {
+                try {
+                    var raw = localStorage.getItem(KEY);
+                    if (!raw) return [];
+                    var list = JSON.parse(raw);
+                    return Array.isArray(list) ? list.filter(function (x) {
+                        return x && typeof x.slug === 'string';
+                    }).slice(0, MAX) : [];
+                } catch (_) { return []; }
+            }
+
+            function writeList(list) {
+                try { localStorage.setItem(KEY, JSON.stringify(list.slice(0, MAX))); } catch (_) {}
+            }
+
+            function has(list, slug) {
+                return list.some(function (a) { return a.slug === slug; });
+            }
+
+            function add(list, slug, name) {
+                if (has(list, slug) || list.length >= MAX) return list;
+                list.push({ slug: slug, name: name });
+                writeList(list);
+                return list;
+            }
+
+            function remove(list, slug) {
+                var next = list.filter(function (a) { return a.slug !== slug; });
+                writeList(next);
+                return next;
+            }
+
+            function refreshBar() {
+                var bar = document.getElementById('compare-bar');
+                if (!bar) return;
+                var list = readList();
+                var count = document.getElementById('compare-count');
+                var chips = document.getElementById('compare-chips');
+                var go = document.getElementById('compare-go');
+                if (count) count.textContent = list.length;
+                if (chips) {
+                    chips.innerHTML = list.map(function (a) {
+                        return '<span class="compare-chip">' +
+                            a.name.replace(/[<>&"]/g, function (c) {
+                                return { '<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;' }[c];
+                            }) +
+                            ' <button type="button" data-slug="' + a.slug + '" aria-label="Remove ' + a.slug + ' from compare">&times;</button></span>';
+                    }).join('');
+                }
+                if (go) {
+                    go.href = '/compare.html' + (list.length ? '?advisors=' + list.map(function (a) { return encodeURIComponent(a.slug); }).join(',') : '');
+                }
+                bar.classList.toggle('is-open', list.length > 0);
+            }
+
+            function refreshToggles() {
+                var list = readList();
+                var full = list.length >= MAX;
+                var slugs = list.map(function (a) { return a.slug; });
+                document.querySelectorAll('.js-compare-toggle').forEach(function (btn) {
+                    var slug = btn.getAttribute('data-slug');
+                    var pressed = slugs.indexOf(slug) !== -1;
+                    btn.setAttribute('aria-pressed', pressed ? 'true' : 'false');
+                    btn.disabled = !pressed && full;
+                });
+            }
+
+            // Toggle clicks
+            document.addEventListener('click', function (e) {
+                var btn = e.target.closest('.js-compare-toggle');
+                if (btn) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    if (btn.disabled) return;
+                    var slug = btn.getAttribute('data-slug');
+                    var name = btn.getAttribute('data-name') || slug;
+                    var list = readList();
+                    if (has(list, slug)) {
+                        list = remove(list, slug);
+                    } else {
+                        list = add(list, slug, name);
+                    }
+                    refreshBar();
+                    refreshToggles();
+                    return;
+                }
+                // Chip remove inside compare bar
+                var chipBtn = e.target.closest('.compare-chip button');
+                if (chipBtn) {
+                    var chipSlug = chipBtn.getAttribute('data-slug');
+                    remove(readList(), chipSlug);
+                    refreshBar();
+                    refreshToggles();
+                    return;
+                }
+            });
+
+            var clear = document.getElementById('compare-clear');
+            if (clear) {
+                clear.addEventListener('click', function () {
+                    writeList([]);
+                    refreshBar();
+                    refreshToggles();
+                });
+            }
+
+            // Cross-tab sync
+            window.addEventListener('storage', function (e) {
+                if (e.key === KEY) { refreshBar(); refreshToggles(); }
+            });
+
+            document.addEventListener('DOMContentLoaded', function () {
+                refreshBar();
+                refreshToggles();
+            });
+            // Also run immediately in case DOMContentLoaded already fired
+            refreshBar();
+            refreshToggles();
+        })();
     </script>
 </body>
 </html>
