@@ -1,4 +1,0 @@
-User-agent: *
-Allow: /
-
-Sitemap: https://smart-investor-financial-tools.com/sitemap.xml
