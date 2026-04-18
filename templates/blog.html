@@ -2,112 +2,105 @@
 
 {% block content %}
 
-<!-- Hero -->
-<section class="bg-gradient-to-br from-blue-600 to-blue-700 text-white py-12">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h1 class="text-3xl md:text-4xl font-bold mb-3">Resources &amp; Guides</h1>
-        <p class="text-blue-100 text-lg max-w-2xl">
-            Helpful information for investors navigating financial planning, portfolio management, and advisor selection.
-        </p>
+<nav class="breadcrumb" aria-label="Breadcrumb">
+    <div class="wrap">
+        <ol>
+            <li><a href="/">Home</a></li>
+            <li aria-current="page">Guides</li>
+        </ol>
     </div>
-</section>
+</nav>
 
-<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+<header class="page-head">
+    <div class="wrap">
+        <div class="eyebrow">Research &amp; guides</div>
+        <h1>Plain-English writing on advisor selection, fees, and planning</h1>
+        <p class="lede">
+            We publish short, opinionated guides on what to ask, what to avoid, and how to read fee disclosures without a finance degree. No affiliate placements, no AI-generated summaries of whitepapers — just what we've learned helping people find advisors.
+        </p>
+        <div class="page-head-meta">
+            <span><strong>{{ posts|length }}</strong> article{{ 's' if posts|length != 1 else '' }}</span>
+        </div>
+    </div>
+</header>
+
+<div class="wrap">
     {% if posts %}
 
-    <!-- Category Filters -->
-    <div class="flex flex-wrap gap-2 mb-8">
-        <button class="filter-btn px-4 py-2 rounded-full text-sm font-medium bg-blue-600 text-white transition-colors"
-                data-category="all">
-            All
-        </button>
-        {% set categories_seen = [] %}
-        {% for post in posts %}
-        {% if post.category and post.category not in categories_seen %}
-        {% if categories_seen.append(post.category) %}{% endif %}
-        <button class="filter-btn px-4 py-2 rounded-full text-sm font-medium bg-gray-100 text-gray-700 hover:bg-blue-50 hover:text-blue-700 transition-colors"
-                data-category="{{ post.category | lower | replace(' ', '-') }}">
-            {{ post.category }}
-        </button>
+    {# Collect categories present in the posts, preserving order of first appearance #}
+    {% set seen_cats = [] %}
+    {% for post in posts %}
+        {% if post.category and post.category not in seen_cats %}
+            {% if seen_cats.append(post.category) %}{% endif %}
         {% endif %}
+    {% endfor %}
+
+    <div class="filter-pills" role="tablist" aria-label="Filter articles by category">
+        <button class="filter-pill" data-category="all" aria-pressed="true">All <span class="count">{{ posts|length }}</span></button>
+        {% for cat in seen_cats %}
+        {% set cat_slug = cat | lower | replace(' ', '-') %}
+        {% set cat_count = posts | selectattr('category', 'equalto', cat) | list | length %}
+        <button class="filter-pill" data-category="{{ cat_slug }}" aria-pressed="false">{{ cat }} <span class="count">{{ cat_count }}</span></button>
         {% endfor %}
     </div>
 
-    <!-- Post Count -->
-    <p class="text-sm text-gray-500 mb-6" id="post-count">{{ posts|length }} articles</p>
+    <p style="font-family: var(--font-mono); font-size: 0.74rem; color: var(--text-faint); letter-spacing: 0.08em; text-transform: uppercase; margin: 24px 0 8px;" id="post-count">
+        Showing <strong style="color: var(--text);">{{ posts|length }}</strong> of {{ posts|length }} articles
+    </p>
 
-    <!-- Posts Grid -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" id="posts-grid">
+    <ol class="post-index" id="posts-grid">
         {% for post in posts %}
-        <a href="/blog/{{ post.slug }}.html"
-           class="post-card bg-white rounded-xl border border-gray-100 overflow-hidden hover:shadow-lg transition-shadow flex flex-col group"
-           data-category="{{ post.category | lower | replace(' ', '-') }}">
-            <!-- Featured Image -->
-            <div class="h-48 bg-blue-50 overflow-hidden flex-shrink-0">
-                {% if post.featured_image %}
-                <img src="{{ post.featured_image }}" alt="{{ post.title }}"
-                     class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                     loading="lazy" referrerpolicy="no-referrer"
-                     onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                <div style="display:none" class="w-full h-full flex items-center justify-center bg-gradient-to-br from-blue-100 to-teal-100">
-                    <span class="text-4xl opacity-30">&#128200;</span>
+        {% set wc = (post.content or '') | striptags | wordcount %}
+        {% set reading_time = (wc // 225) + 1 if wc else 1 %}
+        {% set cat_slug = (post.category or '') | lower | replace(' ', '-') %}
+        <li class="post-index-item post-card" data-category="{{ cat_slug }}">
+            <a class="post-index-link" href="/blog/{{ post.slug }}.html">
+                <div class="post-index-meta">
+                    {% if post.category %}<span class="category">{{ post.category }}</span>{% endif %}
+                    <span class="read-time">{{ reading_time }} min read</span>
+                    {% if post.publish_date %}<span class="date">{{ post.publish_date | format_date }}</span>{% endif %}
                 </div>
-                {% else %}
-                <div class="w-full h-full flex items-center justify-center bg-gradient-to-br from-blue-100 to-teal-100">
-                    <span class="text-4xl opacity-30">&#128200;</span>
-                </div>
-                {% endif %}
-            </div>
-
-            <!-- Content -->
-            <div class="p-5 flex flex-col flex-grow">
-                {% if post.category %}
-                <span class="text-xs font-semibold text-blue-600 uppercase tracking-wider mb-2">{{ post.category }}</span>
-                {% endif %}
-
-                <h2 class="text-lg font-bold text-gray-900 group-hover:text-blue-600 leading-snug mb-2 transition-colors">
-                    {{ post.title }}
-                </h2>
-
-                {% if post.excerpt %}
-                <p class="text-sm text-gray-500 leading-relaxed mb-4 line-clamp-3 flex-grow">{{ post.excerpt }}</p>
-                {% endif %}
-
-                <div class="flex items-center justify-between text-xs text-gray-400 mt-auto pt-4 border-t border-gray-100">
-                    {% if post.publish_date %}
-                    <span>{{ post.publish_date | format_date }}</span>
+                <div>
+                    <h2 class="post-index-title">{{ post.title }}</h2>
+                    {% if post.excerpt %}
+                    <p class="post-index-excerpt">{{ post.excerpt }}</p>
                     {% endif %}
-                    {% if post.author %}
-                    <span>{{ post.author }}</span>
-                    {% endif %}
+                    <div class="post-index-foot">
+                        {% if post.author %}<span class="author">By {{ post.author }}</span>{% endif %}
+                        <span class="read-link">Read</span>
+                    </div>
                 </div>
-            </div>
-        </a>
+            </a>
+        </li>
         {% endfor %}
-    </div>
+    </ol>
+
     {% else %}
-    <!-- Empty state -->
-    <div class="text-center py-16">
-        <div class="text-5xl mb-4 opacity-30">&#128221;</div>
-        <h2 class="text-xl font-semibold text-gray-900 mb-2">Coming Soon</h2>
-        <p class="text-gray-500 mb-6">We're working on helpful resources and guides for investors. Check back soon!</p>
-        <a href="/" class="inline-block px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors">
-            Browse Advisors
-        </a>
+
+    <div style="padding: 80px 0;">
+        <div class="empty-state">
+            <h2>Guides are on the way</h2>
+            <p>We're writing original guides on advisor selection, fee structures, Social Security optimization, and portfolio construction. Check back — or subscribe to get them in your inbox.</p>
+            <div class="actions">
+                <a class="btn btn--primary" href="/">Browse advisors</a>
+            </div>
+        </div>
     </div>
+
     {% endif %}
 </div>
 
 {% if posts %}
 <script>
-(function() {
-    var buttons = document.querySelectorAll('.filter-btn');
+(function () {
+    var buttons = document.querySelectorAll('.filter-pill');
     var cards = document.querySelectorAll('.post-card');
     var countEl = document.getElementById('post-count');
+    var total = cards.length;
 
-    function filterByCategory(category) {
+    function applyFilter(category) {
         var visible = 0;
-        cards.forEach(function(card) {
+        cards.forEach(function (card) {
             if (category === 'all' || card.getAttribute('data-category') === category) {
                 card.style.display = '';
                 visible++;
@@ -115,30 +108,25 @@
                 card.style.display = 'none';
             }
         });
-        countEl.textContent = visible + ' article' + (visible !== 1 ? 's' : '');
-
-        buttons.forEach(function(btn) {
-            if (btn.getAttribute('data-category') === category) {
-                btn.className = 'filter-btn px-4 py-2 rounded-full text-sm font-medium bg-blue-600 text-white transition-colors';
-            } else {
-                btn.className = 'filter-btn px-4 py-2 rounded-full text-sm font-medium bg-gray-100 text-gray-700 hover:bg-blue-50 hover:text-blue-700 transition-colors';
-            }
+        if (countEl) {
+            countEl.innerHTML = 'Showing <strong style="color: var(--text);">' + visible + '</strong> of ' + total + ' articles';
+        }
+        buttons.forEach(function (btn) {
+            btn.setAttribute('aria-pressed', btn.getAttribute('data-category') === category ? 'true' : 'false');
         });
     }
 
-    buttons.forEach(function(btn) {
-        btn.addEventListener('click', function() {
-            filterByCategory(this.getAttribute('data-category'));
+    buttons.forEach(function (btn) {
+        btn.addEventListener('click', function () {
+            applyFilter(this.getAttribute('data-category'));
         });
     });
 
-    // Check for hash on page load (from homepage category cards)
+    // Deep-link support from homepage category chips
     var hash = window.location.hash.replace('#', '');
     if (hash) {
-        var matchBtn = document.querySelector('.filter-btn[data-category="' + hash + '"]');
-        if (matchBtn) {
-            filterByCategory(hash);
-        }
+        var matchBtn = document.querySelector('.filter-pill[data-category="' + hash + '"]');
+        if (matchBtn) applyFilter(hash);
     }
 })();
 </script>
