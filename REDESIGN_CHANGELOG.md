@@ -6,6 +6,37 @@ This file is the "release notes" view of the redesign. For the terse one-line-pe
 
 ---
 
+## Milestone 5 — Tools hub, category, tool detail (2026-04-18)
+
+**Branch:** `redesign/tools`
+**Commits:** (two scoped commits — see git log)
+**Templates rewritten:** `tools.html`, `category.html`, `tool.html`
+**CSS:** new `.tool-list`, `.tool-card`, `.category-section`, `.tool-head`, `.feature-list`, `.audience-chips`, `.tool-cta`, `.related-tools` blocks
+
+### What changed
+
+- **Tools hub (`/tools.html`)** replaces its blue-gradient hero with an editorial page head and editorial-voice positioning copy ("A reference library of tools we've used and reviewed"). Each `config.CATEGORIES` entry renders as a category section with a tokenized header row (name · description · count · "View all →") and a stacked list of `.tool-card` rows for that category.
+- **Category listing (`/category/*.html`)** uses the same `.tool-card` row pattern, surfaces the category description from `config.CATEGORIES` as the page-head lede, and closes with a reusable `.specialty-chip-row` pointing to every other category.
+- **Tool detail (`/tool/*.html`)** now opens with a `.tool-head` block — big logo + Fraunces name + mono-caps meta line (rating · pricing model · price range · featured pill if applicable) + tokenized category tags + a primary "Visit vendor" button. Body runs in the shared `.content-grid content-grid--right` layout with detail-cards for About, Features (clean typographic checklist), and "Best for" (audience chip row). Sticky right sidebar holds a spec-sheet `<dl>` (pricing, price range, API, Mobile, data sources with `.is-gain` tokens on the Yes values) and a gradient-accent `.tool-cta` card.
+- **Each `.tool-card` row includes `.bool-chip` pills** for API availability and Mobile app, rendered in `--gain`-tinted mono-caps when true. At-a-glance comparison of booleans without fake stars or icons.
+- **AdSense slot placements preserved.** tools.html has two slots (`tools-hub-a` above content, `tools-hub-b` below). category.html has one (`category-a`). tool.html has three (`tool-detail-a` above body, `tool-detail-sidebar` inside the aside, `tool-detail-b` before related). All CLS-safe with `.ad-slot--leaderboard` (min-height 100) or `.ad-slot--in-content` (min-height 250). `data-slot` attributes name each position so Kevin can populate with unique AdSense slot IDs after resubmission approval.
+- **Related tools** render as a horizontal 4-column card row at desktop, stacking to 1 col on mobile. Shares DNA with the blog's `.related-post` pattern.
+
+### Why it helps
+
+- **Preserves the site's unique differentiator.** Every other advisor directory is just advisors. The Tools section is what makes smart-investor stand out; now it looks like a proper finance-native product directory instead of generic SaaS pricing-comparison boilerplate.
+- **Comparison-ready design.** The API / Mobile boolean chips and sidebar spec-sheet make side-by-side comparison easy even without visiting multiple detail pages. Consistent with the finance-native "show me the data" posture.
+- **Category-tag navigation.** Tools are often multi-category (TradingView: Technical Analysis + Trading Platforms). Clicking any tag jumps to the relevant category page — better browse than "one category per tool" would allow.
+- **Ad placements now visually consistent** across homepage, directory, tools — same CLS-safe reserved space with a subtle "Advertisement" placeholder, so whatever AdSense decides to serve post-approval will land predictably.
+- **Tools section inherits the BrokerCheck / fee-disclosure editorial voice** from the advisor directory, so the whole site reads as one product rather than two.
+
+### Known gaps
+
+- Empty `related_tools` is common in the current sample data because the three seed tools are each in mutually-disjoint categories. Once Airtable has the full 34 tools, the "related tools" row will populate properly.
+- The `.tool-cta` gradient block uses the accent as its background. On dark theme, gold-on-near-black is legible but the accent-ink contrast is intentional; evaluate in production and retune if needed.
+
+---
+
 ## Milestone 4 — Blog templates + prose tokenization (2026-04-18)
 
 **Branch:** `redesign/blog`

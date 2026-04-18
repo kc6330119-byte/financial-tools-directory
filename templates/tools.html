@@ -2,105 +2,105 @@
 
 {% block content %}
 
-<!-- Breadcrumbs -->
-<nav class="bg-white border-b border-gray-100">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
-        <ol class="flex items-center text-sm text-gray-500">
-            <li><a href="/" class="hover:text-blue-600">Home</a></li>
-            <li class="mx-2">/</li>
-            <li class="text-gray-900 font-medium">Investor Tools</li>
+<nav class="breadcrumb" aria-label="Breadcrumb">
+    <div class="wrap">
+        <ol>
+            <li><a href="/">Home</a></li>
+            <li aria-current="page">Tools</li>
         </ol>
     </div>
 </nav>
 
-<!-- Hero -->
-<section class="bg-gradient-to-r from-blue-600 to-blue-800 text-white py-12">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h1 class="text-3xl md:text-4xl font-bold mb-3">Investor Tools</h1>
-        <p class="text-blue-100 text-lg max-w-2xl">
-            Explore our curated collection of free and premium financial tools &mdash; from stock screeners and portfolio trackers to tax calculators and retirement planners.
+<header class="page-head">
+    <div class="wrap">
+        <div class="eyebrow">Investor tools</div>
+        <h1>A reference library of tools we've used and reviewed</h1>
+        <p class="lede">
+            Stock screeners, portfolio trackers, research platforms, charting tools. Free and paid. Honest ratings &mdash; we don't accept payment for placement, and we flag the ones we personally wouldn't use.
         </p>
-        <p class="mt-4 text-blue-200 text-sm">{{ tools|length }} tool{{ 's' if tools|length != 1 else '' }} available</p>
+        <div class="page-head-meta">
+            <span><strong>{{ tools|length }}</strong> tool{{ 's' if tools|length != 1 else '' }}</span>
+            <span><strong>{{ categories|length }}</strong> categor{{ 'ies' if categories|length != 1 else 'y' }}</span>
+        </div>
     </div>
-</section>
+</header>
 
-<!-- Ad Slot: After Hero -->
-<div class="ad-container my-8 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-    <div class="bg-gray-100 border border-dashed border-gray-300 p-6 rounded text-center">
-        <p class="text-gray-400 text-sm">Advertisement</p>
-    </div>
+<div class="wrap">
+    <div class="ad-slot ad-slot--leaderboard ad-container" data-slot="tools-hub-a"></div>
 </div>
 
-<!-- Tools by Category -->
-<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+<div class="wrap">
+    {% if tools %}
     {% for category in categories %}
     {% set cat_tools = grouped.get(category.slug, []) %}
     {% if cat_tools %}
-    <section class="mb-12">
-        <div class="mb-6">
-            <h2 class="text-2xl font-bold text-gray-900">{{ category.name }}</h2>
-            {% if category.description %}
-            <p class="text-gray-500 mt-1">{{ category.description }}</p>
-            {% endif %}
-            <p class="text-sm text-gray-400 mt-1">{{ cat_tools|length }} tool{{ 's' if cat_tools|length != 1 else '' }}</p>
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {% for tool in cat_tools %}
-            <div class="bg-white rounded-lg border border-gray-100 p-5 hover:shadow-md transition-shadow flex flex-col">
-                <div class="flex items-start justify-between mb-3">
-                    <div class="flex items-center space-x-3">
-                        {% if tool.logo_url %}
-                        <img src="{{ tool.logo_url }}" alt="{{ tool.name }}" class="w-10 h-10 rounded-lg object-cover">
-                        {% else %}
-                        <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
-                            <span class="text-blue-600 font-bold text-lg">{{ tool.name[0] }}</span>
-                        </div>
-                        {% endif %}
-                        <div>
-                            <h3 class="font-semibold text-gray-900 leading-snug">{{ tool.name }}</h3>
-                            <span class="text-xs text-gray-500">{{ tool.pricing_model }}</span>
-                        </div>
-                    </div>
-                    {% if tool.rating %}
-                    <div class="flex items-center space-x-1 text-sm flex-shrink-0">
-                        <span class="text-yellow-500">&#9733;</span>
-                        <span class="font-medium text-gray-700">{{ tool.rating }}</span>
-                    </div>
-                    {% endif %}
-                </div>
-
-                <p class="text-gray-600 text-sm mb-4 line-clamp-2 flex-grow">
-                    {{ tool.description[:160] }}{% if tool.description|length > 160 %}...{% endif %}
-                </p>
-
-                <a href="/tool/{{ tool.slug }}.html"
-                   class="inline-flex items-center justify-center w-full text-center bg-blue-600 text-white py-2 px-4 rounded-md text-sm font-medium hover:bg-blue-700 transition">
-                    View Details
-                </a>
+    <section class="category-section">
+        <div class="category-head">
+            <div>
+                <h2>{{ category.name }}</h2>
+                <p class="desc">{{ category.description }}</p>
             </div>
-            {% endfor %}
+            <span class="count">{{ cat_tools|length }} tool{{ 's' if cat_tools|length != 1 else '' }}</span>
+            <a class="view-all" href="/category/{{ category.slug }}.html">View all &rarr;</a>
         </div>
+
+        <ol class="tool-list">
+            {% for tool in cat_tools %}
+            <li class="tool-card">
+                <a class="logo" href="/tool/{{ tool.slug }}.html" aria-hidden="true" tabindex="-1">
+                    {% if tool.logo_url %}
+                    <img src="{{ tool.logo_url }}" alt="" loading="lazy" referrerpolicy="no-referrer">
+                    {% else %}
+                    <span class="logo-fallback">{{ tool.name[0] }}</span>
+                    {% endif %}
+                </a>
+                <div class="body">
+                    <div class="row-top">
+                        <a class="tool-name" href="/tool/{{ tool.slug }}.html">{{ tool.name }}</a>
+                        <div class="row-top-meta">
+                            {% if tool.status == 'Featured' %}<span class="featured-pill">Featured</span>{% endif %}
+                            {% if tool.rating %}
+                            <span>
+                                <span class="star">&#9733;</span><span class="rating-num">{{ "%.1f"|format(tool.rating) }}</span>{% if tool.review_count %}<span class="rating-count">({{ tool.review_count }})</span>{% endif %}
+                            </span>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    {% if tool.description %}
+                    <p class="desc">{{ tool.description }}</p>
+                    {% endif %}
+
+                    <div class="tool-foot">
+                        {% if tool.pricing_model %}<span class="pricing">{{ tool.pricing_model }}</span>{% endif %}
+                        {% if tool.price_range %}<span class="price-range">{{ tool.price_range }}</span>{% endif %}
+                        {% if tool.api_available %}<span class="bool-chip is-on">API</span>{% endif %}
+                        {% if tool.mobile_app %}<span class="bool-chip is-on">Mobile</span>{% endif %}
+                        <a class="view-link" href="/tool/{{ tool.slug }}.html">View details</a>
+                    </div>
+                </div>
+            </li>
+            {% endfor %}
+        </ol>
     </section>
     {% endif %}
     {% endfor %}
 
-    {% if not tools %}
-    <!-- Empty state -->
-    <div class="text-center py-16">
-        <div class="text-gray-400 text-6xl mb-4">&#128295;</div>
-        <h2 class="text-xl font-semibold text-gray-700 mb-2">No tools yet</h2>
-        <p class="text-gray-500">We're adding tools to the directory. Check back soon!</p>
-        <a href="/" class="inline-block mt-4 text-blue-600 hover:text-blue-800">&larr; Back to Home</a>
+    {% else %}
+    <div style="padding: 80px 0;">
+        <div class="empty-state">
+            <h2>Tool library is being built</h2>
+            <p>We're cataloging tools we actually use and adding new reviews each week. Check back soon or browse by advisor directory while you wait.</p>
+            <div class="actions">
+                <a class="btn btn--primary" href="/">Browse advisors</a>
+            </div>
+        </div>
     </div>
     {% endif %}
 </div>
 
-<!-- Ad Slot: After Tools -->
-<div class="ad-container my-8 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-    <div class="bg-gray-100 border border-dashed border-gray-300 p-6 rounded text-center">
-        <p class="text-gray-400 text-sm">Advertisement</p>
-    </div>
+<div class="wrap">
+    <div class="ad-slot ad-slot--in-content ad-container" data-slot="tools-hub-b"></div>
 </div>
 
 {% endblock %}
