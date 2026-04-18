@@ -982,6 +982,32 @@ def build_search_index(advisors):
     print(f"Built: search-index.json ({len(index)} advisors)")
 
 
+def build_compare_data(advisors):
+    """Generate compare-data.json — richer than search-index, used by /compare.html to hydrate columns."""
+    data = [
+        {
+            "slug": a["slug"],
+            "name": a["name"],
+            "city": a.get("city", ""),
+            "state": a.get("state", ""),
+            "credentials": a.get("credentials", []),
+            "fee_structure": a.get("fee_structure", []) if isinstance(a.get("fee_structure"), list) else [a.get("fee_structure")] if a.get("fee_structure") else [],
+            "minimum_investment": a.get("minimum_investment", ""),
+            "specialties": a.get("specialties", []),
+            "fiduciary": bool(a.get("fiduciary", False)),
+            "rating": a.get("rating", 0),
+            "review_count": a.get("review_count", 0),
+            "description": a.get("description", ""),
+            "firm_type": a.get("firm_type", ""),
+        }
+        for a in advisors if a.get("name") and a.get("slug")
+    ]
+    output_path = config.OUTPUT_DIR / "compare-data.json"
+    with open(output_path, "w") as f:
+        json.dump(data, f, ensure_ascii=False)
+    print(f"Built: compare-data.json ({len(data)} advisors)")
+
+
 # =============================================================================
 # BUILD: SITEMAP & SEO
 # =============================================================================
@@ -1108,6 +1134,13 @@ STATIC_PAGES = [
         "title": "Message Sent",
         "description": "Thank you for contacting us.",
     },
+    {
+        "template": "compare.html",
+        "output": "compare.html",
+        "title": "Compare Advisors",
+        "description": "Compare fiduciary investment advisors side by side — credentials, fee structures, minimums, and specialties in a single sheet.",
+        "noindex": True,
+    },
 ]
 
 
@@ -1121,6 +1154,7 @@ def build_static_pages(env, advisors=None):
             meta_description=page["description"],
             request_path=f"/{page['output']}",
             total_count=total_count,
+            noindex=page.get("noindex", False),
         )
         output_path = config.OUTPUT_DIR / page["output"]
         output_path.parent.mkdir(parents=True, exist_ok=True)
@@ -1181,6 +1215,7 @@ def main():
     build_robots()
     copy_ads_txt()
     build_search_index(advisors)
+    build_compare_data(advisors)
 
     print(f"\n{'='*50}")
     print(f"Build complete! Output in: {config.OUTPUT_DIR}")
