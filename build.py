@@ -1138,6 +1138,18 @@ def copy_ads_txt():
         print("Built: ads.txt")
 
 
+def copy_verification_files():
+    """Copy any root-level verification files (Google Search Console, Bing Webmaster,
+    etc.) into the output directory. Matches google*.html and BingSiteAuth.xml by
+    convention. Add more patterns here when new verification tools are set up."""
+    patterns = ["google*.html", "BingSiteAuth.xml"]
+    for pattern in patterns:
+        for path in Path(".").glob(pattern):
+            if path.is_file():
+                shutil.copy(path, config.OUTPUT_DIR / path.name)
+                print(f"Built: {path.name} (verification)")
+
+
 # =============================================================================
 # BUILD: STATIC PAGES
 # =============================================================================
@@ -1258,6 +1270,7 @@ def main():
     build_sitemap(tools, advisors, posts, indexed_states, indexed_cities)
     build_robots()
     copy_ads_txt()
+    copy_verification_files()
     build_search_index(advisors)
     build_compare_data(advisors)
 
