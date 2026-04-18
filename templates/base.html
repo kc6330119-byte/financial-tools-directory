@@ -366,6 +366,7 @@
             var next = current === 'dark' ? 'light' : 'dark';
             document.documentElement.setAttribute('data-theme', next);
             try { localStorage.setItem('smart-investor-theme', next); } catch (_) {}
+            document.dispatchEvent(new CustomEvent('smart-investor-theme-change', { detail: { theme: next } }));
         }
         var tt = document.getElementById('theme-toggle');
         var ttm = document.getElementById('theme-toggle-mobile');
