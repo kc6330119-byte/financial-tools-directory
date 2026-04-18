@@ -1,4 +1,40 @@
 {% extends "base.html" %}
+{% from '_breadcrumb_schema.html' import breadcrumb_schema %}
+
+{% block extra_head %}
+{{ breadcrumb_schema(
+    [{'name': 'Home', 'url': site_url},
+     {'name': 'Tools', 'url': site_url ~ '/tools.html'}]
+    + ([{'name': tool.category[0], 'url': site_url ~ '/category/' ~ (tool.category[0] | slugify) ~ '.html'}] if tool.category else [])
+    + [{'name': tool.name}]
+) }}
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": {{ tool.name | tojson | safe }},
+    "description": {{ (tool.description or '') | tojson | safe }},
+    "applicationCategory": "FinanceApplication",
+    "operatingSystem": "Web",
+    {% if tool.logo_url %}"image": {{ tool.logo_url | tojson | safe }},{% endif %}
+    {% if tool.pricing_model in ('Free', 'Freemium') %}
+    "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+    },
+    {% endif %}
+    {% if tool.rating and tool.review_count %}
+    "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": {{ tool.rating }},
+        "reviewCount": {{ tool.review_count }}
+    },
+    {% endif %}
+    "url": {{ (tool.website_url or '') | tojson | safe }}
+}
+</script>
+{% endblock %}
 
 {% block content %}
 
@@ -148,7 +184,7 @@
             <a class="related-tool" href="/tool/{{ related.slug }}.html">
                 <div class="logo">
                     {% if related.logo_url %}
-                    <img src="{{ related.logo_url }}" alt="" loading="lazy" referrerpolicy="no-referrer">
+                    <img src="{{ related.logo_url }}" alt="{{ related.name }} logo" loading="lazy" referrerpolicy="no-referrer">
                     {% else %}
                     <span class="logo-fallback">{{ related.name[0] }}</span>
                     {% endif %}

@@ -1060,16 +1060,19 @@ def build_sitemap(tools, advisors, posts, indexed_states=None, indexed_cities=No
     for calc in config.CALCULATORS:
         urls.append(f"{config.SITE_URL}/calculator/{calc['slug']}.html")
 
-    # State pages — only indexed ones
-    if indexed_states:
+    # State pages — only those with enough advisors to be indexed.
+    # `indexed_states is None` means the caller didn't pass the filter list; fall back to all.
+    # `indexed_states == []` means the caller passed it but nothing qualified; emit nothing
+    # (prevents noindex pages from polluting the sitemap — Google treats that as a soft error).
+    if indexed_states is not None:
         for state_slug in indexed_states:
             urls.append(f"{config.SITE_URL}/state/{state_slug}.html")
     else:
         for state in config.US_STATES:
             urls.append(f"{config.SITE_URL}/state/{state['slug']}.html")
 
-    # City pages — only indexed ones
-    if indexed_cities:
+    # City pages — same filter-list semantics as states above
+    if indexed_cities is not None:
         for city_key in indexed_cities:
             urls.append(f"{config.SITE_URL}/state/{city_key}.html")
     else:
@@ -1169,6 +1172,7 @@ STATIC_PAGES = [
         "output": "success/index.html",
         "title": "Message Sent",
         "description": "Thank you for contacting us.",
+        "noindex": True,
     },
     {
         "template": "compare.html",

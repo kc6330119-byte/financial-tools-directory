@@ -1,6 +1,13 @@
 {% extends "base.html" %}
+{% from '_breadcrumb_schema.html' import breadcrumb_schema %}
 
 {% block extra_head %}
+{{ breadcrumb_schema([
+    {'name': 'Home', 'url': site_url},
+    {'name': state.name, 'url': site_url ~ '/state/' ~ state.slug ~ '.html'},
+    {'name': advisor.city, 'url': site_url ~ '/state/' ~ state.slug ~ '/' ~ advisor.city_slug ~ '.html'},
+    {'name': advisor.name},
+]) }}
 <script type="application/ld+json">
 {
     "@context": "https://schema.org",
@@ -102,7 +109,7 @@
                     <h2>Specialties</h2>
                     <div class="detail-chips">
                         {% for specialty in advisor.specialties %}
-                        <span class="chip">{{ specialty }}</span>
+                        <a class="chip" href="/specialty/{{ specialty | slugify }}.html">{{ specialty }}</a>
                         {% endfor %}
                     </div>
                 </section>

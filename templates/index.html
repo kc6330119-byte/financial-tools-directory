@@ -273,7 +273,7 @@
             {% for tool in featured_tools[:4] %}
             <a class="tool-row" href="/tool/{{ tool.slug }}.html">
                 {% if tool.logo_url %}
-                <img src="{{ tool.logo_url }}" alt="" loading="lazy" width="36" height="36">
+                <img src="{{ tool.logo_url }}" alt="{{ tool.name }} logo" loading="lazy" width="36" height="36">
                 {% else %}
                 <div class="logo-fallback" aria-hidden="true">{{ tool.name[0] }}</div>
                 {% endif %}

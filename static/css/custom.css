@@ -1771,7 +1771,10 @@ nav .group .absolute a:hover { background: var(--bg) !important; color: var(--ac
     border-radius: var(--radius-sm);
     font-size: 0.85rem;
     color: var(--text);
+    text-decoration: none;
+    transition: border-color 120ms, color 120ms;
 }
+.detail-chips a.chip:hover { border-color: var(--accent); color: var(--accent); }
 .detail-chips .chip--fee {
     background: var(--warn-bg);
     color: var(--warn);

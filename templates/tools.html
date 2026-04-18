@@ -1,4 +1,12 @@
 {% extends "base.html" %}
+{% from '_breadcrumb_schema.html' import breadcrumb_schema %}
+
+{% block extra_head %}
+{{ breadcrumb_schema([
+    {'name': 'Home', 'url': site_url},
+    {'name': 'Tools'},
+]) }}
+{% endblock %}
 
 {% block content %}
 
@@ -49,7 +57,7 @@
             <li class="tool-card">
                 <a class="logo" href="/tool/{{ tool.slug }}.html" aria-hidden="true" tabindex="-1">
                     {% if tool.logo_url %}
-                    <img src="{{ tool.logo_url }}" alt="" loading="lazy" referrerpolicy="no-referrer">
+                    <img src="{{ tool.logo_url }}" alt="{{ tool.name }} logo" loading="lazy" referrerpolicy="no-referrer">
                     {% else %}
                     <span class="logo-fallback">{{ tool.name[0] }}</span>
                     {% endif %}

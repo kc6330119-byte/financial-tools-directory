@@ -1,4 +1,36 @@
 {% extends "base.html" %}
+{% from '_breadcrumb_schema.html' import breadcrumb_schema %}
+
+{% block extra_head %}
+{{ breadcrumb_schema([
+    {'name': 'Home', 'url': site_url},
+    {'name': 'Guides', 'url': site_url ~ '/blog.html'},
+    {'name': post.title},
+]) }}
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": {{ post.title | tojson | safe }},
+    "description": {{ (post.excerpt or post.meta_description or '') | tojson | safe }},
+    {% if post.publish_date %}"datePublished": {{ post.publish_date | tojson | safe }},{% endif %}
+    "author": {
+        "@type": "Person",
+        "name": {{ (post.author or site_name) | tojson | safe }}
+    },
+    "publisher": {
+        "@type": "Organization",
+        "name": {{ site_name | tojson | safe }},
+        "logo": {
+            "@type": "ImageObject",
+            "url": {{ (site_url ~ "/static/images/logo.webp") | tojson | safe }}
+        }
+    },
+    "image": {{ (post.featured_image or (site_url ~ "/static/images/logo.webp")) | tojson | safe }},
+    "mainEntityOfPage": {{ (site_url ~ "/blog/" ~ post.slug ~ ".html") | tojson | safe }}
+}
+</script>
+{% endblock %}
 
 {% block content %}
 

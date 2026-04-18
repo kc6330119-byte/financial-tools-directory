@@ -1,0 +1,33 @@
+{#- BreadcrumbList JSON-LD emitter.
+    Usage (in any template with breadcrumbs):
+
+        {% from '_breadcrumb_schema.html' import breadcrumb_schema %}
+        {% block extra_head %}
+        {{ breadcrumb_schema([
+            {'name': 'Home', 'url': site_url},
+            {'name': 'Guides', 'url': site_url ~ '/blog.html'},
+            {'name': post.title},
+        ]) }}
+        {% endblock %}
+
+    The last item should omit `url` (the current page per schema.org). All other
+    items should include an absolute URL.
+-#}
+{%- macro breadcrumb_schema(items) -%}
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+        {%- for item in items %}
+        {
+            "@type": "ListItem",
+            "position": {{ loop.index }},
+            "name": {{ item.name | tojson | safe }}{% if item.url %},
+            "item": {{ item.url | tojson | safe }}{% endif %}
+        }{% if not loop.last %},{% endif %}
+        {%- endfor %}
+    ]
+}
+</script>
+{%- endmacro -%}

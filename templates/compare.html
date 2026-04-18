@@ -1,6 +1,11 @@
 {% extends "base.html" %}
+{% from '_breadcrumb_schema.html' import breadcrumb_schema %}
 
 {% block extra_head %}
+{{ breadcrumb_schema([
+    {'name': 'Home', 'url': site_url},
+    {'name': 'Compare'},
+]) }}
 <meta name="robots" content="noindex, follow">
 {% endblock %}
 

@@ -6,6 +6,42 @@ This file is the "release notes" view of the redesign. For the terse one-line-pe
 
 ---
 
+## Milestone 7b — SEO hardening (2026-04-18)
+
+**Branch:** `redesign/seo-hardening-m7b`
+**Commits:** single scoped commit
+**Files touched:** `build.py`, `templates/base.html`, new `templates/_breadcrumb_schema.html` macro, plus `extra_head` additions across 15 templates
+**Type:** Technical-SEO hardening pass — not a design milestone
+
+### What changed
+
+- **Fixed sitemap emitting noindex URLs.** `build.py`'s `build_sitemap` used `if indexed_states:` / `if indexed_cities:` truthy checks that silently treated "empty list" the same as "caller didn't filter at all," falling back to listing every state/city even when most were noindexed. Changed to `is not None` so an explicit empty list is honored. With sample data, five Texas/Illinois/Florida cities (1 advisor each, below the 3-advisor threshold) are no longer polluting the sitemap.
+- **`success.html` now noindex.** Added `"noindex": True` to its `STATIC_PAGES` entry — same pattern already used for `compare.html`. The contact-form thank-you page has no value for search to surface.
+- **New universal schema on every page.** `base.html` now emits an `@graph` JSON-LD block with both `WebSite` and `Organization` types, cross-referenced via `@id`. Organization schema is site-wide E-E-A-T signal that previously wasn't anywhere.
+- **BreadcrumbList schema site-wide.** New `_breadcrumb_schema.html` macro (imported and called from each template with breadcrumbs). Emits proper `ListItem` elements with `position` and `item` URL. Landed on 15 template types — state, city, advisor, specialty, all 6 calculators, tools/category/tool detail, blog/post, about/contact/privacy/terms, compare. Google shows breadcrumbs in SERPs when this is present; they're also AI-Overview signal.
+- **Article schema on `post.html`.** Proper `headline`, `datePublished`, `author`, `publisher` (with logo ImageObject), `image`, `mainEntityOfPage`. Required for Google News / Discover candidacy and AI Overview eligibility for editorial content.
+- **SoftwareApplication schema on `tool.html`.** Proper `applicationCategory: "FinanceApplication"`, `operatingSystem: "Web"`, conditional `offers` for Free/Freemium tools, `aggregateRating` when rating + review count are present.
+- **Specialty chips on advisor detail now link to specialty pages.** Internal-link flow from high-intent advisor pages into specialty-hub pages, which were previously reached only via nav or sidebar. CSS updated with hover states on `a.chip` (border and text shift to accent on hover).
+- **Descriptive alt text on tool logos.** Changed `alt=""` to `alt="{{ tool.name }} logo"` in `tools.html`, `category.html`, `index.html` (homepage tools-row), and `tool.html` (related-tools block). Zero empty-alt images remain on the listing surfaces per grep audit.
+
+### Why it helps
+
+- **Rich SERP results.** BreadcrumbList → breadcrumbs in search results instead of raw URLs. Article on blog posts → "By Author · Date" byline treatment. SoftwareApplication on tools → star rating and app-card rich result eligibility.
+- **AI Overview candidacy.** Structured data is now one of the strongest inputs into whether Google Gemini / SGE pulls a page into its AI Overview response. Every major content type has proper schema.
+- **Clean Search Console.** Noindexed URLs in the sitemap previously would have surfaced in Search Console as "Excluded → Submitted URL not selected as canonical" or similar warnings. Removed.
+- **Internal-link juice toward specialty pages.** Advisor detail pages are the highest-authority type we generate (most backlinks, most traffic once AdSense is approved). Linking specialty chips passes that juice into specialty hub pages that otherwise are only reachable from nav.
+- **Accessibility + image search.** Named alt text on tool logos helps screen readers and Google Image Search rank tool identities correctly.
+- **Macro pattern is reusable.** Any future template with breadcrumbs (when we add them) gets a 5-line import + 3-line call, with no duplication of the JSON-LD boilerplate.
+
+### Known gaps
+
+- No `WebApplication` / `FAQPage` schema on calculator pages yet. Calculators could emit `WebApplication` with their description and benefit — deferred, lower priority than getting the universal schema in place.
+- Hub page titles (`blog.html`, `tools.html`, `about.html`) are still shorter than ideal. Captured in the audit as a quick win; one-line edits in `build.py STATIC_PAGES` / page heads. Deferred to a later polish pass.
+- About page still lacks a founder bio (already flagged in the AdSense resubmission plan).
+- Homepage tool-row `loading="lazy"` is applied but the 4 images are above-the-fold on some viewports; consider removing `loading="lazy"` from those specifically or using `fetchpriority="high"` if they end up in the LCP candidate set.
+
+---
+
 ## Milestone 8 — Three more calculators: Social Security, RMD, Safe Withdrawal (2026-04-18)
 
 **Branch:** `redesign/calculators-m8`
