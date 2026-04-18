@@ -282,7 +282,6 @@
                     <div class="sub">{{ tool.category[0] if tool.category else '' }} &middot; {{ tool.description[:100] }}{% if tool.description|length > 100 %}&hellip;{% endif %}</div>
                 </div>
                 <div class="nums-col tool-rating">
-                    <span class="rating"><span class="star">&#9733;</span>{{ "%.1f"|format(tool.rating) }}</span>
                     <span class="tool-pricing">{{ tool.pricing_model }}</span>
                 </div>
             </a>

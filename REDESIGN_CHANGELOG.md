@@ -6,6 +6,39 @@ This file is the "release notes" view of the redesign. For the terse one-line-pe
 
 ---
 
+## Side-milestone — Removed fabricated tool ratings (2026-04-18)
+
+**Branch:** `fix/remove-fabricated-tool-ratings`
+**Type:** Integrity fix — not a design or feature change
+
+### What changed
+
+Kevin flagged that the star ratings and review counts displayed on the tool directory (TradingView 4.8/892 reviews, Alpha Vantage 4.5/127, Yahoo Finance 4.2/456, etc.) were fabricated placeholder data, not real user reviews. Removed all display and all structured-data emission of those values:
+
+- **`tool.html` SoftwareApplication schema:** `aggregateRating` block removed from the JSON-LD. This was the highest-severity item — fabricated `aggregateRating` markup is explicitly prohibited by Google's [structured data policy](https://developers.google.com/search/docs/appearance/structured-data/sd-policies) and triggers manual-action penalties in Search Console.
+- **`tool.html` header:** rating + review-count display removed from the tool-meta-line. Pricing model, price range, and Featured badge remain.
+- **`tool.html` related-tools block:** star rating removed; the meta line now shows pricing model and primary category instead.
+- **`tools.html` and `category.html` tool-cards:** star + review-count display removed from the row-top-meta. Featured badge remains.
+- **Homepage tool-row:** star rating removed; pricing model stays as the single numeric meta.
+
+### What did NOT change
+
+- **Advisor ratings and review counts are untouched.** Those come from Outscraper pulling real Google Maps data — legitimate, unlike the hand-authored tool values. `advisor.html` still emits `aggregateRating` in its `FinancialService` schema.
+- **Data model preserved.** The `rating` and `review_count` fields remain in `config.py` sample data, Airtable, and build-time dicts. Templates just don't render them. If Kevin ever wants to add a real editorial scoring system (1–5 with disclosed criteria), the field scaffolding is ready.
+- **Featured status, category tags, API/Mobile bool-chips, pricing, features, target audience** — all stay.
+
+### Why it matters
+
+- **Google manual-action risk.** Schema-level fake reviews are one of the specific things that get sites penalized. Shipped before Google first-crawled the new schema, so there's no record of the fabricated markup.
+- **AdSense deceptive-content risk.** Review-style pages with fabricated ratings are the kind of thing AdSense denies for in the YMYL-finance category. Critical to clean up pre-resubmission.
+- **Editorial consistency.** The rest of the site is built around a "no paid placements, disclosure-driven, skeptical-of-hype" posture. Fake ratings contradicted that directly.
+
+### Known gaps
+
+- Tool directory has no social proof left. If Kevin wants that back, an honest path is: editorial ratings (our own 1–5 with a published rubric like "data quality / pricing transparency / UX / API quality") applied consistently by a human. That's a real content project, not a placeholder.
+
+---
+
 ## Side-milestone — Google Search Console verification (2026-04-18)
 
 **Branch:** `chore/gsc-verification`

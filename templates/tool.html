@@ -24,13 +24,6 @@
         "priceCurrency": "USD"
     },
     {% endif %}
-    {% if tool.rating and tool.review_count %}
-    "aggregateRating": {
-        "@type": "AggregateRating",
-        "ratingValue": {{ tool.rating }},
-        "reviewCount": {{ tool.review_count }}
-    },
-    {% endif %}
     "url": {{ (tool.website_url or '') | tojson | safe }}
 }
 </script>
@@ -64,13 +57,7 @@
             <div class="identity">
                 <h1>{{ tool.name }}</h1>
                 <div class="tool-meta-line">
-                    {% if tool.rating %}
-                    <span>
-                        <span class="star">&#9733;</span><span class="rating-num">{{ "%.1f"|format(tool.rating) }}</span>{% if tool.review_count %}<span class="rating-count">({{ tool.review_count }})</span>{% endif %}
-                    </span>
-                    {% endif %}
                     {% if tool.pricing_model %}
-                    <span class="divider" aria-hidden="true"></span>
                     <span>{{ tool.pricing_model }}</span>
                     {% endif %}
                     {% if tool.price_range %}
@@ -192,8 +179,8 @@
                 <div class="info">
                     <h3>{{ related.name }}</h3>
                     <div class="rating-line">
-                        {% if related.rating %}<span class="star">&#9733;</span> {{ "%.1f"|format(related.rating) }}{% endif %}
-                        {% if related.pricing_model %} &middot; {{ related.pricing_model }}{% endif %}
+                        {% if related.pricing_model %}{{ related.pricing_model }}{% endif %}
+                        {% if related.category %}{% if related.pricing_model %} &middot; {% endif %}{{ related.category[0] }}{% endif %}
                     </div>
                 </div>
             </a>

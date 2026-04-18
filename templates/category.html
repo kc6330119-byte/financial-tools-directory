@@ -58,11 +58,6 @@
                         <a class="tool-name" href="/tool/{{ tool.slug }}.html">{{ tool.name }}</a>
                         <div class="row-top-meta">
                             {% if tool.status == 'Featured' %}<span class="featured-pill">Featured</span>{% endif %}
-                            {% if tool.rating %}
-                            <span>
-                                <span class="star">&#9733;</span><span class="rating-num">{{ "%.1f"|format(tool.rating) }}</span>{% if tool.review_count %}<span class="rating-count">({{ tool.review_count }})</span>{% endif %}
-                            </span>
-                            {% endif %}
                         </div>
                     </div>
 
