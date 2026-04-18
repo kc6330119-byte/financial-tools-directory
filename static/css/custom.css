@@ -1175,6 +1175,757 @@ nav .group .absolute a:hover { background: var(--bg) !important; color: var(--ac
 }
 
 /* -------------------------------------------------------------------------
+   Directory-page components (state / city / specialty / advisor detail)
+   Milestone 2 — 2026-04-18
+   ------------------------------------------------------------------------- */
+
+/* Breadcrumb */
+.breadcrumb {
+    background: var(--bg);
+    border-bottom: 1px solid var(--divider);
+    padding: 12px 0;
+}
+.breadcrumb ol {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    color: var(--text-faint);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+.breadcrumb li { display: inline-flex; align-items: center; }
+.breadcrumb li + li::before {
+    content: "/";
+    color: var(--text-faint);
+    opacity: 0.5;
+    margin: 0 10px;
+}
+.breadcrumb a {
+    color: var(--text-muted);
+    text-decoration: none;
+    transition: color 120ms;
+}
+.breadcrumb a:hover { color: var(--accent); }
+.breadcrumb li[aria-current="page"],
+.breadcrumb li.current {
+    color: var(--text);
+    font-weight: 600;
+}
+
+/* Page head (editorial page header — replaces gradient heroes) */
+.page-head {
+    padding: 48px 0 40px;
+    border-bottom: 1px solid var(--divider);
+    background: var(--bg);
+}
+@media (min-width: 768px) { .page-head { padding: 64px 0 56px; } }
+
+.page-head .eyebrow {
+    margin-bottom: 12px;
+    display: inline-block;
+}
+.page-head h1 {
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-variation-settings: "opsz" 72;
+    font-size: clamp(1.9rem, 4.2vw, 3rem);
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    margin: 0 0 16px;
+    color: var(--text);
+    text-wrap: balance;
+}
+.page-head .lede {
+    font-size: 1.05rem;
+    line-height: 1.55;
+    color: var(--text-muted);
+    margin: 0;
+    max-width: 60ch;
+}
+.page-head .page-head-meta {
+    margin-top: 18px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px 24px;
+    align-items: center;
+    font-family: var(--font-mono);
+    font-size: 0.76rem;
+    color: var(--text-faint);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+.page-head .page-head-meta strong {
+    color: var(--text);
+    font-weight: 600;
+    font-family: var(--font-mono);
+}
+
+/* Two-column sidebar + main layout */
+.content-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 32px;
+    padding: 48px 0;
+}
+@media (min-width: 1024px) {
+    .content-grid {
+        grid-template-columns: 280px 1fr;
+        gap: 48px;
+    }
+    .content-grid--right {
+        grid-template-columns: 1fr 320px;
+    }
+}
+
+/* Generic sidebar card (used for map, city list, state filter, contact, etc.) */
+.sidebar-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 20px;
+}
+.sidebar-card + .sidebar-card { margin-top: 16px; }
+.sidebar-card h3 {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--text-faint);
+    font-weight: 600;
+    margin: 0 0 14px;
+}
+.sidebar-card.is-sticky {
+    position: sticky;
+    top: 80px;
+}
+
+/* City/state filter list inside sidebar */
+.filter-list {
+    max-height: 420px;
+    overflow-y: auto;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+}
+.filter-list a {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 8px 10px;
+    font-size: 0.88rem;
+    color: var(--text);
+    text-decoration: none;
+    border-radius: var(--radius-sm);
+    transition: background 120ms, color 120ms;
+}
+.filter-list a:hover { background: var(--bg); color: var(--accent); }
+.filter-list a .count {
+    font-family: var(--font-mono);
+    font-size: 0.76rem;
+    color: var(--text-faint);
+}
+
+/* Map frame */
+.map-frame {
+    height: 260px;
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    background: var(--bg);
+    border: 1px solid var(--border);
+}
+.map-frame .leaflet-container {
+    background: var(--bg);
+    font-family: var(--font-sans);
+}
+.map-frame .leaflet-popup-content-wrapper,
+.map-frame .leaflet-popup-tip {
+    background: var(--surface);
+    color: var(--text);
+    box-shadow: var(--shadow-md);
+}
+.map-frame .leaflet-popup-content {
+    margin: 10px 12px;
+    font-size: 0.82rem;
+    line-height: 1.4;
+}
+.map-frame .leaflet-popup-content a {
+    color: var(--accent);
+    font-weight: 600;
+    text-decoration: none;
+}
+.map-frame .leaflet-control-attribution {
+    background: rgba(255,255,255,0.8);
+    color: var(--text-muted);
+    font-size: 0.62rem;
+}
+[data-theme="dark"] .map-frame .leaflet-control-attribution {
+    background: rgba(19,23,28,0.8);
+    color: var(--text-muted);
+}
+[data-theme="dark"] .map-frame .leaflet-control-attribution a {
+    color: var(--text);
+}
+
+/* Results meta line above advisor list */
+.results-meta {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 20px;
+    font-family: var(--font-mono);
+    font-size: 0.76rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-faint);
+}
+.results-meta .total {
+    color: var(--text);
+    font-weight: 600;
+}
+
+/* Advisor row (list-view item on state/city/specialty pages + "related" section) */
+.advisor-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+.advisor-row {
+    display: block;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 20px 22px;
+    text-decoration: none;
+    color: var(--text);
+    transition: border-color 150ms, transform 150ms, box-shadow 150ms;
+    position: relative;
+}
+.advisor-row:hover {
+    border-color: var(--accent);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-sm);
+}
+.advisor-row .row-top {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 4px;
+    flex-wrap: wrap;
+}
+.advisor-row .firm-name {
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-variation-settings: "opsz" 48;
+    font-size: 1.2rem;
+    line-height: 1.2;
+    letter-spacing: -0.01em;
+    color: var(--text);
+    margin: 0;
+    flex: 1 1 auto;
+    min-width: 0;
+}
+.advisor-row:hover .firm-name { color: var(--accent); }
+.advisor-row .row-right {
+    display: inline-flex;
+    align-items: center;
+    gap: 14px;
+    font-family: var(--font-mono);
+    font-size: 0.82rem;
+    flex-shrink: 0;
+}
+.advisor-row .row-right .star { color: var(--gold); }
+.advisor-row .row-right .rating-num { color: var(--text); font-weight: 600; margin-left: 2px; }
+.advisor-row .row-right .rating-count { color: var(--text-faint); margin-left: 4px; }
+.advisor-row .fiduciary-mark {
+    background: var(--gain-bg);
+    color: var(--gain);
+}
+.advisor-row .location {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    margin: 0 0 14px;
+}
+.advisor-row .chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 10px;
+}
+.advisor-row .chip {
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    font-weight: 600;
+    padding: 2px 7px;
+    border-radius: 3px;
+    letter-spacing: 0.04em;
+    border: 1px solid var(--border);
+    color: var(--text);
+    background: var(--bg);
+}
+.advisor-row .chip--specialty {
+    font-family: var(--font-sans);
+    font-weight: 500;
+    font-size: 0.75rem;
+    text-transform: none;
+    letter-spacing: 0;
+    color: var(--text-muted);
+    background: transparent;
+    border-color: var(--divider);
+}
+.advisor-row .stats-line {
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    margin-bottom: 10px;
+}
+.advisor-row .stats-line span + span::before {
+    content: "·";
+    color: var(--text-faint);
+    margin: 0 8px;
+}
+.advisor-row .desc {
+    font-size: 0.9rem;
+    line-height: 1.5;
+    color: var(--text-muted);
+    margin: 0 0 14px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+.advisor-row .view-link {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--accent);
+    font-weight: 600;
+}
+.advisor-row:hover .view-link::after {
+    margin-left: 6px;
+}
+.advisor-row .view-link::after {
+    content: "→";
+    margin-left: 4px;
+    transition: margin-left 150ms;
+}
+
+/* Empty state */
+.empty-state {
+    padding: 64px 20px;
+    text-align: center;
+    background: var(--surface);
+    border: 1px dashed var(--border);
+    border-radius: var(--radius-lg);
+}
+.empty-state h2 {
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: 1.4rem;
+    color: var(--text);
+    margin: 0 0 10px;
+}
+.empty-state p {
+    font-size: 0.95rem;
+    color: var(--text-muted);
+    margin: 0 0 24px;
+    max-width: 44ch;
+    margin-inline: auto;
+}
+.empty-state .actions {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+.btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 18px;
+    font-family: var(--font-sans);
+    font-size: 0.88rem;
+    font-weight: 600;
+    border-radius: var(--radius-md);
+    text-decoration: none;
+    border: 1px solid transparent;
+    cursor: pointer;
+    transition: background 120ms, border-color 120ms, color 120ms;
+}
+.btn--primary {
+    background: var(--accent);
+    color: var(--accent-ink);
+}
+.btn--primary:hover { background: var(--accent-hover); }
+.btn--ghost {
+    background: transparent;
+    border-color: var(--border-strong);
+    color: var(--text);
+}
+.btn--ghost:hover { background: var(--bg); border-color: var(--accent); color: var(--accent); }
+
+/* Editorial intro block (SEO text replacement on state/city/specialty) */
+.seo-intro {
+    padding: 56px 0;
+    background: var(--surface);
+    border-top: 1px solid var(--divider);
+    border-bottom: 1px solid var(--divider);
+}
+.seo-intro .editorial { max-width: 720px; margin: 0 auto; }
+.seo-intro h2 {
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-variation-settings: "opsz" 48;
+    font-size: clamp(1.4rem, 2.4vw, 1.7rem);
+    letter-spacing: -0.01em;
+    margin: 0 0 18px;
+    color: var(--text);
+}
+.seo-intro p {
+    font-size: 1rem;
+    line-height: 1.6;
+    color: var(--text-muted);
+    margin: 0 0 14px;
+}
+.seo-intro p:last-child { margin-bottom: 0; }
+
+/* Back link strip */
+.back-strip {
+    padding: 32px 0;
+    border-top: 1px solid var(--divider);
+    text-align: center;
+}
+.back-strip a {
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--accent);
+    text-decoration: none;
+    font-weight: 600;
+}
+.back-strip a::before { content: "← "; }
+
+/* Other specialties chip row (bottom of specialty page) */
+.specialty-chip-row {
+    padding: 40px 0 56px;
+    background: var(--bg);
+    border-top: 1px solid var(--divider);
+}
+.specialty-chip-row h2 {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--text-faint);
+    font-weight: 600;
+    text-align: center;
+    margin: 0 0 18px;
+}
+.specialty-chip-row .chips {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 6px;
+}
+.specialty-chip-row a {
+    display: inline-flex;
+    padding: 7px 14px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 100px;
+    color: var(--text);
+    text-decoration: none;
+    font-size: 0.84rem;
+    font-weight: 500;
+    transition: border-color 120ms, color 120ms, background 120ms;
+}
+.specialty-chip-row a:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: var(--bg);
+}
+
+/* -------------------------------------------------------------------------
+   Advisor detail — page head + card stack
+   ------------------------------------------------------------------------- */
+
+.advisor-head {
+    padding: 40px 0 32px;
+    background: var(--bg);
+    border-bottom: 1px solid var(--divider);
+}
+.advisor-head .badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 16px;
+}
+.advisor-head .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    border-radius: var(--radius-sm);
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-weight: 600;
+}
+.badge--fiduciary { background: var(--gain-bg); color: var(--gain); }
+.badge--featured { background: var(--warn-bg); color: var(--warn); }
+.advisor-head h1 {
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-variation-settings: "opsz" 96, "SOFT" 30;
+    font-size: clamp(2rem, 4.6vw, 3.2rem);
+    line-height: 1.05;
+    letter-spacing: -0.025em;
+    margin: 0 0 12px;
+    color: var(--text);
+    text-wrap: balance;
+}
+.advisor-head .location-line {
+    font-size: 1.05rem;
+    color: var(--text-muted);
+    margin: 0 0 12px;
+}
+.advisor-head .rating-inline {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 6px;
+    font-family: var(--font-mono);
+    font-size: 0.9rem;
+    color: var(--text);
+    margin-bottom: 24px;
+}
+.advisor-head .rating-inline .star { color: var(--gold); font-family: var(--font-sans); }
+.advisor-head .rating-inline .count { color: var(--text-faint); }
+.advisor-head .actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+/* Detail card stack */
+.detail-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding: 32px 0;
+}
+.detail-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 28px;
+}
+.detail-card h2 {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    font-weight: 600;
+    color: var(--text-faint);
+    margin: 0 0 18px;
+}
+.detail-card .prose-body {
+    font-size: 1rem;
+    line-height: 1.65;
+    color: var(--text);
+    margin: 0;
+}
+
+/* Specialty + fee chip rows inside detail cards */
+.detail-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+.detail-chips .chip {
+    padding: 5px 10px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    font-size: 0.85rem;
+    color: var(--text);
+}
+.detail-chips .chip--fee {
+    background: var(--warn-bg);
+    color: var(--warn);
+    border-color: transparent;
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+
+/* Spec-sheet dl grid */
+.spec-sheet {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px 32px;
+    margin: 0;
+}
+@media (max-width: 640px) {
+    .spec-sheet { grid-template-columns: 1fr; gap: 14px; }
+}
+.spec-sheet dt {
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-faint);
+    font-weight: 600;
+    margin-bottom: 4px;
+}
+.spec-sheet dd {
+    font-size: 0.98rem;
+    color: var(--text);
+    margin: 0;
+    font-weight: 500;
+}
+.spec-sheet dd.is-gain { color: var(--gain); font-family: var(--font-mono); font-weight: 600; font-size: 0.9rem; }
+
+/* Credentials detail list */
+.credentials-detail {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+.credentials-detail .cred-item {
+    display: grid;
+    grid-template-columns: 72px 1fr;
+    gap: 16px;
+    align-items: start;
+    padding-top: 16px;
+    border-top: 1px solid var(--divider);
+}
+.credentials-detail .cred-item:first-child { border-top: 0; padding-top: 0; }
+.credentials-detail .cred-code {
+    font-family: var(--font-mono);
+    font-weight: 700;
+    font-size: 1rem;
+    letter-spacing: 0.04em;
+    color: var(--accent);
+    padding-top: 2px;
+}
+.credentials-detail .cred-name {
+    font-family: var(--font-sans);
+    font-weight: 600;
+    color: var(--text);
+    margin: 0 0 4px;
+    font-size: 0.95rem;
+}
+.credentials-detail .cred-desc {
+    font-size: 0.88rem;
+    line-height: 1.55;
+    color: var(--text-muted);
+    margin: 0;
+}
+
+/* Sidebar — advisor-detail right column */
+.advisor-sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+.advisor-sidebar .contact-card .contact-row {
+    margin-bottom: 14px;
+}
+.advisor-sidebar .contact-card .contact-row:last-child { margin-bottom: 0; }
+.advisor-sidebar .contact-card .label {
+    font-family: var(--font-mono);
+    font-size: 0.66rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--text-faint);
+    font-weight: 600;
+    display: block;
+    margin-bottom: 2px;
+}
+.advisor-sidebar .contact-card .value {
+    font-size: 0.94rem;
+    color: var(--text);
+}
+.advisor-sidebar .contact-card a.value {
+    color: var(--accent);
+    text-decoration: none;
+}
+.advisor-sidebar .contact-card a.value:hover { text-decoration: underline; }
+.advisor-sidebar .contact-card .call-btn,
+.advisor-sidebar .contact-card .site-btn {
+    display: block;
+    text-align: center;
+    margin-top: 10px;
+}
+.brokercheck-card p {
+    font-size: 0.8rem;
+    line-height: 1.5;
+    color: var(--text-muted);
+    margin: 10px 0 0;
+}
+.brokercheck-card a {
+    color: var(--accent);
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.88rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+.brokercheck-card a:hover { text-decoration: underline; }
+
+/* Share row */
+.share-row {
+    display: flex;
+    gap: 10px;
+}
+.share-row a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    color: var(--text-muted);
+    transition: border-color 120ms, color 120ms;
+}
+.share-row a:hover { border-color: var(--accent); color: var(--accent); }
+.share-row svg { width: 16px; height: 16px; }
+
+/* Related advisors block on advisor detail — reuses .advisor-row stacked */
+.related-advisors {
+    padding: 40px 0 56px;
+}
+.related-advisors h2 {
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: 1.4rem;
+    letter-spacing: -0.01em;
+    margin: 0 0 20px;
+    color: var(--text);
+}
+
+/* -------------------------------------------------------------------------
    PRESERVED — styles used by not-yet-redesigned page types. Do not remove.
    ------------------------------------------------------------------------- */
 
