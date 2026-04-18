@@ -65,3 +65,14 @@ One line per non-obvious design decision. Append as we go. Format: `YYYY-MM-DD �
 - **Disclaimer box** kept with tokenized `--warn`-tinted styling. Still says "informational only, not financial advice" — required by the YMYL posture.
 - **Related posts as card row** (not grid of 3 photo cards) — same visual language as the homepage blog preview, ensures voice consistency.
 - **Category filter on blog.html** stays client-side, but filter chips are rewritten in the tokenized chip pattern used elsewhere. URL hash deep-linking from homepage category tiles preserved.
+
+## 2026-04-18 — Milestone 5: Tools hub + category + tool detail
+
+- **Branch** — `redesign/tools`. Scope: `tools.html` (hub), `category.html` (single-category listing), `tool.html` (detail).
+- **`.ad-container` placements preserved.** tools.html (2 slots), category.html (1 slot), tool.html (3 slots: after header, sidebar, before related). Each wrapped with our `.ad-slot ad-slot--leaderboard` / `.ad-slot ad-slot--in-content` CLS-safe containers so the empty `<div class="ad-container">` still reserves vertical space consistent with the finance-native direction. Slot IDs unchanged (none were ever defined — pre-resubmission, same posture as the rest of the site).
+- **Tools get their own list-row pattern, `.tool-card`** — conceptually parallel to `.advisor-row` but with logo/fallback at left, `.bool-chip` for API / Mobile flags (a mono-caps pill with `--gain`-tint when true, `--text-faint` outline when false), rating + pricing in mono, and a right-aligned CTA to the detail page and external site.
+- **Tool detail page head** — `.tool-head` extends the `.page-head` pattern with a logo block and inline rating/pricing/category tags. Uses the existing `.btn btn--primary` / `.btn btn--ghost` pair for the "Visit site" + "Learn more" actions.
+- **Features rendered as a typographic checklist** — clean single-column list with tokenized check glyph. No decorative backgrounds, just the data.
+- **Sidebar spec-sheet** reuses the `.spec-sheet` pattern from advisor detail. Quick-info `<dl>` items: pricing, price range, API availability (gain-tinted when Yes), mobile app, data sources. Consistent voice with the advisor spec-sheet.
+- **"Other categories" chip row** at the foot of category.html reuses the `.specialty-chip-row` component from the specialty page. Same design, different content slot.
+- **Related tools on the detail page** render as a compact 4-column card row at desktop, stack on mobile. Shares the `.related-post` pattern from the blog post template.
