@@ -635,6 +635,13 @@ def build_homepage(env, tools, advisors, posts):
     # State counts for browse grid
     by_state = group_advisors_by_state(advisors)
     state_counts = {s: len(v) for s, v in by_state.items()}
+    max_state_count = max(state_counts.values()) if state_counts else 0
+
+    # Specialty counts for homepage matrix
+    specialty_counts = {}
+    for a in advisors:
+        for s in a.get("specialties", []):
+            specialty_counts[s] = specialty_counts.get(s, 0) + 1
 
     # Blog categories with counts
     blog_cats = []
@@ -652,6 +659,8 @@ def build_homepage(env, tools, advisors, posts):
         recent_advisors=recent_advisors,
         all_advisors=advisors,
         state_counts=state_counts,
+        max_state_count=max_state_count,
+        specialty_counts=specialty_counts,
         total_advisor_count=len(advisors),
         total_tool_count=len(tools),
         blog_categories=blog_categories,
