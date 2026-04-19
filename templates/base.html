@@ -104,204 +104,154 @@
     <link rel="preload" href="/static/fonts/geist-latin.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="/static/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
 
-    <!-- Custom styles (primary) -->
+    <!-- Primary stylesheet -->
     <link rel="stylesheet" href="/static/css/custom.css">
-
-    <!-- Tailwind CSS CDN — retained for not-yet-redesigned page types -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        primary: {
-                            50: '#eff6ff', 100: '#dbeafe', 200: '#bfdbfe', 300: '#93c5fd',
-                            400: '#60a5fa', 500: '#3b82f6', 600: '#2563eb', 700: '#1d4ed8',
-                            800: '#1e40af', 900: '#1e3a8a',
-                        },
-                        secondary: {
-                            50: '#f0fdfa', 100: '#ccfbf1', 200: '#99f6e4', 300: '#5eead4',
-                            400: '#2dd4bf', 500: '#14b8a6', 600: '#0d9488', 700: '#0f766e',
-                            800: '#115e59', 900: '#134e4a',
-                        },
-                        accent: {
-                            50: '#fffbeb', 100: '#fef3c7', 200: '#fde68a', 300: '#fcd34d',
-                            400: '#fbbf24', 500: '#f59e0b', 600: '#d97706', 700: '#b45309',
-                            800: '#92400e', 900: '#78350f',
-                        }
-                    }
-                }
-            }
-        }
-    </script>
 
     <!-- Favicon -->
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect x='4' y='14' width='4' height='6' fill='%231F3A5F'/%3E%3Crect x='10' y='9' width='4' height='11' fill='%231F3A5F'/%3E%3Crect x='16' y='4' width='4' height='16' fill='%23A67A1A'/%3E%3C/svg%3E">
-
-    <style>
-        .ad-container { min-height: 90px; }
-    </style>
 </head>
-<body class="min-h-screen flex flex-col">
+<body>
 
     <!-- Navigation -->
-    <nav class="bg-white shadow-sm border-b sticky top-0 z-40">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between h-16">
-                <!-- Logo -->
-                <div class="flex items-center">
-                    <a href="/" class="brand-mark" aria-label="{{ site_name }} home">
-                        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-                            <rect class="brand-bar-2" x="4" y="14" width="4" height="6"/>
-                            <rect class="brand-bar-2" x="10" y="9" width="4" height="11"/>
-                            <rect class="brand-bar-1" x="16" y="4" width="4" height="16"/>
-                        </svg>
-                        <span class="font-bold text-xl text-gray-900">{{ site_name }}</span>
-                    </a>
-                </div>
+    <nav class="site-nav" aria-label="Primary">
+        <div class="site-container site-nav-inner">
+            <!-- Brand -->
+            <a href="/" class="brand-mark" aria-label="{{ site_name }} home">
+                <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                    <rect class="brand-bar-2" x="4" y="14" width="4" height="6"/>
+                    <rect class="brand-bar-2" x="10" y="9" width="4" height="11"/>
+                    <rect class="brand-bar-1" x="16" y="4" width="4" height="16"/>
+                </svg>
+                <span class="brand-name">{{ site_name }}</span>
+            </a>
 
-                <!-- Desktop Navigation -->
-                <div class="hidden md:flex items-center space-x-1">
-                    <!-- Find an Advisor dropdown -->
-                    <div class="relative group">
-                        <button class="text-gray-700 hover:text-primary-600 px-3 py-2 text-sm font-medium flex items-center gap-1 rounded-md hover:bg-gray-50">
-                            Find an Advisor
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
-                            </svg>
-                        </button>
-                        <div class="absolute left-0 mt-1 w-56 bg-white rounded-xl shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-150 z-50 border border-gray-100 py-2">
-                            {% for state in us_states[:10] %}
-                            <a href="/state/{{ state.slug }}.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-primary-50 hover:text-primary-700">
-                                {{ state.name }}
-                            </a>
-                            {% endfor %}
-                            <hr class="my-1 border-gray-100">
-                            <a href="/#states" class="block px-4 py-2 text-sm font-semibold text-primary-600 hover:bg-primary-50">
-                                View all states &rarr;
-                            </a>
-                        </div>
-                    </div>
-
-                    <!-- Specialties dropdown -->
-                    <div class="relative group">
-                        <button class="text-gray-700 hover:text-primary-600 px-3 py-2 text-sm font-medium flex items-center gap-1 rounded-md hover:bg-gray-50">
-                            Specialties
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
-                            </svg>
-                        </button>
-                        <div class="absolute left-0 mt-1 w-64 bg-white rounded-xl shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-150 z-50 border border-gray-100 py-2">
-                            {% for specialty in specialties %}
-                            <a href="/specialty/{{ specialty.slug }}.html" class="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-primary-50 hover:text-primary-700">
-                                <span>{{ specialty.name }}</span>
-                            </a>
-                            {% endfor %}
-                        </div>
-                    </div>
-
-                    <a href="/calculators.html" class="text-gray-700 hover:text-primary-600 px-3 py-2 text-sm font-medium rounded-md hover:bg-gray-50">Calculators</a>
-                    <a href="/tools.html" class="text-gray-700 hover:text-primary-600 px-3 py-2 text-sm font-medium rounded-md hover:bg-gray-50">Tools</a>
-                    <a href="/blog.html" class="text-gray-700 hover:text-primary-600 px-3 py-2 text-sm font-medium rounded-md hover:bg-gray-50">Blog</a>
-                    <a href="/about.html" class="text-gray-700 hover:text-primary-600 px-3 py-2 text-sm font-medium rounded-md hover:bg-gray-50">About</a>
-
-                    <!-- Desktop Search -->
-                    <div class="relative" id="search-container">
-                        <button id="search-toggle" class="text-gray-700 hover:text-primary-600 p-2 rounded-md hover:bg-gray-50" aria-label="Search advisors">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0"/>
-                            </svg>
-                        </button>
-                        <div id="search-box" class="hidden absolute right-0 top-full mt-2 w-80 bg-white rounded-xl shadow-lg border border-gray-100 z-50">
-                            <div class="p-3">
-                                <input type="text" id="search-input" placeholder="Search by name, city, or state..."
-                                       class="w-full px-4 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none">
-                            </div>
-                            <div id="search-results" class="hidden max-h-72 overflow-y-auto border-t border-gray-100 pb-2"></div>
-                        </div>
-                    </div>
-
-                    <!-- Theme toggle -->
-                    <button id="theme-toggle" class="theme-toggle" aria-label="Toggle color theme" type="button">
-                        <svg class="theme-dark-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-                            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
-                        </svg>
-                        <svg class="theme-light-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-                            <circle cx="12" cy="12" r="4"/>
-                            <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/>
-                        </svg>
-                        <span class="theme-label"></span>
-                    </button>
-                </div>
-
-                <!-- Mobile menu button -->
-                <div class="md:hidden flex items-center gap-1">
-                    <button id="theme-toggle-mobile" class="theme-toggle" aria-label="Toggle color theme" type="button" style="padding: 4px 8px;">
-                        <svg class="theme-dark-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-                            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
-                        </svg>
-                        <svg class="theme-light-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-                            <circle cx="12" cy="12" r="4"/>
-                            <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/>
+            <!-- Desktop nav -->
+            <div class="site-nav-links">
+                <!-- Find an Advisor dropdown -->
+                <div class="nav-dropdown">
+                    <button class="site-nav-btn" aria-haspopup="true">
+                        Find an Advisor
+                        <svg class="site-nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
                         </svg>
                     </button>
-                    <button id="mobile-search-btn" class="text-gray-700 hover:text-primary-600 p-2 rounded-md" aria-label="Search">
-                        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <div class="nav-dropdown-panel">
+                        {% for state in us_states[:10] %}
+                        <a href="/state/{{ state.slug }}.html">{{ state.name }}</a>
+                        {% endfor %}
+                        <div class="nav-dropdown-divider"></div>
+                        <a href="/#states" class="nav-dropdown-cta">View all states &rarr;</a>
+                    </div>
+                </div>
+
+                <!-- Specialties dropdown -->
+                <div class="nav-dropdown nav-dropdown--wide">
+                    <button class="site-nav-btn" aria-haspopup="true">
+                        Specialties
+                        <svg class="site-nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                        </svg>
+                    </button>
+                    <div class="nav-dropdown-panel">
+                        {% for specialty in specialties %}
+                        <a href="/specialty/{{ specialty.slug }}.html">{{ specialty.name }}</a>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <a href="/calculators.html" class="site-nav-link">Calculators</a>
+                <a href="/tools.html" class="site-nav-link">Tools</a>
+                <a href="/blog.html" class="site-nav-link">Blog</a>
+                <a href="/about.html" class="site-nav-link">About</a>
+
+                <!-- Desktop search -->
+                <div class="search-container" id="search-container">
+                    <button id="search-toggle" class="site-nav-icon-btn" aria-label="Search advisors" type="button">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0"/>
                         </svg>
                     </button>
-                    <button id="mobile-menu-btn" class="text-gray-700 hover:text-primary-600 p-2 rounded-md" aria-label="Open menu">
-                        <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
-                        </svg>
-                    </button>
+                    <div id="search-box" class="search-dropdown">
+                        <div class="search-dropdown-inner">
+                            <input type="text" id="search-input" class="search-input" placeholder="Search by name, city, or state...">
+                        </div>
+                        <div id="search-results" class="search-results"></div>
+                    </div>
                 </div>
+
+                <!-- Theme toggle -->
+                <button id="theme-toggle" class="theme-toggle" aria-label="Toggle color theme" type="button">
+                    <svg class="theme-dark-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+                    </svg>
+                    <svg class="theme-light-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                        <circle cx="12" cy="12" r="4"/>
+                        <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/>
+                    </svg>
+                </button>
+            </div>
+
+            <!-- Mobile controls (phone only) -->
+            <div class="mobile-nav-controls">
+                <button id="theme-toggle-mobile" class="theme-toggle" aria-label="Toggle color theme" type="button" style="padding: 4px 8px;">
+                    <svg class="theme-dark-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+                    </svg>
+                    <svg class="theme-light-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                        <circle cx="12" cy="12" r="4"/>
+                        <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/>
+                    </svg>
+                </button>
+                <button id="mobile-search-btn" class="mobile-nav-btn" aria-label="Search" type="button">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0"/>
+                    </svg>
+                </button>
+                <button id="mobile-menu-btn" class="mobile-nav-btn" aria-label="Open menu" type="button">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                    </svg>
+                </button>
             </div>
         </div>
 
-        <!-- Mobile menu -->
-        <div id="mobile-menu" class="hidden md:hidden border-t border-gray-100 bg-white">
-            <!-- Mobile Search -->
-            <div class="px-3 pt-3 pb-2">
-                <input type="text" id="mobile-search-input" placeholder="Search advisors..."
-                       class="w-full px-4 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none">
-                <div id="mobile-search-results" class="hidden mt-2 rounded-lg border border-gray-100 bg-white max-h-60 overflow-y-auto shadow-sm"></div>
+        <!-- Mobile menu panel -->
+        <div id="mobile-menu">
+            <div class="mobile-menu-search">
+                <input type="text" id="mobile-search-input" class="search-input" placeholder="Search advisors...">
+                <div id="mobile-search-results" class="search-results"></div>
             </div>
-            <div class="px-3 pt-2 pb-3 space-y-1">
-                <p class="px-3 py-1 text-xs font-semibold text-gray-400 uppercase tracking-wider">Find an Advisor</p>
+            <div class="mobile-menu-section">
+                <p class="mobile-menu-label">Find an Advisor</p>
                 {% for state in us_states[:10] %}
-                <a href="/state/{{ state.slug }}.html" class="block px-3 py-2 text-sm font-medium text-gray-700 hover:bg-primary-50 hover:text-primary-700 rounded-md">
-                    {{ state.name }}
-                </a>
+                <a href="/state/{{ state.slug }}.html" class="mobile-menu-link">{{ state.name }}</a>
                 {% endfor %}
-                <a href="/#states" class="block px-3 py-2 text-sm font-semibold text-primary-600 hover:bg-primary-50 rounded-md">
-                    View all states &rarr;
-                </a>
-                <hr class="my-2 border-gray-100">
-                <p class="px-3 py-1 text-xs font-semibold text-gray-400 uppercase tracking-wider">Specialties</p>
+                <a href="/#states" class="mobile-menu-link mobile-menu-link--cta">View all states &rarr;</a>
+            </div>
+            <div class="mobile-menu-section">
+                <p class="mobile-menu-label">Specialties</p>
                 {% for specialty in specialties %}
-                <a href="/specialty/{{ specialty.slug }}.html" class="flex items-center gap-2 px-3 py-2 text-sm font-medium text-gray-700 hover:bg-primary-50 hover:text-primary-700 rounded-md">
-                    {{ specialty.name }}
-                </a>
+                <a href="/specialty/{{ specialty.slug }}.html" class="mobile-menu-link">{{ specialty.name }}</a>
                 {% endfor %}
-                <hr class="my-2 border-gray-100">
-                <a href="/calculators.html" class="block px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 rounded-md">Calculators</a>
-                <a href="/tools.html" class="block px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 rounded-md">Investor Tools</a>
-                <a href="/blog.html" class="block px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 rounded-md">Blog</a>
-                <a href="/about.html" class="block px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 rounded-md">About</a>
-                <a href="/contact.html" class="block px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 rounded-md">Contact</a>
+            </div>
+            <div class="mobile-menu-section">
+                <a href="/calculators.html" class="mobile-menu-link">Calculators</a>
+                <a href="/tools.html" class="mobile-menu-link">Investor Tools</a>
+                <a href="/blog.html" class="mobile-menu-link">Blog</a>
+                <a href="/about.html" class="mobile-menu-link">About</a>
+                <a href="/contact.html" class="mobile-menu-link">Contact</a>
             </div>
         </div>
     </nav>
 
-    <!-- Main Content -->
-    <main class="flex-grow">
+    <!-- Main content -->
+    <main class="site-main">
         {% block content %}{% endblock %}
     </main>
 
     <!-- Sticky compare bar (site-wide; hidden until ≥1 advisor selected) -->
     <div class="compare-bar" id="compare-bar" role="region" aria-label="Advisor compare tray">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 compare-bar-inner">
+        <div class="site-container compare-bar-inner">
             <div class="compare-bar-left">
                 <span class="compare-count" id="compare-count">0</span>
                 <span>selected</span>
@@ -315,108 +265,104 @@
     </div>
 
     <!-- Newsletter Signup — Mailchimp (shared audience, SITE tag segments source) -->
-    <section class="bg-primary-600 text-white py-10">
-        <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <h2 class="text-xl font-bold mb-2">Get one email a month. Nothing else.</h2>
-            <p class="text-primary-100 text-sm mb-5">Advisor selection checklists, fee-disclosure explainers, and research summaries. No sales pitches.</p>
+    <section class="newsletter">
+        <div class="newsletter-inner">
+            <h2>Get one email a month. Nothing else.</h2>
+            <p class="newsletter-desc">Advisor selection checklists, fee-disclosure explainers, and research summaries. No sales pitches.</p>
             <form action="https://doggroomerlocator.us12.list-manage.com/subscribe/post?u=21343a587fbb950d8b649ee6d&amp;id=970ba04869&amp;f_id=00d5e2e3f0"
                   method="post"
                   target="_blank"
                   rel="noopener"
-                  class="flex flex-col sm:flex-row gap-3 max-w-md mx-auto"
+                  class="newsletter-form"
                   id="newsletter-form">
-                <label class="sr-only" for="mc-email">Email address</label>
-                <input type="email" name="EMAIL" id="mc-email" required placeholder="you@domain.com"
-                       class="flex-1 px-4 py-2.5 rounded-lg text-gray-900 text-sm focus:ring-2 focus:ring-accent-400 outline-none">
-                <button type="submit" name="subscribe" value="Subscribe" class="px-6 py-2.5 bg-accent-500 hover:bg-accent-600 text-white font-semibold rounded-lg text-sm transition-colors whitespace-nowrap">
-                    Subscribe
-                </button>
-                {# Mailchimp bot honeypot — the field name is specific to the list and must be preserved verbatim #}
-                <div aria-hidden="true" style="position: absolute; left: -5000px;">
+                <label class="u-sr-only" for="mc-email">Email address</label>
+                <input type="email" name="EMAIL" id="mc-email" required placeholder="you@domain.com" class="newsletter-input">
+                <button type="submit" name="subscribe" value="Subscribe" class="newsletter-submit">Subscribe</button>
+                {# Mailchimp bot honeypot — field name is specific to the list and must be preserved verbatim #}
+                <div class="newsletter-honeypot" aria-hidden="true">
                     <input type="text" name="b_21343a587fbb950d8b649ee6d_970ba04869" tabindex="-1" autocomplete="off" value="">
                 </div>
-                {# Source tag — populates a SITE merge field if Kevin adds one to the Mailchimp audience; silently ignored otherwise #}
+                {# Source tag — populates a SITE merge field if added to the audience; silently ignored otherwise #}
                 <input type="hidden" name="SITE" value="smart-investor">
             </form>
-            <p id="newsletter-success" class="hidden text-accent-200 text-sm mt-3 font-medium">Subscribed. Check your inbox to confirm.</p>
+            <p id="newsletter-success" class="newsletter-success">Subscribed. Check your inbox to confirm.</p>
         </div>
     </section>
 
     <!-- Footer -->
-    <footer class="bg-gray-900 text-white">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-            <div class="grid grid-cols-1 md:grid-cols-5 gap-8">
+    <footer class="site-footer">
+        <div class="site-footer-inner">
+            <div class="site-footer-grid">
                 <!-- Brand -->
-                <div class="col-span-1 md:col-span-2">
-                    <div class="flex items-center space-x-2 mb-4">
-                        <svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" style="display:inline-block;">
+                <div class="site-footer-brand">
+                    <div class="site-footer-brand-row">
+                        <svg class="footer-logo-svg" viewBox="0 0 24 24" aria-hidden="true">
                             <rect x="4" y="14" width="4" height="6" fill="currentColor" opacity="0.6"/>
                             <rect x="10" y="9" width="4" height="11" fill="currentColor" opacity="0.8"/>
                             <rect x="16" y="4" width="4" height="16" fill="#A67A1A"/>
                         </svg>
-                        <span class="font-bold text-xl">{{ site_name }}</span>
+                        <span class="footer-brand-name">{{ site_name }}</span>
                     </div>
-                    <p class="text-gray-400 text-sm leading-relaxed mb-4">{{ site_description }}</p>
-                    <p class="text-gray-500 text-xs">&copy; {{ current_year }} {{ site_name }}. All rights reserved. No placement fees. Not a registered investment advisor; informational use only.</p>
+                    <p>{{ site_description }}</p>
+                    <p class="site-footer-copyright">&copy; {{ current_year }} {{ site_name }}. All rights reserved. No placement fees. Not a registered investment advisor; informational use only.</p>
                 </div>
 
                 <!-- Specialties -->
                 <div>
-                    <h3 class="font-semibold mb-4 text-gray-100">Specialties</h3>
-                    <ul class="space-y-2 text-sm text-gray-400">
+                    <h3>Specialties</h3>
+                    <ul>
                         {% for specialty in specialties[:5] %}
-                        <li><a href="/specialty/{{ specialty.slug }}.html" class="hover:text-white transition-colors">{{ specialty.name }}</a></li>
+                        <li><a href="/specialty/{{ specialty.slug }}.html">{{ specialty.name }}</a></li>
                         {% endfor %}
                     </ul>
                 </div>
 
                 <!-- Calculators -->
                 <div>
-                    <h3 class="font-semibold mb-4 text-gray-100">Calculators</h3>
-                    <ul class="space-y-2 text-sm text-gray-400">
+                    <h3>Calculators</h3>
+                    <ul>
                         {% for calc in calculators %}
-                        <li><a href="/calculator/{{ calc.slug }}.html" class="hover:text-white transition-colors">{{ calc.name | replace(' Calculator', '') }}</a></li>
+                        <li><a href="/calculator/{{ calc.slug }}.html">{{ calc.name | replace(' Calculator', '') }}</a></li>
                         {% endfor %}
                     </ul>
                 </div>
 
                 <!-- Info -->
                 <div>
-                    <h3 class="font-semibold mb-4 text-gray-100">Info</h3>
-                    <ul class="space-y-2 text-sm text-gray-400">
-                        <li><a href="/about.html" class="hover:text-white transition-colors">About</a></li>
-                        <li><a href="/blog.html" class="hover:text-white transition-colors">Blog</a></li>
-                        <li><a href="/contact.html" class="hover:text-white transition-colors">Contact</a></li>
-                        <li><a href="/privacy.html" class="hover:text-white transition-colors">Privacy</a></li>
-                        <li><a href="/terms.html" class="hover:text-white transition-colors">Terms</a></li>
+                    <h3>Info</h3>
+                    <ul>
+                        <li><a href="/about.html">About</a></li>
+                        <li><a href="/blog.html">Blog</a></li>
+                        <li><a href="/contact.html">Contact</a></li>
+                        <li><a href="/privacy.html">Privacy</a></li>
+                        <li><a href="/terms.html">Terms</a></li>
                     </ul>
                 </div>
             </div>
         </div>
     </footer>
 
-    <!-- Nav + Search + Theme Script -->
+    <!-- Nav + Search + Theme + Newsletter + Compare Script -->
     <script>
         // Mobile menu open/close — locks body scroll and uses overscroll-contain
-        // so scrolling inside the menu doesn't chain to the page underneath.
         var mobileMenu = document.getElementById('mobile-menu');
         var mobileMenuBtn = document.getElementById('mobile-menu-btn');
         var mobileSearchBtn = document.getElementById('mobile-search-btn');
 
         function setMenuOpen(isOpen) {
             if (isOpen) {
-                mobileMenu.classList.remove('hidden');
+                mobileMenu.classList.add('is-open');
                 document.body.classList.add('menu-open');
                 mobileMenuBtn.setAttribute('aria-expanded', 'true');
             } else {
-                mobileMenu.classList.add('hidden');
+                mobileMenu.classList.remove('is-open');
                 document.body.classList.remove('menu-open');
                 mobileMenuBtn.setAttribute('aria-expanded', 'false');
             }
         }
 
         mobileMenuBtn.addEventListener('click', function () {
-            setMenuOpen(mobileMenu.classList.contains('hidden'));
+            setMenuOpen(!mobileMenu.classList.contains('is-open'));
         });
 
         mobileSearchBtn.addEventListener('click', function () {
@@ -424,15 +370,14 @@
             document.getElementById('mobile-search-input').focus();
         });
 
-        // Close on link click inside the menu (so anchor navigation feels complete
-        // and so the lock is released even if navigation is same-page hash-only).
+        // Close on link click inside the menu
         mobileMenu.addEventListener('click', function (e) {
             if (e.target.closest('a')) setMenuOpen(false);
         });
 
         // Close on Escape
         document.addEventListener('keydown', function (e) {
-            if (e.key === 'Escape' && !mobileMenu.classList.contains('hidden')) {
+            if (e.key === 'Escape' && mobileMenu.classList.contains('is-open')) {
                 setMenuOpen(false);
             }
         });
@@ -472,13 +417,13 @@
 
         function renderResults(matches) {
             if (matches.length === 0) {
-                return '<p class="px-4 py-3 text-sm text-gray-400">No advisors found</p>';
+                return '<p class="no-results">No advisors found</p>';
             }
             return matches.map(a => `
-                <a href="/advisor/${a.slug}.html" class="flex items-center gap-3 px-4 py-2.5 hover:bg-primary-50 transition-colors">
+                <a href="/advisor/${a.slug}.html">
                     <div>
-                        <p class="text-sm font-medium text-gray-900">${a.name}</p>
-                        <p class="text-xs text-gray-400">${a.city}, ${a.state}</p>
+                        <p class="result-name">${a.name}</p>
+                        <p class="result-loc">${a.city}, ${a.state}</p>
                     </div>
                 </a>
             `).join('');
@@ -492,8 +437,8 @@
 
         searchToggle.addEventListener('click', function(e) {
             e.stopPropagation();
-            searchBox.classList.toggle('hidden');
-            if (!searchBox.classList.contains('hidden')) {
+            searchBox.classList.toggle('is-open');
+            if (searchBox.classList.contains('is-open')) {
                 searchInput.focus();
                 loadSearchIndex(() => {});
             }
@@ -501,10 +446,10 @@
 
         searchInput.addEventListener('input', function() {
             const query = this.value.trim();
-            if (query.length < 2) { searchResults.classList.add('hidden'); return; }
+            if (query.length < 2) { searchResults.classList.remove('is-open'); return; }
             loadSearchIndex(() => {
                 searchResults.innerHTML = renderResults(filterAdvisors(query));
-                searchResults.classList.remove('hidden');
+                searchResults.classList.add('is-open');
             });
         });
 
@@ -514,26 +459,21 @@
 
         mobileInput.addEventListener('input', function() {
             const query = this.value.trim();
-            if (query.length < 2) { mobileResults.classList.add('hidden'); return; }
+            if (query.length < 2) { mobileResults.classList.remove('is-open'); return; }
             loadSearchIndex(() => {
                 mobileResults.innerHTML = renderResults(filterAdvisors(query));
-                mobileResults.classList.remove('hidden');
+                mobileResults.classList.add('is-open');
             });
         });
 
-        // Newsletter form — posts directly to Mailchimp (target="_blank" opens
-        // their confirmation page in a new tab). Do NOT preventDefault; let the
-        // native submission go through. Optimistically swap our UI to the
-        // success message once the browser validates and begins the submit.
+        // Newsletter form — posts directly to Mailchimp (target="_blank")
         const nlForm = document.getElementById('newsletter-form');
         if (nlForm) {
             nlForm.addEventListener('submit', function () {
-                // HTML5 required + type=email means this handler only fires on valid input.
-                // Defer the UI swap a tick so the native submit is definitely in flight.
                 setTimeout(function () {
-                    nlForm.classList.add('hidden');
+                    nlForm.classList.add('u-hidden');
                     var success = document.getElementById('newsletter-success');
-                    if (success) success.classList.remove('hidden');
+                    if (success) success.classList.add('is-visible');
                 }, 50);
             });
         }
@@ -541,11 +481,11 @@
         // Close desktop search on outside click or Escape
         document.addEventListener('click', function(e) {
             if (!document.getElementById('search-container').contains(e.target)) {
-                searchBox.classList.add('hidden');
+                searchBox.classList.remove('is-open');
             }
         });
         document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape') searchBox.classList.add('hidden');
+            if (e.key === 'Escape') searchBox.classList.remove('is-open');
         });
 
         /* ------------------------------------------------------------------
@@ -622,7 +562,6 @@
                 });
             }
 
-            // Toggle clicks
             document.addEventListener('click', function (e) {
                 var btn = e.target.closest('.js-compare-toggle');
                 if (btn) {
@@ -641,7 +580,6 @@
                     refreshToggles();
                     return;
                 }
-                // Chip remove inside compare bar
                 var chipBtn = e.target.closest('.compare-chip button');
                 if (chipBtn) {
                     var chipSlug = chipBtn.getAttribute('data-slug');
@@ -661,7 +599,6 @@
                 });
             }
 
-            // Cross-tab sync
             window.addEventListener('storage', function (e) {
                 if (e.key === KEY) { refreshBar(); refreshToggles(); }
             });
@@ -670,7 +607,6 @@
                 refreshBar();
                 refreshToggles();
             });
-            // Also run immediately in case DOMContentLoaded already fired
             refreshBar();
             refreshToggles();
         })();
