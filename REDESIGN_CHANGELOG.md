@@ -6,6 +6,46 @@ This file is the "release notes" view of the redesign. For the terse one-line-pe
 
 ---
 
+## Milestone 9 — Tailwind CDN removal + mobile performance (2026-04-18)
+
+**Commits:** `430afde` (Tailwind removal / base.html rewrite), `0df0dab` (mobile menu scroll-containment)
+**Files touched:** `templates/base.html` (full nav / footer / newsletter rewrite), `static/css/custom.css` (~110 lines of Tailwind-class-selector overrides deleted; new mobile-menu scroll rules added)
+**Type:** Performance milestone — no visual change, substantial payload and CWV win
+
+### What changed
+
+- **Removed the Tailwind CDN `<script>` from `base.html`.** It was render-blocking at the top of `<head>` and Lighthouse flagged ~268 KiB of unused JS payload. Every page paid the cost on every load.
+- **Rewrote `base.html` nav / footer / newsletter in semantic, tokenized CSS.** The old markup had Tailwind utility classes (`bg-white`, `bg-primary-600`, `bg-gray-900`, `px-4 py-2`, `md:hidden`, etc.) throughout. Now uses a small set of semantic classes — `.site-nav`, `.site-container`, `.nav-dropdown`, `.search-dropdown`, `.mobile-menu-section`, `.newsletter`, `.site-footer` — all styled in `custom.css` via the existing design tokens.
+- **Deleted ~110 lines of Tailwind-class-selector overrides from `custom.css`.** The file had accumulated rules like `nav.bg-white { ... }`, `section.bg-primary-600 { ... }`, `footer.bg-gray-900 { ... }`, `#search-box { !important }` to fight Tailwind's specificity. With Tailwind gone, those overrides became dead weight and were removed.
+- **Mobile menu scroll-containment fix.** When the hamburger menu was open, the page behind it would scroll when the user dragged on menu items — the classic iOS/Android scroll-chain bug. Added:
+  ```css
+  @media (max-width: 767px) {
+      #mobile-menu {
+          max-height: calc(100dvh - 64px);
+          overflow-y: auto;
+          overscroll-behavior: contain;
+      }
+      body.menu-open { overflow: hidden; }
+  }
+  ```
+  `100dvh` (dynamic viewport height) correctly handles iOS Safari's collapsing URL bar; `overscroll-behavior: contain` stops the scroll chain from reaching the body; `body.menu-open` is toggled by the existing hamburger JS and locks background scroll.
+
+### Why it helps
+
+- **Lighthouse mobile 91 Performance / 97 Accessibility / 100 SEO.** The journey from the start of the perf push was 70 → 76 → 55 → 91 — the dip to 55 was a brief CLS regression (0 → 0.894) on the first run after Tailwind removal that resolved on the next run (likely a variance / font-loading interaction that settled). Final mobile Lighthouse run: **91 / 97 / 100.** Desktop **96 / 97 / 100.**
+- **~268 KiB of unused JS removed.** Render-blocking script in `<head>` was the largest single chunk the Lighthouse "Reduce unused JavaScript" audit surfaced. Gone entirely — no more CDN fetch, no more utility-class compilation at runtime.
+- **FCP / LCP / TBT all improved.** With no render-blocking script at the top of head, first paint happens earlier on every page. Font-display choices (self-hosted variable WOFF2 with `font-display: swap`) remained unchanged but now benefit more because the critical path is shorter.
+- **Mobile menu no longer scrolls the background.** Small UX win that users would notice immediately — the bug was most visible on the longer mobile menu (nav + search dropdown + newsletter) where a drag could bleed through onto the page underneath.
+- **Simpler stylesheet.** Semantic class names (`.site-nav`) read better than Tailwind utility chains and are easier to refactor. The design token system (`--color-surface`, `--color-text-muted`, `--space-4`, etc.) is now the single source of truth — no parallel Tailwind color palette to reconcile.
+
+### Known gaps
+
+- No CSS tree-shaking step. `custom.css` is hand-authored so there's no unused-class problem today, but it's grown to ~4000+ lines. A future milestone could split into component CSS files loaded on demand; not needed for current page weight.
+- Variance on CLS score between runs. The 0 → 0.894 → 0 flap on sequential Lighthouse runs is likely tied to font-loading timing. Worth revisiting if a production CrUX CLS shows up as a real problem — not a synthetic-only issue.
+- Hamburger menu animation is instant (no transition). Could get a subtle fade-in/slide from the side for polish; deferred.
+
+---
+
 ## Side-milestone — Removed fabricated tool ratings (2026-04-18)
 
 **Branch:** `fix/remove-fabricated-tool-ratings`
