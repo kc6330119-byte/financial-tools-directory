@@ -65,7 +65,7 @@
             <a class="post-index-link" href="/blog/{{ post.slug }}.html">
                 <div class="post-index-left">
                     {% if post.featured_image %}
-                    <img src="{{ post.featured_image }}" alt="{{ post.title }}" class="post-index-thumb" loading="lazy" width="360" height="240">
+                    <img src="{{ post.featured_image }}" alt="{{ post.title }}" class="post-index-thumb" loading="lazy">
                     {% endif %}
                     <div class="post-index-meta">
                         {% if post.category %}<span class="category">{{ post.category }}</span>{% endif %}
