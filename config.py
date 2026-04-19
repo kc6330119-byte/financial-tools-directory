@@ -281,6 +281,7 @@ BLOG_CATEGORIES = [
     {"name": "Investing", "slug": "investing", "icon": "📈", "description": "Investment strategies, portfolio management, and market insights"},
     {"name": "Tax Strategy", "slug": "tax-strategy", "icon": "📋", "description": "Tax-efficient investing and tax planning strategies"},
     {"name": "Resources", "slug": "resources", "icon": "🔗", "description": "Tools, checklists, and resources for investors"},
+    {"name": "Technology & Security", "slug": "technology-security", "icon": "🔒", "description": "Security hygiene, AI tools, and tech-side research for investors"},
 ]
 
 # SEO Settings
