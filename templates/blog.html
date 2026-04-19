@@ -63,10 +63,15 @@
         {% set cat_slug = (post.category or '') | lower | replace(' ', '-') %}
         <li class="post-index-item post-card" data-category="{{ cat_slug }}">
             <a class="post-index-link" href="/blog/{{ post.slug }}.html">
-                <div class="post-index-meta">
-                    {% if post.category %}<span class="category">{{ post.category }}</span>{% endif %}
-                    <span class="read-time">{{ reading_time }} min read</span>
-                    {% if post.publish_date %}<span class="date">{{ post.publish_date | format_date }}</span>{% endif %}
+                <div class="post-index-left">
+                    {% if post.featured_image %}
+                    <img src="{{ post.featured_image }}" alt="{{ post.title }}" class="post-index-thumb" loading="lazy" width="360" height="240">
+                    {% endif %}
+                    <div class="post-index-meta">
+                        {% if post.category %}<span class="category">{{ post.category }}</span>{% endif %}
+                        <span class="read-time">{{ reading_time }} min read</span>
+                        {% if post.publish_date %}<span class="date">{{ post.publish_date | format_date }}</span>{% endif %}
+                    </div>
                 </div>
                 <div>
                     <h2 class="post-index-title">{{ post.title }}</h2>
