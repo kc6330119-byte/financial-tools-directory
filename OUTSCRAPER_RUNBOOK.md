@@ -213,30 +213,44 @@ python3 backfill_specialties.py --apply
 
 ## Step 7 — Enrich descriptions
 
-**Time:** 5–10 min · **Risk:** low (only writes to thin/empty descriptions; doesn't touch good existing ones)
+**Time:** 5–10 min (template path) or 10–20 min (AI path) · **Risk:** low (only writes to thin/empty descriptions; doesn't touch good existing ones)
 
 ⚠️ **Order matters:** must run AFTER validation (Step 5). Enriched descriptions can mask non-advisor businesses by templating professional-sounding text over them.
 
-**Dry run first (replace mode):**
+**Two paths — pick one:**
+
+### Path A — Template enrichment (`enrich_descriptions.py`)
+
+- **Cost:** $0 (no API calls)
+- **Speed:** Fast (~1 min for 3000 records)
+- **Quality:** Deterministic. Same advisor → same description on every rebuild. ~32K unique sentence-pool combinations across the corpus, but every description follows the same skeleton.
+- **Use when:** budget = 0, or you need bit-for-bit reproducibility across rebuilds.
+
 ```bash
-python3 enrich_descriptions.py
+python3 enrich_descriptions.py            # dry run
+python3 enrich_descriptions.py --apply    # replace thin + irrelevant
+python3 enrich_descriptions.py --append   # append to short (100–149 char) descs
 ```
 
-Output shows how many descriptions are thin (< 100 chars) or irrelevant. Preview shows 3 example outputs — check that they read naturally and reference the advisor's actual specialties / fees / location.
+### Path B — AI enrichment (`auto_descriptions.py`)
 
-**Apply replace mode** (handles thin + irrelevant descriptions):
+- **Cost:** ~$0.0015–$0.004 per record (uses Claude Haiku 4.5 with prompt caching on the system message; first call writes the cache, subsequent calls read at ~10% cost). For ~3000 records: **~$5–$12 total**.
+- **Speed:** ~10–20 min for 3000 records (rate-limited to 0.25 s/record).
+- **Quality:** Genuinely contextual — pulls from each advisor's actual data and writes natural prose. YMYL-aware prompt: no return claims, no guarantees, no income promises. Forbidden-phrase list drops the typical AI slop ("trusted partner," "tailored solutions," "holistic approach," etc.).
+- **Two-pass design:** Pass 1 (free) strips junk — JSON blobs, advisor-CRM software lists ("MoneyGuide Pro · eMoney · Riskalyze"), regulatory boilerplate ("Securities offered through…", "Member FINRA/SIPC"), URLs/phones/emails masquerading as descriptions, and "nan" literals. Pass 2 sends only records still under 100 chars after cleaning to Claude.
+- **Use when:** you have ~$10 of budget for a state batch and want descriptions that read like a person wrote them.
+
 ```bash
-python3 enrich_descriptions.py --apply
+python3 auto_descriptions.py                   # dry run (shows estimated cost)
+python3 auto_descriptions.py --apply           # Pass 1 cleanup only (free)
+python3 auto_descriptions.py --apply --ai      # Pass 1 + AI generation
 ```
 
-**Then handle short-but-not-thin descriptions** (100–149 chars — append mode adds supplementary content rather than replacing):
-```bash
-python3 enrich_descriptions.py --append
-```
+**Required for Path B:** `ANTHROPIC_API_KEY` in `.env` and `pip install anthropic` (or `pip install -r requirements.txt`).
 
-Append uses different sentence pools so the result reads naturally: existing copy first, then "Additional areas of expertise include…" / "The firm also specializes in…" etc.
+**Recommendation:** Path B for the AdSense resubmission push (real, varied prose helps with content-quality signal). Path A if you ever need to rebuild without burning credits.
 
-**No AI / no API calls.** Descriptions are deterministic — same advisor always gets the same description across rebuilds. ~32K unique combinations across the sentence pools.
+**Either way, the dry run is non-destructive** — both scripts default to dry run and require explicit `--apply` to write to Airtable.
 
 ---
 
