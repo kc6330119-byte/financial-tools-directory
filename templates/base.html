@@ -77,7 +77,10 @@
                     "@type": "ImageObject",
                     "url": {{ (site_url ~ "/static/images/logo.webp") | tojson | safe }}
                 },
-                "description": {{ site_description | tojson | safe }}
+                "description": {{ site_description | tojson | safe }},
+                "sameAs": [
+                    "https://www.youtube.com/@AIShift-j6s"
+                ]
             }
         ]
     }
