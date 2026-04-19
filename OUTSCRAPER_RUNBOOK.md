@@ -52,11 +52,7 @@ Before starting, confirm:
    ```
    ⚠️ The space-separated filename `Advisors Table-Grid view.csv` is **load-bearing** — the script looks for that exact name. Quoting matters.
 
-4. **Branch off main** so the data work is isolatable:
-   ```bash
-   cd /Users/kevincollins/GitHub/financial-tools-directory
-   git checkout -b data/advisor-import-$(date +%Y-%m-%d)
-   ```
+4. **No branch needed.** Stay on `main`. Every artifact the pipeline produces is gitignored (`outscraper_advisors.xlsx`, `Advisors_NEW_ONLY.csv`, validation CSVs, etc.) and Airtable writes go via API — there's nothing to commit. Only branch if you find yourself wanting to *modify* one of the pipeline scripts mid-run (uncommon — usually a sign that the validator keywords need tuning, in which case branch as `fix/validator-tuning` and PR separately).
 
 ---
 
@@ -289,25 +285,30 @@ Spot-check:
 
 ---
 
-## Step 9 — Commit + push
+## Step 9 — Trigger a Netlify rebuild
 
-**Time:** 2 min · **Risk:** medium (Netlify auto-deploys to production)
+**Time:** 1 min · **Risk:** low (Netlify rebuilds with fresh Airtable data; no code change required)
 
-The Airtable change is already live for any new build. The build artifacts won't be committed (`dist/` is gitignored). What gets committed is just operational notes — and the local working files are gitignored too.
+**The data import doesn't need a git commit.** All working files are gitignored, Airtable writes happened via API, and the site reads live from Airtable on every Netlify build.
 
-If you made any pipeline-script tweaks, commit them. Otherwise, the data import doesn't actually need a code commit.
+To pick up your new advisors on production, you just need to trigger a rebuild:
 
-**Trigger Netlify rebuild** (which will pull fresh Airtable data):
+**Option A — push any small change to main** (forces a build):
 ```bash
-git checkout main
-git merge --ff-only data/advisor-import-$(date +%Y-%m-%d) 2>/dev/null || true
+# e.g., touching a doc file, or just an empty commit
+git commit --allow-empty -m "chore: trigger rebuild — advisor import $(date +%Y-%m-%d)"
 git push origin main
-git branch -d data/advisor-import-$(date +%Y-%m-%d)
 ```
 
-If there were no commits on the branch (just data work), the merge is a no-op and that's fine.
+**Option B — manual trigger** (no commit at all):
+- Netlify UI → site → **Deploys** → **Trigger deploy** → **Deploy site**
 
-**To force a Netlify rebuild without a code change:** in Netlify UI, Site overview → Trigger deploy → Deploy site.
+**If you DID make pipeline-script changes** during the run (e.g., tuned the validator keywords), commit them like any other code change:
+```bash
+git add validate_listings.py
+git commit -m "fix(validator): tune keyword X for false positive on Y"
+git push origin main
+```
 
 ---
 
