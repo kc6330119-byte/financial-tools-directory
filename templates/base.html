@@ -397,15 +397,44 @@
 
     <!-- Nav + Search + Theme Script -->
     <script>
-        // Mobile menu toggle
-        document.getElementById('mobile-menu-btn').addEventListener('click', function() {
-            document.getElementById('mobile-menu').classList.toggle('hidden');
+        // Mobile menu open/close — locks body scroll and uses overscroll-contain
+        // so scrolling inside the menu doesn't chain to the page underneath.
+        var mobileMenu = document.getElementById('mobile-menu');
+        var mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        var mobileSearchBtn = document.getElementById('mobile-search-btn');
+
+        function setMenuOpen(isOpen) {
+            if (isOpen) {
+                mobileMenu.classList.remove('hidden');
+                document.body.classList.add('menu-open');
+                mobileMenuBtn.setAttribute('aria-expanded', 'true');
+            } else {
+                mobileMenu.classList.add('hidden');
+                document.body.classList.remove('menu-open');
+                mobileMenuBtn.setAttribute('aria-expanded', 'false');
+            }
+        }
+
+        mobileMenuBtn.addEventListener('click', function () {
+            setMenuOpen(mobileMenu.classList.contains('hidden'));
         });
 
-        // Mobile search icon
-        document.getElementById('mobile-search-btn').addEventListener('click', function() {
-            document.getElementById('mobile-menu').classList.remove('hidden');
+        mobileSearchBtn.addEventListener('click', function () {
+            setMenuOpen(true);
             document.getElementById('mobile-search-input').focus();
+        });
+
+        // Close on link click inside the menu (so anchor navigation feels complete
+        // and so the lock is released even if navigation is same-page hash-only).
+        mobileMenu.addEventListener('click', function (e) {
+            if (e.target.closest('a')) setMenuOpen(false);
+        });
+
+        // Close on Escape
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape' && !mobileMenu.classList.contains('hidden')) {
+                setMenuOpen(false);
+            }
         });
 
         // Theme toggle — shared handler for desktop + mobile buttons

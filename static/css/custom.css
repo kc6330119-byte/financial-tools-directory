@@ -2318,6 +2318,25 @@ nav .group .absolute a:hover { background: var(--bg) !important; color: var(--ac
 }
 
 /* -------------------------------------------------------------------------
+   Mobile menu scroll containment
+   Fixes the scroll-chain bug where scrolling inside the open menu would
+   move the body underneath. Height is constrained to viewport minus the
+   64-px sticky nav header so the menu has room to scroll internally.
+   ------------------------------------------------------------------------- */
+@media (max-width: 767px) {
+    #mobile-menu {
+        max-height: calc(100vh - 64px);
+        max-height: calc(100dvh - 64px); /* dvh respects mobile chrome bars */
+        overflow-y: auto;
+        overscroll-behavior: contain;
+        -webkit-overflow-scrolling: touch;
+    }
+    body.menu-open {
+        overflow: hidden;
+    }
+}
+
+/* -------------------------------------------------------------------------
    Investor calculators
    Milestone 7 — 2026-04-18
    ------------------------------------------------------------------------- */
