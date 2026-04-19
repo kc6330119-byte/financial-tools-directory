@@ -4,6 +4,8 @@
 
 **Use this when:** an Outscraper extract for a state (or batch of states) finishes and you have an `.xlsx` file ready to import.
 
+> **Looking to upload blog posts instead?** See [`BLOG_RUNBOOK.md`](BLOG_RUNBOOK.md) — the markdown → Airtable → site flow for blog content is a separate workflow.
+
 **Time estimate:** ~45–60 minutes for a typical state batch (3,000–5,000 records). Validation + enrichment dominate; the actual scripts run in 1–3 min each.
 
 **Risk level:** Medium. Steps 5b (`--remove-all`) and 7 (`--apply`) write to Airtable irreversibly. Take an Airtable export at Step 0 as your rollback snapshot.
