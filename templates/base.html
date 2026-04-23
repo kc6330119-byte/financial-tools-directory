@@ -58,15 +58,7 @@
                 "name": {{ site_name | tojson | safe }},
                 "url": {{ site_url | tojson | safe }},
                 "description": {{ site_description | tojson | safe }},
-                "publisher": {"@id": {{ (site_url ~ "/#organization") | tojson | safe }}},
-                "potentialAction": {
-                    "@type": "SearchAction",
-                    "target": {
-                        "@type": "EntryPoint",
-                        "urlTemplate": {{ (site_url ~ "/state/{slug}.html") | tojson | safe }}
-                    },
-                    "query-input": "required name=slug"
-                }
+                "publisher": {"@id": {{ (site_url ~ "/#organization") | tojson | safe }}}
             },
             {
                 "@type": "Organization",
