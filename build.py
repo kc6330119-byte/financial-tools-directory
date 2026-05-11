@@ -1150,6 +1150,60 @@ def copy_verification_files():
                 print(f"Built: {path.name} (verification)")
 
 
+def write_indexnow_key_file():
+    """Publish the IndexNow ownership-verification key at /{key}.txt on the site root.
+    Required by the IndexNow protocol — search engines fetch this URL to confirm we
+    own the submitting key before accepting any URL submissions."""
+    key = config.INDEXNOW_KEY
+    out = config.OUTPUT_DIR / f"{key}.txt"
+    out.write_text(key)
+    print(f"Built: {key}.txt (IndexNow key)")
+
+
+def submit_to_indexnow():
+    """Notify Bing/Yandex/Seznam of fresh content via IndexNow.
+
+    Submits a short list of aggregator URLs (homepage, /blog.html, etc.) on every
+    build. The IndexNow spec asks that we only submit URLs that have changed, but
+    aggregator URLs effectively *do* change every build — they list newly added
+    content. Per-URL change tracking for the long tail is deferred to a later phase.
+
+    Skipped unless NETLIFY=true (auto-set by Netlify in CI) or INDEXNOW_ENABLED=1
+    is set manually. This keeps local dev builds from spamming the protocol.
+    """
+    if not (os.getenv("NETLIFY") or os.getenv("INDEXNOW_ENABLED")):
+        print("Skipping IndexNow submission (not in Netlify build; set INDEXNOW_ENABLED=1 to force)")
+        return
+
+    import urllib.request
+    import urllib.error
+
+    host = config.SITE_URL.replace("https://", "").replace("http://", "").rstrip("/")
+    url_list = [f"{config.SITE_URL}{path}" if path else config.SITE_URL for path in config.INDEXNOW_FRESH_URLS]
+    payload = json.dumps({
+        "host": host,
+        "key": config.INDEXNOW_KEY,
+        "keyLocation": f"{config.SITE_URL}/{config.INDEXNOW_KEY}.txt",
+        "urlList": url_list,
+    }).encode("utf-8")
+
+    req = urllib.request.Request(
+        "https://api.indexnow.org/indexnow",
+        data=payload,
+        headers={"Content-Type": "application/json; charset=utf-8"},
+        method="POST",
+    )
+    try:
+        with urllib.request.urlopen(req, timeout=15) as resp:
+            print(f"IndexNow: submitted {len(url_list)} URLs, HTTP {resp.status}")
+    except urllib.error.HTTPError as e:
+        print(f"IndexNow: HTTP {e.code} — {e.reason} (non-fatal, continuing)")
+    except urllib.error.URLError as e:
+        print(f"IndexNow: network error — {e.reason} (non-fatal, continuing)")
+    except Exception as e:
+        print(f"IndexNow: unexpected error — {e} (non-fatal, continuing)")
+
+
 # =============================================================================
 # BUILD: STATIC PAGES
 # =============================================================================
@@ -1271,8 +1325,12 @@ def main():
     build_robots()
     copy_ads_txt()
     copy_verification_files()
+    write_indexnow_key_file()
     build_search_index(advisors)
     build_compare_data(advisors)
+
+    # IndexNow submission (Netlify CI only, or when INDEXNOW_ENABLED=1)
+    submit_to_indexnow()
 
     print(f"\n{'='*50}")
     print(f"Build complete! Output in: {config.OUTPUT_DIR}")

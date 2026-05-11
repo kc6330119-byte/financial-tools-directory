@@ -22,6 +22,18 @@ SITE_DESCRIPTION = "Find a trusted investment advisor near you. Compare credenti
 SITE_URL = os.getenv("SITE_URL", "https://smart-investor-financial-tools.com")
 SITE_AUTHOR = "Smart Investor"
 
+# IndexNow (Bing/Yandex/Seznam push-indexing protocol). The key is published at
+# `/{INDEXNOW_KEY}.txt` on the site root and is NOT a secret per the IndexNow spec.
+# https://www.indexnow.org/documentation
+INDEXNOW_KEY = "6f4ea7d33ff1caeea923537ef96f3fc3"
+INDEXNOW_FRESH_URLS = [
+    "",                  # homepage
+    "/blog.html",
+    "/tools.html",
+    "/calculators.html",
+    "/compare.html",
+]
+
 # Airtable Configuration
 AIRTABLE_API_KEY = os.getenv("AIRTABLE_API_KEY")
 AIRTABLE_BASE_ID = os.getenv("AIRTABLE_BASE_ID")
