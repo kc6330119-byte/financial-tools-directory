@@ -15,6 +15,14 @@
 
 Python static site generation → Airtable (read-only CMS) → Netlify hosting → Google AdSense monetization. See the `smart-investor-redesign` skill for full stack conventions.
 
+## Runbooks (cross-site methodology)
+
+When the user reports a search-engine indexing alert, performance question, or asks "is something wrong with our SEO" — read the SEO diagnostic runbook before starting:
+
+- `~/notes/claude-runbooks/SEO_DIAGNOSTIC_RUNBOOK.md` — playbooks for GSC indexing alerts (noindex / alternate canonical / 404), single-URL 5xx errors, open-ended SEO health checks, Bing-specific diagnosis, meta description audits, and IndexNow integration. Built from the 2026-05-11 tuning session and intended to transfer across all 5 directory sites.
+
+The runbook is centralized at `~/notes/claude-runbooks/` so the same playbook serves all Kevin's directory sites without drift.
+
 ## Skills to use on this project
 
 At session start, load skills in this order when relevant:
