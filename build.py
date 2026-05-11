@@ -717,7 +717,7 @@ def build_state_pages(env, advisors):
             cities=cities,
             noindex=noindex,
             page_title=f"Investment Advisors in {state['name']} - {config.SITE_NAME}",
-            meta_description=f"Find {len(state_advisors)} trusted investment advisors in {state['name']}. Compare credentials, fee structures, and specialties.",
+            meta_description=f"Browse {len(state_advisors)} listed investment advisors in {state['name']}. Compare credentials, fee structures, services, and minimums across fiduciary firms and independent RIAs.",
             request_path=f"/state/{state['slug']}.html",
         )
 
@@ -768,7 +768,7 @@ def build_city_pages(env, advisors):
             advisors=city_advisors,
             noindex=noindex,
             page_title=f"Investment Advisors in {city_name}, {state_info.get('abbr', '') or state_name} - {config.SITE_NAME}",
-            meta_description=f"Find {len(city_advisors)} investment advisors in {city_name}, {state_name}. Compare fee structures, credentials, and specialties.",
+            meta_description=f"Find {len(city_advisors)} listed investment advisor{'' if len(city_advisors) == 1 else 's'} in {city_name}, {state_name}. Compare credentials, fee structures, services, and minimums across local fiduciary firms.",
             request_path=f"/state/{state_slug}/{city_slug}.html",
         )
 
@@ -868,7 +868,7 @@ def build_tools_hub(env, tools):
         tools=tools,
         grouped=grouped,
         page_title=f"Investor Tools - {config.SITE_NAME}",
-        meta_description="Discover the best financial tools, stock screeners, portfolio trackers, and trading platforms for investors.",
+        meta_description="Browse the best free and paid investor tools — stock screeners, portfolio trackers, charting platforms, fundamental data services, and tax software.",
         request_path="/tools.html",
     )
 
@@ -964,7 +964,7 @@ def build_blog_page(env, posts):
     html = template.render(
         posts=posts,
         page_title=f"Blog - {config.SITE_NAME}",
-        meta_description="Guides, tips, and resources to help you find the right financial advisor and make smart investment decisions.",
+        meta_description="Plain-English guides on choosing a fiduciary advisor, reading fee disclosures, verifying credentials with BrokerCheck and IAPD, and avoiding common pitfalls.",
         request_path="/blog.html",
     )
     output_path = config.OUTPUT_DIR / "blog.html"
@@ -1159,25 +1159,25 @@ STATIC_PAGES = [
         "template": "about.html",
         "output": "about.html",
         "title": "About Us",
-        "description": f"Learn about {config.SITE_NAME} and our mission to help investors find trusted financial advisors.",
+        "description": f"{config.SITE_NAME} lists thousands of fiduciary financial advisors across the US. Learn how we research firms, score quality, and help you compare credentials and fees.",
     },
     {
         "template": "privacy.html",
         "output": "privacy.html",
         "title": "Privacy Policy",
-        "description": "Our privacy policy explains how we collect, use, and protect your information.",
+        "description": f"How {config.SITE_NAME} collects, uses, and protects your information. Read our policy on data collection, cookies, third-party services, and your privacy rights.",
     },
     {
         "template": "contact.html",
         "output": "contact.html",
         "title": "Contact Us",
-        "description": f"Get in touch with {config.SITE_NAME} for questions, suggestions, or business inquiries.",
+        "description": f"Contact {config.SITE_NAME} with questions, listing corrections, advisor disputes, or business inquiries. We review every message and reply within 2 business days.",
     },
     {
         "template": "terms.html",
         "output": "terms.html",
         "title": "Terms of Service",
-        "description": f"Terms and conditions for using {config.SITE_NAME}.",
+        "description": f"Terms of service for {config.SITE_NAME} — what you can and can't do with our directory, advisor data, and content. Covers usage, attribution, and liability.",
     },
     {
         "template": "success.html",

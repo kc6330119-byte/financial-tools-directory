@@ -37,14 +37,14 @@ GA_MEASUREMENT_ID = os.getenv("GA_MEASUREMENT_ID", "")
 # =============================================================================
 
 CATEGORIES = [
-    {"name": "Stock Screeners", "slug": "stock-screeners", "description": "Filter and find stocks based on your criteria"},
-    {"name": "Portfolio Trackers", "slug": "portfolio-trackers", "description": "Track your investments across accounts"},
-    {"name": "Technical Analysis", "slug": "technical-analysis", "description": "Chart patterns and technical indicators"},
-    {"name": "Fundamental Analysis", "slug": "fundamental-analysis", "description": "Financial statements and valuation metrics"},
-    {"name": "Data Providers", "slug": "data-providers", "description": "APIs and data feeds for financial data"},
-    {"name": "Trading Platforms", "slug": "trading-platforms", "description": "Execute trades and manage orders"},
-    {"name": "Research Tools", "slug": "research-tools", "description": "In-depth research and analysis"},
-    {"name": "News & Alerts", "slug": "news-alerts", "description": "Financial news and price alerts"},
+    {"name": "Stock Screeners", "slug": "stock-screeners", "description": "Filter and find stocks based on price, fundamentals, technical signals, and custom criteria. Compare free and paid screeners across coverage, speed, and data depth."},
+    {"name": "Portfolio Trackers", "slug": "portfolio-trackers", "description": "Track investments across brokerage accounts, retirement plans, and crypto wallets. Compare portfolio trackers on aggregation, tax reporting, and performance analytics."},
+    {"name": "Technical Analysis", "slug": "technical-analysis", "description": "Chart patterns, indicators, and technical-analysis platforms for traders. Compare charting tools on indicator libraries, drawing tools, and intraday data quality."},
+    {"name": "Fundamental Analysis", "slug": "fundamental-analysis", "description": "Financial statements, valuation models, and fundamentals platforms for long-term investors. Compare tools on data depth, historical coverage, and export options."},
+    {"name": "Data Providers", "slug": "data-providers", "description": "APIs and data feeds for financial data — equities, options, fundamentals, macro, and alternative data. Compare providers on coverage, latency, and pricing."},
+    {"name": "Trading Platforms", "slug": "trading-platforms", "description": "Execute trades and manage orders across stocks, options, futures, and crypto. Compare trading platforms on commissions, order types, mobile apps, and reliability."},
+    {"name": "Research Tools", "slug": "research-tools", "description": "In-depth research platforms for stocks, ETFs, and macro analysis. Compare research tools on analyst coverage, valuation models, and primary-source document access."},
+    {"name": "News & Alerts", "slug": "news-alerts", "description": "Financial news feeds, price alerts, and earnings calendars for active investors. Compare news platforms on speed, breadth, customization, and signal-to-noise."},
 ]
 
 PRICING_MODELS = ["Free", "Freemium", "Paid", "Subscription"]
@@ -117,70 +117,70 @@ SPECIALTIES = [
         "name": "Retirement Planning",
         "slug": "retirement-planning",
         "icon": "🏖️",
-        "description": "Comprehensive planning for retirement income, Social Security optimization, and lifestyle goals",
+        "description": "Comprehensive retirement income planning, Social Security claim-age optimization, withdrawal strategy, and Medicare and long-term-care preparation.",
         "intro": "Retirement planning is the most sought-after financial advisory specialty, helping individuals and couples prepare for a financially secure retirement. A retirement planning advisor analyzes your current savings, projected Social Security benefits, pension income, and anticipated expenses to create a sustainable withdrawal strategy. Key areas include determining when to claim Social Security, optimizing 401(k) and IRA distributions, managing sequence-of-returns risk, and planning for healthcare costs including Medicare and long-term care. Whether you're 10 years from retirement or already retired, a qualified advisor can help you maximize your income while preserving your savings for the long term."
     },
     {
         "name": "Investment Management",
         "slug": "investment-management",
         "icon": "📈",
-        "description": "Portfolio construction, asset allocation, and ongoing investment oversight",
+        "description": "Portfolio construction, asset allocation, rebalancing, and ongoing investment oversight matched to your goals, risk tolerance, and time horizon.",
         "intro": "Investment management advisors build and maintain diversified portfolios aligned with your financial goals, risk tolerance, and time horizon. Services typically include asset allocation strategy, security selection, portfolio rebalancing, tax-loss harvesting, and performance monitoring. A good investment manager takes a disciplined approach to markets, avoiding emotional decisions during volatility while capturing long-term growth. When evaluating investment management advisors, ask about their investment philosophy (active vs. passive), typical portfolio construction, fee structure (percentage of assets under management is most common), and how they measure and report performance."
     },
     {
         "name": "Tax Strategy",
         "slug": "tax-strategy",
         "icon": "📋",
-        "description": "Tax-efficient investing, Roth conversions, and minimizing your lifetime tax burden",
+        "description": "Tax-efficient investing, Roth conversion planning, asset-location optimization, and strategies for minimizing your lifetime tax burden.",
         "intro": "Tax strategy advisors specialize in minimizing your lifetime tax burden through sophisticated planning techniques. This includes tax-loss harvesting, asset location optimization (placing investments in the most tax-efficient accounts), Roth conversion strategies, charitable giving optimization, and capital gains management. For business owners, tax planning extends to entity structure, qualified business income deductions, and retirement plan selection. A skilled tax strategist coordinates with your CPA to ensure investment decisions and tax filing work together. The best tax planners think in terms of lifetime tax minimization rather than just reducing this year's bill."
     },
     {
         "name": "Estate Planning",
         "slug": "estate-planning",
         "icon": "🏛️",
-        "description": "Wealth transfer, trust strategies, and legacy planning for your heirs",
+        "description": "Wealth-transfer planning, trust strategies, beneficiary optimization, and legacy planning to pass assets to heirs and charities tax-efficiently.",
         "intro": "Estate planning advisors help you structure the transfer of wealth to heirs, charities, and other beneficiaries in the most tax-efficient way possible. Services include coordinating with estate attorneys on wills and trusts, beneficiary designation optimization, life insurance analysis, charitable giving strategies (donor-advised funds, charitable remainder trusts), and business succession planning. With the federal estate tax exemption potentially decreasing in coming years, proactive estate planning is more important than ever for families with significant assets. A qualified advisor ensures your wealth passes to the people and causes you care about, not to unnecessary taxes."
     },
     {
         "name": "College Savings",
         "slug": "college-savings",
         "icon": "🎓",
-        "description": "529 plans, education funding strategies, and financial aid optimization",
+        "description": "529 plans, Coverdell ESAs, custodial accounts, and education-funding strategies coordinated with financial aid and your other long-term goals.",
         "intro": "College savings advisors help families plan for the rising cost of higher education through strategies like 529 plans, Coverdell ESAs, custodial accounts, and financial aid optimization. With the average cost of a four-year degree exceeding $100,000 at many institutions, early and strategic planning can make a significant difference. Advisors evaluate the best savings vehicles based on your state's tax benefits, your expected financial aid eligibility, and your timeline. They also help coordinate college funding with other financial goals like retirement savings, ensuring you don't sacrifice your own financial security for your children's education."
     },
     {
         "name": "Insurance Planning",
         "slug": "insurance-planning",
         "icon": "🛡️",
-        "description": "Life insurance, disability, long-term care, and risk management strategies",
+        "description": "Life, disability, long-term care, and umbrella liability strategy from fee-only advisors with no commission incentive to over-sell coverage.",
         "intro": "Insurance planning advisors evaluate your risk exposure and recommend appropriate coverage for life insurance, disability insurance, long-term care insurance, and umbrella liability policies. The goal is protecting your family and wealth against catastrophic events without overpaying for unnecessary coverage. Fee-only insurance planning advisors are particularly valuable because they have no commission incentive to recommend products you don't need. Key areas include determining the right amount and type of life insurance, evaluating long-term care options (traditional policies, hybrid products, self-insurance), and coordinating insurance with your overall financial plan."
     },
     {
         "name": "Small Business",
         "slug": "small-business",
         "icon": "🏢",
-        "description": "Business retirement plans, succession planning, and owner financial strategies",
+        "description": "SEP IRA, SIMPLE IRA, Solo 401(k), and defined-benefit plan selection, plus succession, exit planning, and owner-specific financial strategy.",
         "intro": "Small business financial advisors help entrepreneurs and business owners navigate the unique financial challenges of running a company. Services include selecting and managing business retirement plans (SEP IRA, SIMPLE IRA, Solo 401(k), defined benefit plans), business succession and exit planning, entity structure optimization, cash flow management, and key person insurance. Many business owners have the majority of their wealth tied up in their company, making diversification and exit planning critical. A qualified advisor helps you build personal wealth alongside your business and plan for a successful eventual transition — whether through sale, family succession, or closing."
     },
     {
         "name": "Wealth Management",
         "slug": "wealth-management",
         "icon": "💎",
-        "description": "Comprehensive financial oversight for high-net-worth individuals and families",
+        "description": "Coordinated investment, tax, estate, and risk-management oversight for high-net-worth individuals and families with $1M+ in investable assets.",
         "intro": "Wealth management advisors provide comprehensive financial oversight for high-net-worth individuals and families, typically those with $1 million or more in investable assets. Services integrate investment management, tax planning, estate planning, risk management, philanthropic strategy, and family governance into a coordinated plan. Wealth managers often serve as the quarterback of your financial life, coordinating with your CPA, estate attorney, insurance agent, and other professionals. When selecting a wealth manager, consider their minimum account size, the breadth of services included, their team structure, and how they handle multi-generational family planning."
     },
     {
         "name": "Debt Management",
         "slug": "debt-management",
         "icon": "📉",
-        "description": "Student loan strategies, debt payoff planning, and credit optimization",
+        "description": "Student-loan repayment optimization, mortgage strategy, and debt-payoff planning balanced against long-term investment and retirement goals.",
         "intro": "Debt management advisors help individuals create strategies for paying down debt efficiently while still building wealth. This includes student loan repayment optimization (evaluating PSLF, income-driven repayment, refinancing), mortgage strategy (15-year vs. 30-year, when to refinance), and prioritizing high-interest debt elimination. Many people struggle with the question of whether to pay down debt or invest, and a qualified advisor can model both scenarios based on your interest rates, tax situation, and investment returns. Debt management planning is often integrated with broader financial planning to ensure you're making progress toward all your goals simultaneously."
     },
     {
         "name": "Social Security Planning",
         "slug": "social-security",
         "icon": "🏛️",
-        "description": "Optimizing Social Security claiming strategies for maximum lifetime benefits",
+        "description": "Claim-age analysis, spousal and survivor benefit strategy, and lifetime-benefit optimization — often a six-figure decision for married couples.",
         "intro": "Social Security planning advisors specialize in helping individuals and couples optimize their claiming strategy to maximize lifetime benefits. The decision of when to claim Social Security — age 62, full retirement age, or 70 — can result in differences of hundreds of thousands of dollars over a lifetime. For married couples, the analysis becomes even more complex with spousal benefits, survivor benefits, and coordinated claiming strategies. Advisors use specialized software to model different scenarios based on your health, life expectancy, other income sources, and tax situation. Given that Social Security is the foundation of most Americans' retirement income, getting this decision right is one of the highest-value planning activities available."
     },
 ]
