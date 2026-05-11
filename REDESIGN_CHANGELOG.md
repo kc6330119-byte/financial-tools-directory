@@ -6,6 +6,22 @@ This file is the "release notes" view of the redesign. For the terse one-line-pe
 
 ---
 
+## Side-milestone — Newsletter / Mailchimp removal (2026-05-11)
+
+**Files touched:** `templates/base.html` (HTML section + JS handler removed), `static/css/custom.css` (~80 lines of `.newsletter-*` rules removed), `templates/blog.html` (empty-state copy), `templates/privacy.html` (3 mentions removed).
+
+**Why:** Decision by Kevin — the newsletter was low-value for this site and Mailchimp upkeep across 5 directory sites was overhead he didn't want to keep paying. The shared Mailchimp audience continues to serve the other 4 sites (different `SITE` tag values); only the smart-investor submission stream is gone.
+
+**Effect:**
+- Privacy policy now lists 2 form types instead of 3, drops the Mailchimp third-party-service bullet, and drops the newsletter retention clause.
+- Blog empty-state copy lost the "subscribe to your inbox" CTA and now reads "we publish a new guide most weeks."
+- All `.newsletter-*` CSS rules stripped to avoid dead code.
+- No template variable / feature flag retained — removal is hard, not toggleable.
+
+**Rollback path:** revert the commit; the previous markup is recoverable in full from git history.
+
+---
+
 ## Milestone 10 — Post-resubmission SEO tuning (2026-05-11)
 
 **Commits:** `3e5f50c` (SearchAction fix), `0c2bfb8` (meta description lengthening)

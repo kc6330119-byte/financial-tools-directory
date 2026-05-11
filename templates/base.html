@@ -259,31 +259,6 @@
         </div>
     </div>
 
-    <!-- Newsletter Signup — Mailchimp (shared audience, SITE tag segments source) -->
-    <section class="newsletter">
-        <div class="newsletter-inner">
-            <h2>Get one email a month. Nothing else.</h2>
-            <p class="newsletter-desc">Advisor selection checklists, fee-disclosure explainers, and research summaries. No sales pitches.</p>
-            <form action="https://doggroomerlocator.us12.list-manage.com/subscribe/post?u=21343a587fbb950d8b649ee6d&amp;id=970ba04869&amp;f_id=00d5e2e3f0"
-                  method="post"
-                  target="_blank"
-                  rel="noopener"
-                  class="newsletter-form"
-                  id="newsletter-form">
-                <label class="u-sr-only" for="mc-email">Email address</label>
-                <input type="email" name="EMAIL" id="mc-email" required placeholder="you@domain.com" class="newsletter-input">
-                <button type="submit" name="subscribe" value="Subscribe" class="newsletter-submit">Subscribe</button>
-                {# Mailchimp bot honeypot — field name is specific to the list and must be preserved verbatim #}
-                <div class="newsletter-honeypot" aria-hidden="true">
-                    <input type="text" name="b_21343a587fbb950d8b649ee6d_970ba04869" tabindex="-1" autocomplete="off" value="">
-                </div>
-                {# Source tag — populates a SITE merge field if added to the audience; silently ignored otherwise #}
-                <input type="hidden" name="SITE" value="smart-investor">
-            </form>
-            <p id="newsletter-success" class="newsletter-success">Subscribed. Check your inbox to confirm.</p>
-        </div>
-    </section>
-
     <!-- Footer -->
     <footer class="site-footer">
         <div class="site-footer-inner">
@@ -337,7 +312,7 @@
         </div>
     </footer>
 
-    <!-- Nav + Search + Theme + Newsletter + Compare Script -->
+    <!-- Nav + Search + Theme + Compare Script -->
     <script>
         // Mobile menu open/close — locks body scroll and uses overscroll-contain
         var mobileMenu = document.getElementById('mobile-menu');
@@ -460,18 +435,6 @@
                 mobileResults.classList.add('is-open');
             });
         });
-
-        // Newsletter form — posts directly to Mailchimp (target="_blank")
-        const nlForm = document.getElementById('newsletter-form');
-        if (nlForm) {
-            nlForm.addEventListener('submit', function () {
-                setTimeout(function () {
-                    nlForm.classList.add('u-hidden');
-                    var success = document.getElementById('newsletter-success');
-                    if (success) success.classList.add('is-visible');
-                }, 50);
-            });
-        }
 
         // Close desktop search on outside click or Escape
         document.addEventListener('click', function(e) {
