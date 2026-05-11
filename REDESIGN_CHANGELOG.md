@@ -6,6 +6,53 @@ This file is the "release notes" view of the redesign. For the terse one-line-pe
 
 ---
 
+## Milestone 10 — Post-resubmission SEO tuning (2026-05-11)
+
+**Commits:** `3e5f50c` (SearchAction fix), `0c2bfb8` (meta description lengthening)
+**Files touched:** `templates/base.html` (Organization JSON-LD trimmed), `build.py` (state-root, state-city, tools, blog templates), `config.py` (10 specialty + 8 tool-category descriptions)
+**Type:** Bug fix + SEO uplift — first round of GSC/Bing-driven tuning after the 3-week post-resubmission ramp
+
+### What changed
+
+- **Removed a bogus SearchAction from the WebSite JSON-LD.** The `potentialAction` block in `base.html` had a `urlTemplate` of `/state/{slug}.html` — a state-page path, not a search endpoint. GoogleBot crawled the literal template string and flagged it as a 404 in Search Console. We don't have a site-search endpoint, so the correct action is to drop the `potentialAction` entirely. Search Console's "Not found (404)" report had exactly one offender; this kills it at the source.
+- **Lengthened meta descriptions across 1,900+ pages.** Bing Webmaster Tools flagged ~21% of pages as having short meta descriptions. The bulk traced to three boilerplate templates plus a handful of static and tool-category pages:
+  - **State-root template** (51 pages): `"Find {N} trusted investment advisors in {State}. Compare credentials, fee structures, and specialties."` → `"Browse {N} listed investment advisors in {State}. Compare credentials, fee structures, services, and minimums across fiduciary firms and independent RIAs."` Adds two signals ("fiduciary firms", "independent RIAs", "minimums") that match queries already getting GSC impressions ("fiduciary advisor", "investment management [state]").
+  - **State-city template** (1,828 pages): same lengthening pattern, plus a **grammar fix** — the old template rendered "Find 1 investment advisors in Independence, Missouri" for any city with exactly one listing. Now correctly singular/plural based on count.
+  - **Specialty descriptions** (10 entries in `config.py`): rewritten from 60-90c taglines into 135-150c descriptions that double as on-page sub-headlines.
+  - **Tool category descriptions** (8 entries in `config.py`): rewritten from 35-50c taglines into ~160c descriptions.
+  - **Static pages** (about, privacy, contact, terms): rewritten from 46-93c stubs into 150-165c descriptions.
+  - **Tools hub and blog index**: rewritten from 108-109c into 158-167c descriptions.
+- **"Listed" rather than "vetted."** Considered the stronger word but rejected it as over-claiming. The directory ingests and validates listings via Outscraper, but it doesn't manually vet each advisor's quality. "Listed" is verifiably accurate and YMYL-safe.
+
+### Why it helps
+
+- **GSC "Not found (404)" report cleared.** The `/state/{slug}.html` 404 was self-inflicted by the JSON-LD; removing the `potentialAction` block eliminates the crawl target entirely. After Netlify deploys and GoogleBot recrawls, the report drops to zero.
+- **Bing "Meta descriptions on many pages are too short" recommendation should clear on next crawl.** Pages under 120c dropped from **2,226 (21.2%) → 324 (3.1%)**. Sweet-spot occupancy (150-160c) climbed from 64.6% → 69.6%.
+- **CTR uplift potential on Google.** GSC shows 11K impressions / 39 clicks (0.35% CTR) over the post-resubmission ramp. Longer, query-relevant metas with concrete signals ("fiduciary", "minimums", "BrokerCheck", "IAPD") give SERP users a reason to click instead of scrolling past.
+- **Grammar bug fix.** "Find 1 investment advisors in [City]" was rendering on every city page with exactly one listed firm. Embarrassing in SERPs and harmful to perceived quality. Now correctly singular.
+
+### Known gaps
+
+- **~324 pages still under 120c** — almost all are advisor pages where the Airtable `description` field is very brief (some are 60-80c). This is a data-side issue, not a template issue. Could be addressed by enriching short descriptions through the same AI-enrichment pipeline used in Action 5, but no urgent need.
+- **~840 pages render slightly over 160c** because Airtable descriptions are truncated at exactly 160 raw chars but HTML-encode special characters (`&amp;`, `&#39;`) which adds bytes after the truncation. Bing/Google simply truncate display past ~158-160 visible chars; no SEO penalty.
+- **`about.html` came out at 164c** (4 over target) — readable, SERP truncation is mid-sentence but not jarring. Acceptable.
+
+### Bing Webmaster Tools follow-ups
+
+Reviewing BWT after the 3-week post-resubmission ramp surfaced three actionable items, ranked:
+1. **IndexNow integration** — Bing's #1 recommendation. Not yet shipped. Phase 2 ticket: add ~30 lines to `build.py` to POST changed URLs to `https://api.indexnow.org/indexnow` on each build. Should accelerate Bing indexation of nightly-rebuilt content.
+2. **Duplicate www sitemap** — Bing auto-discovered `www.smart-investor-financial-tools.com/sitemap.xml` (non-canonical). Netlify's 301 from www → apex handles it, but Bing was double-counting URLs. **Deleted manually in BWT UI on 2026-05-11.**
+3. **Backlink profile** — long-term content/outreach play, out of scope for code.
+
+### Post-resubmission snapshot (for the record)
+
+- **GSC indexed pages:** 539 (2026-04-19) → 3,213 (2026-05-07). ~150 pages/day getting admitted. Healthy ramp.
+- **GSC avg position trend:** 17.6 → 6-8 across the period. Improving.
+- **GSC impressions / clicks (3-month):** 11,128 / 39 / 0.35% CTR. Low CTR partly attributable to brand-of-others queries ("koyfin", "merrill lynch wealth management") and SERP-operator queries from scrapers inflating the impressions denominator.
+- **Bing search performance (21 days):** 0 / 0 / 0. Sitemap is submitted, crawled, and registered (5.4K URLs). Empty impressions are pure ramp/maturity, not a configuration problem. Re-check end of May.
+
+---
+
 ## Milestone 9 — Tailwind CDN removal + mobile performance (2026-04-18)
 
 **Commits:** `430afde` (Tailwind removal / base.html rewrite), `0df0dab` (mobile menu scroll-containment)
