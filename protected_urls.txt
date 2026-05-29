@@ -1,0 +1,49 @@
+# Protected URLs — pages already earning Google Search traffic. build.py's
+# _load_protected_slugs() reads these so the indexing gate never noindexes a page
+# that already ranks. Regenerate after every data/GSC refresh (see CLAUDE.md):
+#   python3 extract_protected_urls.py [export.csv]
+# Source: Pages.csv | Generated: 2026-05-29 | Rule: clicks >= 1 | Count: 44
+https://smart-investor-financial-tools.com/about.html
+https://smart-investor-financial-tools.com/advisor/alpha-1-tax-wealth-retirement-planning-financial-advisors-thornton-co.html
+https://smart-investor-financial-tools.com/advisor/arisgarde-charleston-sc.html
+https://smart-investor-financial-tools.com/advisor/capstone-wealth-partners-dublin-oh.html
+https://smart-investor-financial-tools.com/advisor/charles-pascoe-prudential-financial-belle-vernon-pa.html
+https://smart-investor-financial-tools.com/advisor/chris-schultz-modern-woodmen-of-america-punta-gorda-fl.html
+https://smart-investor-financial-tools.com/advisor/christopher-erlewine-cfp-focus-partners-wealth-charleston-wv.html
+https://smart-investor-financial-tools.com/advisor/daniel-o-sullivan-cds-wealth-management-blue-bell-pa.html
+https://smart-investor-financial-tools.com/advisor/dunuwila-wealth-management-fayetteville-ny.html
+https://smart-investor-financial-tools.com/advisor/elevate-financial-planning-wealth-management-maryville-tn.html
+https://smart-investor-financial-tools.com/advisor/fly-fishing-financial-birmingham-al.html
+https://smart-investor-financial-tools.com/advisor/gregory-kelly-owner-principal-advisor-kelly-financial-partners-llc-san-antonio-tx.html
+https://smart-investor-financial-tools.com/advisor/integrity-independent-financial-insurance-services-whittier-ca.html
+https://smart-investor-financial-tools.com/advisor/james-lasher-financial-advisor-eagle-strategies-west-chester-pa.html
+https://smart-investor-financial-tools.com/advisor/jess-miller-caliber-wealth-management-amarillo-tx.html
+https://smart-investor-financial-tools.com/advisor/jp-investments-group-myersville-md.html
+https://smart-investor-financial-tools.com/advisor/libertas-financial-partners-llc-garland-tx.html
+https://smart-investor-financial-tools.com/advisor/mario-j-tenuta-financial-advisor-northwestern-mutual-wealth-management-company-lombard-il.html
+https://smart-investor-financial-tools.com/advisor/merrill-lynch-wealth-management-clearwater-fl.html
+https://smart-investor-financial-tools.com/advisor/merrill-lynch-wealth-management-honolulu-hi.html
+https://smart-investor-financial-tools.com/advisor/mountain-financial-llc-coeur-d-alene-id.html
+https://smart-investor-financial-tools.com/advisor/o-connor-advisory-group-lawrence-ks.html
+https://smart-investor-financial-tools.com/advisor/pardini-wulbrecht-financial-group-of-raymond-james-santa-rosa-ca.html
+https://smart-investor-financial-tools.com/advisor/phillip-james-financial-plymouth-mn.html
+https://smart-investor-financial-tools.com/advisor/pioneer-wealth-management-weaverville-nc.html
+https://smart-investor-financial-tools.com/advisor/premier-planning-professionals-waterford-ct.html
+https://smart-investor-financial-tools.com/advisor/rightview-private-wealth-seneca-sc
+https://smart-investor-financial-tools.com/advisor/rmw-rocky-mountain-wealth-advisory-group-highlands-ranch-co.html
+https://smart-investor-financial-tools.com/advisor/robert-ugiansky-partner-capital-associates-wealth-management-llc-bethesda-md.html
+https://smart-investor-financial-tools.com/advisor/santana-consultation-bronx-ny.html
+https://smart-investor-financial-tools.com/advisor/save-smart-college-funding-planning-inc-highlands-ranch-co.html
+https://smart-investor-financial-tools.com/advisor/seven-oaks-capital-wyoming-mi.html
+https://smart-investor-financial-tools.com/advisor/terence-gallagher-mba-financial-advisor-at-farther-new-york-ny.html
+https://smart-investor-financial-tools.com/advisor/the-wert-investment-consulting-group-of-wells-fargo-advisors-wyomissing-pa.html
+https://smart-investor-financial-tools.com/advisor/tindon-health-wealth-wells-me.html
+https://smart-investor-financial-tools.com/advisor/troy-jerrils-dave-ramsey-smartvestor-pro-alexandria-in.html
+https://smart-investor-financial-tools.com/advisor/tru-fit-financial-services-sharon-pa.html
+https://smart-investor-financial-tools.com/advisor/zeib-parvez-financial-advisor-with-freedom-point-virginia-beach-va.html
+https://smart-investor-financial-tools.com/specialty/insurance-planning
+https://smart-investor-financial-tools.com/specialty/retirement-planning.html
+https://smart-investor-financial-tools.com/specialty/wealth-management
+https://smart-investor-financial-tools.com/state/texas
+https://smart-investor-financial-tools.com/state/washington/spokane.html
+https://smart-investor-financial-tools.com/tool/koyfin
