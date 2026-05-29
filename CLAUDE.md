@@ -45,6 +45,17 @@ Redesign the homepage only. Before writing new CSS:
 3. Produce a one-page plan describing the proposed homepage structure, typography system, and color palette
 4. Wait for Kevin's approval before implementing
 
+## AdSense content remediation — after any data refresh
+
+The site failed AdSense for "Low Value Content" because listing descriptions were spun/templated (`enrich_descriptions.py`, now deprecated). The fix is fact-grounded descriptions + a per-listing indexing gate. **Whenever the advisor data is refreshed** (a new Outscraper export, or new advisors imported via `outscraper_to_airtable.py`), re-run the remediation so the new listings get the same treatment — otherwise fresh records ship with blank/thin descriptions and either get noindexed or, worse, dilute the indexed set:
+
+1. **Refresh protected URLs.** Export Performance → Pages from Google Search Console, then `python3 extract_protected_urls.py path/to/Pages.csv`. This regenerates `protected_urls.txt` (pages already earning traffic, grandfathered past the gate). Fail-open: with no export it leaves the file as-is. Commit `protected_urls.txt` — it is a Netlify build input.
+2. **Regenerate descriptions.** `python3 generate_fact_descriptions.py` (dry-run) to review the length distribution, indexed ratio, and `FACT_DESCRIPTIONS_SAMPLE.md`; then `python3 generate_fact_descriptions.py --apply` to write Airtable. `--apply` backs up existing descriptions to `data/description_backup_<ts>.json` first and **only updates existing records, never inserts.**
+3. **Build + verify locally.** `python3 build.py`, then confirm indexed advisor pages carry `index, follow` + canonical + a real body description + the AdSense loader, and noindexed ones carry `noindex, follow` + suppressed ads + are absent from `sitemap.xml`.
+4. **Deploy.** Hand the git push / Netlify deploy to Kevin — he drives deploys.
+
+Gate threshold lives in `config.MIN_DESCRIPTION_LENGTH` (currently 250). Phase 2 (website-crawl enrichment for per-page value) is the planned follow-on once Phase 1 is live. **Never** re-run `enrich_descriptions.py` (it re-introduces the spam signal; it now hard-stops), **never** add `aggregateRating` markup from scraped ratings, and **never** insert new CMS records from a description script.
+
 ## Decision log
 
 All non-obvious design decisions get a one-line entry in `REDESIGN_NOTES.md` in the project root. Create this file on day one and keep it current.

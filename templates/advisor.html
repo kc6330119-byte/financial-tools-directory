@@ -30,13 +30,6 @@
     {% if advisor.website_url %}
     "url": {{ advisor.website_url | tojson | safe }},
     {% endif %}
-    {% if advisor.rating and advisor.review_count %}
-    "aggregateRating": {
-        "@type": "AggregateRating",
-        "ratingValue": {{ advisor.rating }},
-        "reviewCount": {{ advisor.review_count }}
-    },
-    {% endif %}
     {% if advisor.photo_url %}
     "image": {{ advisor.photo_url | tojson | safe }},
     {% endif %}

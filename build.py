@@ -8,6 +8,7 @@ Fetches data from Airtable with fallback to sample data.
 """
 import json
 import os
+import re
 import shutil
 import time
 from datetime import datetime
@@ -786,9 +787,72 @@ def build_city_pages(env, advisors):
 # BUILD: ADVISOR DETAIL PAGES
 # =============================================================================
 
+# Per-listing quality gate. A listing DETAIL page is indexed only if it has a
+# real contact signal AND a description that clears MIN_DESCRIPTION_LENGTH with
+# genuine vocabulary (not regulatory boilerplate or a JSON blob). Pages that fail
+# are noindexed and dropped from the sitemap + AdSense, deliberately shrinking the
+# synthetic indexed surface. No padding: short, fact-poor listings stay out.
+
+# Regulatory disclaimer text scrapers grab from footers — real legalese, but it
+# says nothing about the firm, so it must not qualify a page for indexing.
+_BOILERPLATE_RE = re.compile(
+    r"securities offered through|investment advisory services offered through|"
+    r"member finra|member sipc|not fdic insured|past performance is not",
+    re.IGNORECASE,
+)
+
+
+def _load_protected_slugs():
+    """Advisor slugs that must stay indexed regardless of the gate, because they
+    already earn Search traffic. Populated by extract_protected_urls.py from a
+    Google Search Console export into protected_urls.txt. Fail-open: a missing
+    file means no protections (the gate applies to everything)."""
+    path = Path("protected_urls.txt")
+    if not path.exists():
+        return set()
+    slugs = set()
+    for line in path.read_text().splitlines():
+        line = line.strip()
+        if not line or line.startswith("#"):
+            continue
+        m = re.search(r"/advisor/(.+?)\.html", line)
+        slugs.add(m.group(1) if m else line.rsplit("/", 1)[-1].removesuffix(".html"))
+    return slugs
+
+
+def description_is_indexable(description):
+    """min-length + vocabulary + junk-filter. True if the description is
+    substantial, original-looking prose rather than boilerplate/blob/stub."""
+    text = (description or "").strip()
+    if len(text) < config.MIN_DESCRIPTION_LENGTH:
+        return False
+    if text.startswith("{") and text.endswith("}"):  # JSON blob masquerading as prose
+        return False
+    if _BOILERPLATE_RE.search(text):  # scraped regulatory disclaimer, not a real description
+        return False
+    distinct_words = {w for w in re.findall(r"[a-zA-Z']{2,}", text.lower())}
+    return len(distinct_words) >= 20
+
+
+def advisor_is_indexable(advisor, protected_slugs):
+    """Gate one listing. Protected (traffic-earning) slugs always index."""
+    if advisor.get("slug") in protected_slugs:
+        return True
+    has_contact = bool(advisor.get("phone") or advisor.get("website_url") or advisor.get("address"))
+    return has_contact and description_is_indexable(advisor.get("description", ""))
+
+
 def build_advisor_pages(env, advisors):
-    """Build individual advisor detail pages with JSON-LD FinancialService schema."""
+    """Build advisor detail pages with JSON-LD FinancialService schema.
+
+    Returns the list of slugs that were indexed (for the sitemap)."""
     template = env.get_template("advisor.html")
+    protected_slugs = _load_protected_slugs()
+    if protected_slugs:
+        print(f"  Protected (force-indexed) listings: {len(protected_slugs)}")
+
+    indexed_slugs = []
+    noindex_count = 0
 
     for advisor in advisors:
         related = [
@@ -804,10 +868,17 @@ def build_advisor_pages(env, advisors):
             {"name": advisor.get("state", ""), "slug": advisor.get("state_slug", ""), "abbr": ""}
         )
 
+        noindex = not advisor_is_indexable(advisor, protected_slugs)
+        if noindex:
+            noindex_count += 1
+        else:
+            indexed_slugs.append(advisor["slug"])
+
         html = template.render(
             advisor=advisor,
             state=state_info,
             related_advisors=related,
+            noindex=noindex,
             page_title=f"{advisor['name']} - {advisor['city']}, {advisor['state']} - {config.SITE_NAME}",
             meta_description=advisor.get("description", "")[:160] or f"{advisor['name']} is an investment advisor in {advisor['city']}, {advisor['state']}.",
             page_image=advisor.get("photo_url", ""),
@@ -816,7 +887,10 @@ def build_advisor_pages(env, advisors):
 
         output_path = config.OUTPUT_DIR / "advisor" / f"{advisor['slug']}.html"
         output_path.write_text(html)
-        print(f"Built: advisor/{advisor['slug']}.html")
+
+    print(f"Built: {len(advisors)} advisor pages "
+          f"({len(indexed_slugs)} indexed, {noindex_count} noindexed)")
+    return indexed_slugs
 
 
 # =============================================================================
@@ -1044,7 +1118,7 @@ def build_compare_data(advisors):
 # BUILD: SITEMAP & SEO
 # =============================================================================
 
-def build_sitemap(tools, advisors, posts, indexed_states=None, indexed_cities=None):
+def build_sitemap(tools, advisors, posts, indexed_states=None, indexed_cities=None, indexed_advisor_slugs=None):
     """Generate sitemap.xml — only includes indexable pages."""
     urls = [
         f"{config.SITE_URL}/",
@@ -1090,9 +1164,16 @@ def build_sitemap(tools, advisors, posts, indexed_states=None, indexed_cities=No
     for specialty in config.SPECIALTIES:
         urls.append(f"{config.SITE_URL}/specialty/{specialty['slug']}.html")
 
-    # Advisor pages
-    for advisor in advisors:
-        urls.append(f"{config.SITE_URL}/advisor/{advisor['slug']}.html")
+    # Advisor pages — only indexed listings (same None=all / []=none semantics as states/cities,
+    # so noindexed listings never pollute the sitemap).
+    if indexed_advisor_slugs is not None:
+        indexed_set = set(indexed_advisor_slugs)
+        for advisor in advisors:
+            if advisor["slug"] in indexed_set:
+                urls.append(f"{config.SITE_URL}/advisor/{advisor['slug']}.html")
+    else:
+        for advisor in advisors:
+            urls.append(f"{config.SITE_URL}/advisor/{advisor['slug']}.html")
 
     # Tool category pages
     for category in config.CATEGORIES:
@@ -1300,7 +1381,7 @@ def main():
     build_homepage(env, tools, advisors, posts)
     indexed_states = build_state_pages(env, advisors)
     indexed_cities = build_city_pages(env, advisors)
-    build_advisor_pages(env, advisors)
+    indexed_advisor_slugs = build_advisor_pages(env, advisors)
     build_specialty_pages(env, advisors)
 
     # Build tool pages (preserved from original site)
@@ -1321,7 +1402,7 @@ def main():
 
     # Build SEO files
     print("\nBuilding SEO files...")
-    build_sitemap(tools, advisors, posts, indexed_states, indexed_cities)
+    build_sitemap(tools, advisors, posts, indexed_states, indexed_cities, indexed_advisor_slugs)
     build_robots()
     copy_ads_txt()
     copy_verification_files()

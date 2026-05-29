@@ -68,6 +68,12 @@ PRICING_MODELS = ["Free", "Freemium", "Paid", "Subscription"]
 # Minimum advisors for a state/city page to be indexed by search engines
 MIN_ADVISORS_FOR_INDEX = 3
 
+# Minimum description length for an ADVISOR LISTING page to be indexed.
+# Listings whose (fact-grounded) description falls below this are left short on
+# purpose and noindexed by build.py's per-listing gate — deliberately shrinking
+# the indexed surface to genuinely fact-rich pages. Do not pad to clear this.
+MIN_DESCRIPTION_LENGTH = 250
+
 # US States + DC for state-based pages
 US_STATES = [
     {"name": "Alabama", "slug": "alabama", "abbr": "AL", "description": "Alabama's investment landscape is shaped by a favorable tax climate — the state does not tax Social Security benefits and offers deductions on certain retirement income. Birmingham and Huntsville are the primary financial services hubs, with a growing number of independent RIAs serving Mobile, Montgomery, and Auburn. Alabama investors benefit from a lower cost of living that allows retirement savings to stretch further, and local advisors often specialize in retirement income planning for state employees and military families near Redstone Arsenal."},

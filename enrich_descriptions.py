@@ -1,5 +1,16 @@
 #!/usr/bin/env python3
 """
+!!! DEPRECATED — DO NOT RUN. This is the spun/templated generator that caused
+the Google AdSense "Low Value Content" rejection (March-2024 "scaled content
+abuse"). The MD5-hash-into-sentence-pools approach below is synonym/sentence
+shuffling, not real per-page value — exactly the signal we are removing.
+
+Use generate_fact_descriptions.py instead: it composes each description ONLY
+from facts true for that specific firm. Running this again would re-introduce
+the spam signal and undo the remediation, so main() now hard-stops unless an
+explicit override flag is passed. Kept in the tree for historical reference.
+
+----------------------------------------------------------------------------
 Deterministic description enrichment for investment advisors.
 
 Uses MD5 hash of the advisor slug with bit-shifting to select from varied
@@ -346,6 +357,16 @@ def generate_supplement(record):
 
 
 def main():
+    # DEPRECATED hard-stop: this is the spun generator that triggered the AdSense
+    # rejection. Refuse to run so it can't silently re-spin descriptions and undo
+    # the fact-grounded remediation. See generate_fact_descriptions.py.
+    if "--force-deprecated-spinner" not in sys.argv:
+        sys.exit(
+            "enrich_descriptions.py is DEPRECATED — it produces spun/templated content\n"
+            "(the AdSense 'Low Value Content' root cause). Use generate_fact_descriptions.py\n"
+            "instead. If you truly need the old behavior, re-run with --force-deprecated-spinner."
+        )
+
     from pyairtable import Api
 
     append_mode = "--append" in sys.argv

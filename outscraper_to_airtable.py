@@ -503,7 +503,7 @@ output = pd.DataFrame()
 
 output["Name"] = col("name")
 output["Slug"] = df.apply(generate_slug, axis=1)
-output["Description"] = ""  # Left blank -- use auto_descriptions.py to generate
+output["Description"] = ""  # Left blank -- use generate_fact_descriptions.py to fill
 output["Address"] = col("street")
 output["City"] = col("city")
 output["State"] = col("state").apply(normalize_state)
