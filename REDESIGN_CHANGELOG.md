@@ -6,6 +6,41 @@ This file is the "release notes" view of the redesign. For the terse one-line-pe
 
 ---
 
+## Milestone 11 — Fact-grounded descriptions + per-listing indexing gate (2026-05-29)
+
+**Branch:** `remediation/fact-grounded-descriptions` (commit pending push by Kevin)
+**Files touched:** `generate_fact_descriptions.py` (new), `extract_protected_urls.py` (new), `build.py` (gate + sitemap), `config.py` (`MIN_DESCRIPTION_LENGTH`), `templates/base.html` (ad suppression), `templates/advisor.html` (schema), `enrich_descriptions.py` (retired), `outscraper_to_airtable.py` (comment), `CLAUDE.md`, `REDESIGN_NOTES.md`, `.gitignore`
+**Type:** AdSense "Low Value Content" remediation (Phase 1) — replaces synthetic content with original per-page value
+**Data write:** 4,810 Airtable `Description` fields updated (backed up to `data/description_backup_20260529_173640.json` first; existing records only, never inserts)
+
+### What changed
+
+- **Retired the spun description generator.** `enrich_descriptions.py` selected sentences from fixed pools via `MD5(slug)` bit-shifting — Google's March-2024 "scaled content abuse," and the literal Low-Value-Content root cause. It now carries a DEPRECATED banner and `main()` hard-stops unless `--force-deprecated-spinner` is passed, so it can't silently re-spin and undo the fix. This supersedes the "enrich short descriptions through the AI-enrichment pipeline" suggestion in Milestone 10's known gaps — that pipeline *was* the problem.
+- **Fact-grounded generator (`generate_fact_descriptions.py`).** Composes each description only from clauses true for that specific firm (firm type, year established, fiduciary/SEC status, services, specialties deduped against services, credentials, fee basis, minimum investment, non-English languages, Outscraper `about` attributes, hours, rating/reviews as prose). Variation comes from real differing facts, never synonym shuffling. Dry-run by default; `--apply` backs up first and only updates existing records.
+- **Per-listing indexing gate (`build.py`).** A listing now indexes only if it has contact info **and** a description ≥ 250c that isn't a JSON blob, isn't scraped regulatory boilerplate, and has ≥ 20 distinct words. `config.MIN_DESCRIPTION_LENGTH = 250`. No length padding — sub-gate listings stay short and noindexed on purpose. The sitemap emits indexed advisor slugs only.
+- **AdSense suppressed on noindex pages** (`base.html`) — the loader is wrapped in `{% if not noindex %}`, so thin/noindexed pages serve no ads.
+- **Removed scraped `aggregateRating` JSON-LD** (`advisor.html`) — emitting review structured data from scraped ratings is a structured-data-spam manual-action risk. Ratings remain as body prose.
+- **Protected-URLs mechanism** (`extract_protected_urls.py` → `protected_urls.txt`, read by `build.py`). Reads a GSC Pages export and grandfathers traffic-earning pages past the gate so a ranking page can't get noindexed on the next build. Fail-open: no export = no protections = gate applies to everything.
+
+### Why it helps
+
+- **Removes the scaled-content signal at the source.** Every indexed listing is now original prose grounded in that firm's real facts, not shuffled boilerplate — the thing the AdSense reviewer and Google's quality systems actually penalize.
+- **Shrinks the synthetic indexed surface to fact-rich pages.** Build result: **3,099 indexed / 1,711 noindexed** (64.4% / 35.6%) of 4,810. The 1,711 thin listings are deliberately noindexed and carry no ads, rather than diluting the indexed set. (Building from the *old* spun field indexed 1,727 — so this replaces spun-indexed pages with fact-grounded ones, it doesn't just trim.)
+- **96.6% Outscraper `about` join** means the structured-fact base is broad, not a handful of lucky matches.
+
+### Known gaps
+
+- **Near-duplicate franchise listings.** Branches of the same firm (Raymond James, Northwestern Mutual) often share identical structured facts, so their descriptions come out near-identical. Truthful and un-spun, but not yet *distinctive*. This is exactly what **Phase 2** (per-site crawl → LLM extracts distinguishing facts → original description → Phase-1 fallback → same gate) is for. Honest framing: Phase 1 removes the spam signal; Phase 2 adds value beyond the Google Business Profile.
+- **`protected_urls.txt` not yet generated.** Fail-open until a GSC Pages export is run through `extract_protected_urls.py`. With ~1,711 listings going noindex, run it before/after deploy if GSC shows any of them earning traffic, so a ranking page isn't dropped.
+- **Source data hygiene.** A few records carry placeholder names ("Advisor Name - Raymond James") and ~6 advisors share duplicate slugs (4,810 records → 4,804 files). Pre-existing, low-impact; the placeholders fall under the gate and noindex on their own.
+
+### Rollback path
+
+- **Descriptions:** restore from `data/description_backup_20260529_173640.json` (keyed by record id) back into Airtable.
+- **Code/templates/config:** `git revert` the commit. The gate, ad-suppression, and schema changes are not feature-flagged — revert is the toggle.
+
+---
+
 ## Side-milestone — Newsletter / Mailchimp removal (2026-05-11)
 
 **Files touched:** `templates/base.html` (HTML section + JS handler removed), `static/css/custom.css` (~80 lines of `.newsletter-*` rules removed), `templates/blog.html` (empty-state copy), `templates/privacy.html` (3 mentions removed).

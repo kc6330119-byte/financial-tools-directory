@@ -91,9 +91,11 @@
     </script>
     {% endif %}
 
-    <!-- Google AdSense -->
+    <!-- Google AdSense — suppressed on noindex pages (no ads on thin/noindexed content) -->
+    {% if not noindex %}
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9265762311868507"
      crossorigin="anonymous"></script>
+    {% endif %}
 
     <!-- Preload critical fonts (Latin subsets) -->
     <link rel="preload" href="/static/fonts/geist-latin.woff2" as="font" type="font/woff2" crossorigin>
