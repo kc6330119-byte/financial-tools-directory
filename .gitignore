@@ -19,7 +19,10 @@ outscraper_advisors*.xlsx
 
 # AdSense remediation working artifacts (protected_urls.txt is NOT ignored — it's a build input)
 FACT_DESCRIPTIONS_SAMPLE.md
+WEBSITE_DESCRIPTIONS_SAMPLE.md
 data/description_backup_*.json
+# Phase 2 crawl + LLM response cache (offline working artifact, not a build input)
+data/site_cache/
 # Raw GSC performance exports — input for extract_protected_urls.py; only the
 # derived protected_urls.txt is committed.
 data/Pages.csv

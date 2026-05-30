@@ -6,6 +6,45 @@ This file is the "release notes" view of the redesign. For the terse one-line-pe
 
 ---
 
+## Milestone 12 — Phase 2: website-derived descriptions (2026-05-29)
+
+**Branch:** `seo/phase2-website-enrichment` (commit pending push by Kevin)
+**Files touched:** `website_descriptions.py` (new), `.gitignore` (Phase 2 cache + sample ignores), `REDESIGN_NOTES.md`, `REDESIGN_CHANGELOG.md`, `ADSENSE_RESUBMISSION_PLAN.md` (gitignored)
+**Type:** AdSense "Low Value Content" remediation (Phase 2) — adds original per-page value *beyond* the Google Business Profile
+**Data write:** 4,810 Airtable `Description` fields updated (backed up to `data/description_backup_20260529_194917.json` first; existing records only, never inserts)
+
+### What changed
+
+- **Per-site crawl → Haiku composition (`website_descriptions.py`).** For each advisor with a website, crawl the firm's own site (homepage + ≤2 about/services pages, trafilatura main-content extraction), have Claude Haiku 4.5 extract firm-specific facts and write an original 2–4 sentence description, falling back to the Phase 1 GBP description when the site yields nothing usable. Same `Description` field, same 250c `build.py` gate, same write discipline (dry-run default; `--apply` backs up first; existing records only, never inserts).
+- **Franchise / shared-host guard.** Hosts shared by ≥8 advisors (ml.com 209, raymondjames.com 182, northwesternmutual.com 179, …; 23 hosts) route to the GBP fallback and never reach the LLM — proven duplicate content (two `advisor.ml.com` pages scored a 6-gram Jaccard of 1.0). Crawling them would manufacture the near-duplicate descriptions Phase 1 set out to remove.
+- **Originality guard (`MAX_VERBATIM_WORDS = 10`).** A website description copying ≥10 consecutive words from the crawled source is rejected to the GBP fallback (`gbp-verbatim`). Across the full run the longest shipped verbatim run was 9 words (median 5) — a measurable no-copying guarantee for the YMYL/copyright posture.
+- **Polite, robots-aware crawling.** Per-host robots.txt honored (cached, fail-open), bot-identifying UA, 0.5s same-host delay, `socket.setdefaulttimeout(8)` to bound robotparser hangs across thousands of hosts, and a social/aggregator skip-list so the crawl stays on each firm's own site. Crawl + LLM responses cache under `data/site_cache/` (gitignored — not a Netlify build input; the build still reads only the stored Airtable field).
+
+### Results (full `--apply`, 4,810 records)
+
+- **Source mix:** website-derived **2,509 (52%)**, gbp-shared-host 1,089 (23%), gbp-thin-site 955 (20%), gbp-verbatim 179 (4%), gbp-insufficient 78 (2%).
+- **Indexing:** description length min 65 / median 412 / max 952; **4,111 index (85%) / 699 noindex (15%)** at the 250 gate. The rendered build (after duplicate-slug collisions + the build's own contact-info/boilerplate conditions) is **4,099 indexed / 705 noindexed** across 4,804 files. All 37 protected (traffic-earning) advisor pages stay indexed.
+- **Originality:** longest verbatim word-run vs source min 1 / median 5 / max 9 (gate rejects ≥10).
+- **Cost:** $5.90 (2,766 Haiku calls; 4.14M input / 352K output tokens; ≈$0.0021/call).
+
+### Why it helps
+
+- **Adds the distinctiveness Phase 1 couldn't.** 2,509 listings now carry original prose mined from each firm's own website — the value-beyond-the-GBP that Milestone 11's known-gaps flagged. Median description length rose 277 → 412.
+- **Grows the indexed surface honestly.** Indexable advisor pages move 64% → 85%, but every *added* indexed page is original website-derived content, not synthetic boilerplate — the opposite of the scaled-content signal. Franchise branches still route to the truthful, gated GBP fallback rather than near-duplicate spun copy.
+- **No verbatim copying ships.** The 9-word ceiling means no scraped sentence reaches production, keeping the YMYL/copyright posture clean.
+
+### Known gaps
+
+- **Thin / JS-only sites fall back (20%).** 955 sites returned < 250 chars of extractable text (often JS-rendered single-page sites trafilatura can't read without a headless browser). These keep their Phase 1 GBP description and gate normally — no regression, just no uplift.
+- **CLAUDE.md runbook not yet updated.** The "after any data refresh" workflow still documents only Phase 1 (`generate_fact_descriptions.py`). Insert `website_descriptions.py` into that runbook once Phase 2 is deployed and validated in production.
+
+### Rollback path
+
+- **Descriptions:** restore from `data/description_backup_20260529_194917.json` (keyed by record id) back into Airtable.
+- **Code:** `website_descriptions.py` is additive — the build reads the stored Airtable field, not the generator — so `git revert` of the commit fully removes Phase 2. Phase 1 fallback descriptions remain valid throughout.
+
+---
+
 ## Milestone 11 — Fact-grounded descriptions + per-listing indexing gate (2026-05-29)
 
 **Branch:** `remediation/fact-grounded-descriptions` (commit pending push by Kevin)
