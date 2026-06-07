@@ -45,3 +45,12 @@
   from = "/blog"
   to = "/blog.html"
   status = 200
+
+# Edge-level bot filter: 403s traffic from blocked countries (default: Singapore)
+# before it reaches the site — stops the GA-polluting bot flood. Legit crawlers
+# (Googlebot, AdSense, Bing) are always allowed. Disable without a redeploy via
+# env EDGE_BLOCK_ENABLED=false; change the list via env EDGE_BLOCKED_COUNTRIES.
+# See netlify/edge-functions/block-bot-traffic.js.
+[[edge_functions]]
+  path = "/*"
+  function = "block-bot-traffic"
