@@ -160,7 +160,7 @@ One line per non-obvious design decision. Append as we go. Format: `YYYY-MM-DD �
 - **Near-dup rule = 6-gram Jaccard > 0.5 within same-firm-name groups** — survivor preference: protected > longest description > slug (deterministic). 615 noindexed (Merrill 209→14 indexed); indexed advisors 4,099→3,607. Magnitude is deliberate: one canonical page per shared corporate blurb. Threshold and survivor policy live in `_near_duplicate_slugs`.
 - **Methodology page** — `/methodology.html`, indexed, in sitemap, footer link site-wide + about-page link; copy is fact-grounded against the real pipeline (says "roughly one in four" listings noindexed, matching 1,203/4,810). Pretty URL via netlify.toml 200 rewrite.
 - **Sitemap dedup** — `urls = list(dict.fromkeys(urls))` before write; order-preserving.
-- **Flagged, not changed** — about.html says firms are "added from public regulatory sources"; actual source is GBP/Outscraper. Kevin's copy call.
+- **About/methodology alignment (2026-06-10, Kevin's call)** — about.html's "added from public regulatory sources (BrokerCheck, SEC IAPD)" claim rewritten to the truthful provenance (public business profiles + the firm's own website, with BrokerCheck/IAPD as the *verification* layer) so the two pages agree before the AdSense reviewer reads both.
 
 ## 2026-06-07 — Block Singapore bot traffic (Netlify Edge Function)
 

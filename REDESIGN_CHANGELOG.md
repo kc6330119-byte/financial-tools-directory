@@ -21,7 +21,9 @@ A full-corpus audit (fresh build + live verification, benchmarked against doggro
 
 **Results (fresh build):** 35 tools fetched (correct table), 4,810 advisor pages (3,607 indexed / 1,203 noindexed), 44-entry protected list fully honored, sitemap 4,219 URLs with 0 dupes, methodology rendered + linked site-wide.
 
-**Open:** Kevin rotates the Airtable PAT (leaked into a local session transcript during the audit — never committed). About page claims regulatory-source provenance (BrokerCheck/IAPD) while the pipeline actually sources from Google Business Profile data — flagged for Kevin's copy decision, not changed here.
+**Open:** Kevin rotates the Airtable PAT (leaked into a local session transcript during the audit — never committed).
+
+**Addendum (2026-06-10):** About page provenance claim aligned with the methodology page on Kevin's call — listings sourced from the public business profiles firms maintain + their own websites, with BrokerCheck/SEC IAPD as the verification layer. The two pages now tell one story. Deployed to production.
 
 ---
 
