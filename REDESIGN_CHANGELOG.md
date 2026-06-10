@@ -6,6 +6,25 @@ This file is the "release notes" view of the redesign. For the terse one-line-pe
 
 ---
 
+## Milestone 13 — Pre-resubmission audit fixes (2026-06-09)
+
+**Branch:** `fix/adsense-audit-findings` (deploy pending Kevin)
+**Files touched:** `build.py`, `netlify.toml`, `templates/base.html`, `templates/about.html`, `templates/methodology.html` (new), `.env` (local-only, not committed)
+
+A full-corpus audit (fresh build + live verification, benchmarked against doggroomerlocator.com's AdSense "Low Value Content" rejection) found production healthy but flagged five fixes; all five shipped here:
+
+1. **Local/prod parity restored.** The local `.env` carried `AIRTABLE_TABLE_NAME=Advisors`, making every local build render all 4,810 advisors as ungated, indexed, ad-loading `/tool/` pages (3,752 files) — the root cause of the 2026-05-29 "3,752 tool pages" confusion. Override removed; `build.py`'s tool fetch now has a sanity guard that **aborts the build** if the table returns advisor-shaped records (City/Specialties without Pricing Model/Category), so this class of misconfiguration can never ship.
+2. **Tool pages get the same indexing gate as advisors** (`description_is_indexable`): thin tools are noindexed, dropped from the sitemap, and serve no ads. Today: 35/35 pass (min description 346 chars).
+3. **Near-duplicate branch pages noindexed.** Within same-firm groups, a description with 6-gram Jaccard > 0.5 against an already-kept sibling is noindexed (protected slugs always survive; longest description wins). Catches the multi-branch chains: Merrill 209 branches → 14 indexed survivors. Net: **615 near-dup pages noindexed**; indexed advisors 4,099 → 3,607 — the indexed surface is now distinct content only.
+4. **Methodology page** (`/methodology.html`, indexed, footer + about links): data sources, fact-only description rules, the indexing gate, the multi-branch rule, corrections process. The main E-E-A-T addition for resubmission.
+5. **Sitemap dedup** (order-preserving): 0 duplicate `<loc>` entries (live had 6; the misconfigured local build had 1,064).
+
+**Results (fresh build):** 35 tools fetched (correct table), 4,810 advisor pages (3,607 indexed / 1,203 noindexed), 44-entry protected list fully honored, sitemap 4,219 URLs with 0 dupes, methodology rendered + linked site-wide.
+
+**Open:** Kevin rotates the Airtable PAT (leaked into a local session transcript during the audit — never committed). About page claims regulatory-source provenance (BrokerCheck/IAPD) while the pipeline actually sources from Google Business Profile data — flagged for Kevin's copy decision, not changed here.
+
+---
+
 ## Milestone 12 — Phase 2: website-derived descriptions (2026-05-29)
 
 **Branch:** `seo/phase2-website-enrichment` (commit pending push by Kevin)

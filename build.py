@@ -117,6 +117,27 @@ def fetch_tools_from_airtable():
         table = api.table(config.AIRTABLE_BASE_ID, config.AIRTABLE_TABLE_NAME)
         records = table.all()
 
+        # Sanity guard: this fetch must return investor *tools*, not advisor
+        # listings. A misdirected AIRTABLE_TABLE_NAME (e.g. "Advisors") once made
+        # local builds render every advisor as an ungated /tool/ page — the exact
+        # duplicate-directory signal AdSense rejects. Tool records carry
+        # Category / Pricing Model; advisor records carry City / Specialties.
+        # SystemExit deliberately escapes the except below so the build dies loudly
+        # instead of falling back to sample data.
+        sample = [r.get("fields", {}) for r in records[:50]]
+        advisor_shaped = sum(
+            1 for f in sample
+            if ("City" in f or "Specialties" in f)
+            and not ("Pricing Model" in f or "Category" in f)
+        )
+        if sample and advisor_shaped > len(sample) // 2:
+            raise SystemExit(
+                f"ABORT: table '{config.AIRTABLE_TABLE_NAME}' returned advisor-shaped records "
+                f"({advisor_shaped}/{len(sample)} sampled have City/Specialties but no "
+                f"Pricing Model/Category). AIRTABLE_TABLE_NAME must point at the "
+                f"investor-tools table — check .env / Netlify env vars."
+            )
+
         tools = []
         for record in records:
             fields = record.get("fields", {})
@@ -842,6 +863,53 @@ def advisor_is_indexable(advisor, protected_slugs):
     return has_contact and description_is_indexable(advisor.get("description", ""))
 
 
+def _near_duplicate_slugs(advisors, protected_slugs):
+    """Slugs to force-noindex because their description near-duplicates another
+    listing of the same firm — multi-branch firms (Merrill, Raymond James, …)
+    whose locations share one corporate blurb read as scaled content to a
+    reviewer even when each page's contact facts differ. Within each firm-name
+    group, a description with 6-gram Jaccard similarity > 0.5 against an
+    already-kept sibling is noindexed. Protected slugs always survive; the
+    longest description in a group is preferred as the survivor."""
+    def ngrams(text):
+        words = re.findall(r"\w+", (text or "").lower())
+        return {tuple(words[i:i + 6]) for i in range(len(words) - 5)}
+
+    by_firm = {}
+    for a in advisors:
+        key = re.sub(r"[^a-z0-9]+", " ", (a.get("name") or "").lower()).strip()
+        if key:
+            by_firm.setdefault(key, []).append(a)
+
+    dupes = set()
+    for group in by_firm.values():
+        if len(group) < 2:
+            continue
+        # Protected first, then longest description, then slug for determinism —
+        # so the strongest page in the firm group is the one that stays indexed.
+        ordered = sorted(
+            group,
+            key=lambda a: (
+                a["slug"] not in protected_slugs,
+                -len(a.get("description") or ""),
+                a["slug"],
+            ),
+        )
+        kept_grams = []
+        for a in ordered:
+            grams = ngrams(a.get("description"))
+            if not grams:
+                continue  # empty/short descriptions are handled by the main gate
+            is_dup = any(
+                len(grams & kg) / len(grams | kg) > 0.5 for kg in kept_grams if kg
+            )
+            if is_dup and a["slug"] not in protected_slugs:
+                dupes.add(a["slug"])
+            else:
+                kept_grams.append(grams)
+    return dupes
+
+
 def build_advisor_pages(env, advisors):
     """Build advisor detail pages with JSON-LD FinancialService schema.
 
@@ -850,6 +918,10 @@ def build_advisor_pages(env, advisors):
     protected_slugs = _load_protected_slugs()
     if protected_slugs:
         print(f"  Protected (force-indexed) listings: {len(protected_slugs)}")
+
+    near_dupes = _near_duplicate_slugs(advisors, protected_slugs)
+    if near_dupes:
+        print(f"  Near-duplicate descriptions noindexed: {len(near_dupes)}")
 
     indexed_slugs = []
     noindex_count = 0
@@ -868,7 +940,8 @@ def build_advisor_pages(env, advisors):
             {"name": advisor.get("state", ""), "slug": advisor.get("state_slug", ""), "abbr": ""}
         )
 
-        noindex = not advisor_is_indexable(advisor, protected_slugs)
+        noindex = (not advisor_is_indexable(advisor, protected_slugs)
+                   or advisor["slug"] in near_dupes)
         if noindex:
             noindex_count += 1
         else:
@@ -974,8 +1047,16 @@ def build_category_pages(env, tools):
 
 
 def build_tool_pages(env, tools):
-    """Build individual tool detail pages."""
+    """Build individual tool detail pages.
+
+    Same indexing gate as advisor listings (description_is_indexable): a tool
+    page with a thin description is noindexed, dropped from the sitemap, and
+    serves no ads (base.html suppresses the AdSense loader on noindex pages).
+    Returns the list of slugs that were indexed (for the sitemap)."""
     template = env.get_template("tool.html")
+
+    indexed_slugs = []
+    noindex_count = 0
 
     for tool in tools:
         related = []
@@ -985,9 +1066,16 @@ def build_tool_pages(env, tools):
                     related.append(t)
         related = related[:4]
 
+        noindex = not description_is_indexable(tool.get("description", ""))
+        if noindex:
+            noindex_count += 1
+        else:
+            indexed_slugs.append(tool["slug"])
+
         html = template.render(
             tool=tool,
             related_tools=related,
+            noindex=noindex,
             page_title=f"{tool['name']} - Investor Tools - {config.SITE_NAME}",
             meta_description=tool.get("description", "")[:160],
             request_path=f"/tool/{tool['slug']}.html",
@@ -995,7 +1083,10 @@ def build_tool_pages(env, tools):
 
         output_path = config.OUTPUT_DIR / "tool" / f"{tool['slug']}.html"
         output_path.write_text(html)
-        print(f"Built: tool/{tool['slug']}.html")
+
+    print(f"Built: {len(tools)} tool pages "
+          f"({len(indexed_slugs)} indexed, {noindex_count} noindexed)")
+    return indexed_slugs
 
 
 # =============================================================================
@@ -1118,7 +1209,8 @@ def build_compare_data(advisors):
 # BUILD: SITEMAP & SEO
 # =============================================================================
 
-def build_sitemap(tools, advisors, posts, indexed_states=None, indexed_cities=None, indexed_advisor_slugs=None):
+def build_sitemap(tools, advisors, posts, indexed_states=None, indexed_cities=None,
+                  indexed_advisor_slugs=None, indexed_tool_slugs=None):
     """Generate sitemap.xml — only includes indexable pages."""
     urls = [
         f"{config.SITE_URL}/",
@@ -1126,6 +1218,7 @@ def build_sitemap(tools, advisors, posts, indexed_states=None, indexed_cities=No
         f"{config.SITE_URL}/calculators.html",
         f"{config.SITE_URL}/blog.html",
         f"{config.SITE_URL}/about.html",
+        f"{config.SITE_URL}/methodology.html",
         f"{config.SITE_URL}/contact.html",
         f"{config.SITE_URL}/privacy.html",
         f"{config.SITE_URL}/terms.html",
@@ -1179,14 +1272,24 @@ def build_sitemap(tools, advisors, posts, indexed_states=None, indexed_cities=No
     for category in config.CATEGORIES:
         urls.append(f"{config.SITE_URL}/category/{category['slug']}.html")
 
-    # Tool pages
-    for tool in tools:
-        urls.append(f"{config.SITE_URL}/tool/{tool['slug']}.html")
+    # Tool pages — only indexed listings (same None=all / []=none semantics as advisors)
+    if indexed_tool_slugs is not None:
+        indexed_tool_set = set(indexed_tool_slugs)
+        for tool in tools:
+            if tool["slug"] in indexed_tool_set:
+                urls.append(f"{config.SITE_URL}/tool/{tool['slug']}.html")
+    else:
+        for tool in tools:
+            urls.append(f"{config.SITE_URL}/tool/{tool['slug']}.html")
 
     # Blog posts
     for post in posts:
         if post.get("slug"):
             urls.append(f"{config.SITE_URL}/blog/{post['slug']}.html")
+
+    # Dedupe while preserving order — duplicate source records once produced
+    # duplicate <loc> entries, which Google flags as sitemap errors.
+    urls = list(dict.fromkeys(urls))
 
     sitemap = '<?xml version="1.0" encoding="UTF-8"?>\n'
     sitemap += '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
@@ -1297,6 +1400,12 @@ STATIC_PAGES = [
         "description": f"{config.SITE_NAME} lists thousands of fiduciary financial advisors across the US. Learn how we research firms, score quality, and help you compare credentials and fees.",
     },
     {
+        "template": "methodology.html",
+        "output": "methodology.html",
+        "title": "Methodology",
+        "description": f"How {config.SITE_NAME} builds its advisor listings: data sources, fact-only description rules, the quality gate that keeps thin pages out of search, and how to request corrections.",
+    },
+    {
         "template": "privacy.html",
         "output": "privacy.html",
         "title": "Privacy Policy",
@@ -1387,7 +1496,7 @@ def main():
     # Build tool pages (preserved from original site)
     build_tools_hub(env, tools)
     build_category_pages(env, tools)
-    build_tool_pages(env, tools)
+    indexed_tool_slugs = build_tool_pages(env, tools)
 
     # Build blog
     build_blog_page(env, posts)
@@ -1402,7 +1511,8 @@ def main():
 
     # Build SEO files
     print("\nBuilding SEO files...")
-    build_sitemap(tools, advisors, posts, indexed_states, indexed_cities, indexed_advisor_slugs)
+    build_sitemap(tools, advisors, posts, indexed_states, indexed_cities,
+                  indexed_advisor_slugs, indexed_tool_slugs)
     build_robots()
     copy_ads_txt()
     copy_verification_files()

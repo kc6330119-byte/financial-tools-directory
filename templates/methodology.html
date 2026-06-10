@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+{% from '_breadcrumb_schema.html' import breadcrumb_schema %}
+
+{% block extra_head %}
+{{ breadcrumb_schema([
+    {'name': 'Home', 'url': site_url},
+    {'name': 'Methodology'},
+]) }}
+{% endblock %}
+
+{% block content %}
+
+<nav class="breadcrumb" aria-label="Breadcrumb">
+    <div class="wrap">
+        <ol>
+            <li><a href="/">Home</a></li>
+            <li aria-current="page">Methodology</li>
+        </ol>
+    </div>
+</nav>
+
+<header class="page-head">
+    <div class="wrap">
+        <div class="eyebrow">Methodology</div>
+        <h1>How the listings on this site are built, checked, and culled.</h1>
+        <p class="lede">
+            A directory is only as honest as its pipeline. This page documents ours &mdash; where the data comes from, what we do to it, and the quality bar a listing has to clear before we ask a search engine to take it seriously.
+        </p>
+    </div>
+</header>
+
+<div class="wrap static-page">
+    <div class="detail-stack" style="max-width: 720px; margin: 0 auto;">
+        <section class="detail-card">
+            <h2>Where the data comes from</h2>
+            <p class="prose-body">
+                Listings start from the public business profiles that firms maintain themselves &mdash; the name, address, phone, website, hours, credentials, and service descriptions a firm publishes about its own practice. We supplement that with what the firm states on its own website. We do not buy leads, accept submissions in exchange for placement, or merge in third-party "intent data."
+            </p>
+            <p class="prose-body" style="margin-top: 14px;">
+                Because this data describes regulated businesses, every advisor page links to the public regulatory record &mdash; FINRA BrokerCheck and the SEC Investment Adviser Public Disclosure database &mdash; so you can verify registrations, credentials, and disciplinary history at the source. We'd rather you check than take our word for it.
+            </p>
+        </section>
+
+        <section class="detail-card">
+            <h2>How descriptions are written</h2>
+            <p class="prose-body">
+                Every firm description is composed from facts the firm itself publishes: services offered, fee model, fiduciary status, professional credentials (CFP&reg;, CFA, CPA, ChFC), registration status, founding year, account minimums, and stated specialties. The composition is machine-assisted and rule-bound, and the rules are strict:
+            </p>
+            <ul style="list-style: none; padding: 0; margin: 16px 0 0 0;">
+                <li style="padding: 10px 0; border-bottom: 1px solid var(--divider); display: grid; grid-template-columns: 20px 1fr; gap: 12px; align-items: start;">
+                    <span style="color: var(--gold); font-family: var(--font-mono); font-weight: 700; font-size: 0.9rem;">&rarr;</span>
+                    <span style="color: var(--text);">No fact appears in a description unless the firm published it. Nothing is inferred, estimated, or invented.</span>
+                </li>
+                <li style="padding: 10px 0; border-bottom: 1px solid var(--divider); display: grid; grid-template-columns: 20px 1fr; gap: 12px; align-items: start;">
+                    <span style="color: var(--gold); font-family: var(--font-mono); font-weight: 700; font-size: 0.9rem;">&rarr;</span>
+                    <span style="color: var(--text);">No text is copied. An automated originality check rejects any description that reproduces ten or more consecutive words from a source page.</span>
+                </li>
+                <li style="padding: 10px 0; border-bottom: 1px solid var(--divider); display: grid; grid-template-columns: 20px 1fr; gap: 12px; align-items: start;">
+                    <span style="color: var(--gold); font-family: var(--font-mono); font-weight: 700; font-size: 0.9rem;">&rarr;</span>
+                    <span style="color: var(--text);">No promises. Descriptions never claim returns, outcomes, tax savings, or "peace of mind" &mdash; and marketing filler ("trusted partner," "comprehensive suite," "dedicated team") is banned vocabulary.</span>
+                </li>
+                <li style="padding: 10px 0; display: grid; grid-template-columns: 20px 1fr; gap: 12px; align-items: start;">
+                    <span style="color: var(--gold); font-family: var(--font-mono); font-weight: 700; font-size: 0.9rem;">&rarr;</span>
+                    <span style="color: var(--text);">No superlatives we can't source. A firm is "top-rated" on this site only if the underlying data says so, which means it usually isn't.</span>
+                </li>
+            </ul>
+        </section>
+
+        <section class="detail-card">
+            <h2>The indexing gate</h2>
+            <p class="prose-body">
+                Not every listing earns a place in search results. A listing must have working contact information and a substantive, fact-bearing description to be submitted to search engines. Listings that fall short stay reachable on the site &mdash; the firm exists, and you may be looking for it &mdash; but they are excluded from our sitemap, marked <span style="font-family: var(--font-mono); font-size: 0.9em;">noindex</span>, and carry no advertising. Roughly one listing in four currently sits below that bar &mdash; thin listings and near-duplicate branch pages of national firms &mdash; on purpose.
+            </p>
+            <p class="prose-body" style="margin-top: 14px;">
+                Multi-branch firms get one more rule. When a national firm's locations share substantially the same corporate description, we index one canonical page rather than dozens of near-copies. The other branch pages remain available, just not submitted for ranking.
+            </p>
+        </section>
+
+        <section class="detail-card">
+            <h2>What we never publish</h2>
+            <p class="prose-body">
+                No scraped star ratings dressed up as review markup &mdash; structured review data belongs to platforms that collected it, and recycling it misleads both readers and search engines. No paid placements anywhere in the directory. No AI-written "reviews" of advisors. And no financial advice: this site documents who advisors are and what they disclose; it does not tell you whom to hire.
+            </p>
+        </section>
+
+        <section class="detail-card">
+            <h2>Corrections and updates</h2>
+            <p class="prose-body">
+                When the source data is refreshed, every rule on this page runs again &mdash; descriptions are recomposed from current facts, the indexing gate is re-applied, and listings that no longer clear the bar lose their place in search. If a firm believes its listing is wrong &mdash; credentials shown incorrectly, fiduciary status misrepresented, a stale address &mdash; write to us via <a href="/contact.html">the contact page</a> and we will correct or remove the entry within one business day.
+            </p>
+            <p class="prose-body" style="margin-top: 14px;">
+                For who runs this site and how it makes money, see the <a href="/about.html">about page</a> and its disclosure section.
+            </p>
+        </section>
+    </div>
+</div>
+
+{% endblock %}

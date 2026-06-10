@@ -151,6 +151,17 @@ One line per non-obvious design decision. Append as we go. Format: `YYYY-MM-DD �
 - **Cost metering** — each LLM call captures `usage.input_tokens`/`output_tokens`; the run prints actual spend + a full-run projection. Pilot (100 advisors, 34 LLM calls): $0.0697; projected full-run upper bound ~$7.63 (realistically lower — shared-host and thin-site records skip the LLM).
 - **Rollback:** identical to Phase 1 — descriptions restore from the timestamped `data/description_backup_<ts>.json`; `website_descriptions.py` is additive (build reads neither generator). `--apply` is gated on Kevin's explicit go; Kevin drives the git push / Netlify deploy.
 
+## 2026-06-09 — Pre-resubmission audit fixes
+
+- **Branch** — `fix/adsense-audit-findings`. Five fixes from the full-corpus audit (Dog Groomer rejection as benchmark); audit details in `ADSENSE_RESUBMISSION_PLAN.md` 2026-06-09 snapshot.
+- **`.env` override removed** — `AIRTABLE_TABLE_NAME=Advisors` made local builds render all advisors as `/tool/` pages; root cause of the 2026-05-29 tools-removal confusion. Removal verified safe (`validate_listings.py` self-defaults to "Advisors"; importer doesn't read the var). **Rollback:** re-add the line to `.env` (not in git).
+- **Tool-fetch sanity guard** — `fetch_tools_from_airtable` raises `SystemExit` (escapes the fallback `except Exception`) if >50% of sampled records look advisor-shaped. Fail-loud beats fail-into-sample-data: a polluted/misdirected table now kills the build instead of shipping a duplicate directory.
+- **Tool gate parity** — `build_tool_pages` applies `description_is_indexable`, returns indexed slugs; sitemap emits indexed tools only (same None=all/[]=none semantics as advisors). All 35 current tools pass.
+- **Near-dup rule = 6-gram Jaccard > 0.5 within same-firm-name groups** — survivor preference: protected > longest description > slug (deterministic). 615 noindexed (Merrill 209→14 indexed); indexed advisors 4,099→3,607. Magnitude is deliberate: one canonical page per shared corporate blurb. Threshold and survivor policy live in `_near_duplicate_slugs`.
+- **Methodology page** — `/methodology.html`, indexed, in sitemap, footer link site-wide + about-page link; copy is fact-grounded against the real pipeline (says "roughly one in four" listings noindexed, matching 1,203/4,810). Pretty URL via netlify.toml 200 rewrite.
+- **Sitemap dedup** — `urls = list(dict.fromkeys(urls))` before write; order-preserving.
+- **Flagged, not changed** — about.html says firms are "added from public regulatory sources"; actual source is GBP/Outscraper. Kevin's copy call.
+
 ## 2026-06-07 — Block Singapore bot traffic (Netlify Edge Function)
 
 - **Branch** — `infra/block-sg-bot`. New file `netlify/edge-functions/block-bot-traffic.js` + an `[[edge_functions]] path = "/*"` block in `netlify.toml`. First edge function on the site (the existing `netlify/functions/market-data.js` is a regular serverless function).
