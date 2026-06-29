@@ -15,6 +15,15 @@
 
 Python static site generation → Airtable (read-only CMS) → Netlify hosting → Google AdSense monetization. See the `smart-investor-redesign` skill for full stack conventions.
 
+## Airtable backup & free-tier parking
+
+The Advisors table is the live CMS — `build.py` fetches it on every Netlify build, so **emptying the table makes the next deploy publish a blank site** (advisors do NOT fall back to sample data on an empty table; only on an API error — see `build.py:get_advisors`). Before reducing the table to drop onto Airtable's free tier (currently ~1,000 records/base):
+
+1. **Back up first.** Canonical snapshot: `Advisors-Grid view - 20260629.csv` (repo root) — 4,810 rows, all 28 fields the build reads, every enriched Phase 1/2 description. Committed on branch `backup/advisors-20260629` (intentional exception to the generic Airtable-export ignore policy; this dated snapshot is the restore artifact).
+2. **Lock the Netlify production deploy** (Deploys → current deploy → Lock) so no stray rebuild can replace the live site with an empty one.
+3. **Delete rows, not the table** — keeping the table preserves field types for a clean reload.
+4. **Restore:** load the CSV back into the *preserved* Advisors table (not a fresh CSV import, which loses field types). Multi-value fields are comma-separated (`Investment Management,Wealth Management`); checkboxes (Fiduciary, SEC Registered) serialize as `checked`/empty — spot-check those after load. Then run `python3 build.py` and confirm it prints "Fetched 4810 advisors" before trusting the restore.
+
 ## Runbooks (cross-site methodology)
 
 When the user reports a search-engine indexing alert, performance question, or asks "is something wrong with our SEO" — read the SEO diagnostic runbook before starting:
